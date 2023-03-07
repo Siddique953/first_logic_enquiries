@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "first-logic-erp"
+  },
+  "targets": {
+    "first-logic-erp": {
+      "hosting": {
+        "first-logic-erp": [
+          "first-logic-erp"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

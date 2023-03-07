@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1006994680466",
+    "project_id": "first-logic-erp",
+    "storage_bucket": "first-logic-erp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1006994680466:android:60f52f70fde4223840d44b",
+        "android_client_info": {
+          "package_name": "com.firstlogicinfolab.fl_erp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1006994680466-v7j4667i6si2j4gkeg1humfbmpf8leve.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.firstlogicinfolab.fl_erp",
+            "certificate_hash": "46701aef85a708589e2f5fefa63f91f8efeeb87e"
+          }
+        },
+        {
+          "client_id": "1006994680466-e3th1efl6nftsf4gr688qorf4ljdeirm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLiXpf2OGC-gFjT3M6cVNO7eFOBRDMfcg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1006994680466-e3th1efl6nftsf4gr688qorf4ljdeirm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
