@@ -1769,6 +1769,12 @@ class _EditEnquiryState extends State<EditEnquiry> {
                                                                     "",
                                                             'projectDetails':
                                                                 projectDetails,
+                                                            'search': setSearchParam(
+                                                                name.text +
+                                                                    " " +
+                                                                    mobile.text
+                                                                //+ ""  + email.text
+                                                                ),
                                                             'projectType':
                                                                 projectType
                                                                     .text,

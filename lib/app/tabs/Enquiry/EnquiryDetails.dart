@@ -833,9 +833,9 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
                                                                   .fromSTEB(8,
                                                                       0, 0, 0),
                                                           child: Text(
-                                                            data['status'] == 0
-                                                                ? 'Convert to Dead'
-                                                                : "Already a Dead One.",
+                                                            data['status'] == 2
+                                                                ? "Already a Dead One."
+                                                                : 'Convert to Dead',
                                                             style:
                                                                 FlutterFlowTheme
                                                                     .bodyText1
@@ -943,9 +943,9 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
                                                                   .fromSTEB(8,
                                                                       0, 0, 0),
                                                           child: Text(
-                                                            data['status'] == 0
-                                                                ? 'Register As Customer'
-                                                                : "Already a customer.",
+                                                            data['status'] == 1
+                                                                ? "Already a customer."
+                                                                : 'Register As Customer',
                                                             style:
                                                                 FlutterFlowTheme
                                                                     .bodyText1

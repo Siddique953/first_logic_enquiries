@@ -1645,6 +1645,13 @@ class _AddEnquiryWidgetState extends State<AddEnquiryWidget> {
                                                       'place': place.text,
                                                       'mobile': mobile.text,
                                                       'email': email.text,
+                                                      'search': setSearchParam(
+                                                          name.text +
+                                                              " " +
+                                                              mobile.text
+                                                          // + "" +
+                                                          // email.text
+                                                          ),
                                                       'additionalInfo':
                                                           description.text ??
                                                               "",

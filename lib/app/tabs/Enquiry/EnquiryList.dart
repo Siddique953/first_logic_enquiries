@@ -331,14 +331,18 @@ class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
                                             child: Text(
                                               data[index]['status'] == 0
                                                   ? 'Pending'
-                                                  : 'Customer',
+                                                  : data[index]['status'] == 1
+                                                      ? 'Customer'
+                                                      : 'Dead',
                                               style: FlutterFlowTheme.bodyText2
                                                   .override(
                                                 fontFamily: 'Lexend Deca',
-                                                color:
-                                                    data[index]['status'] == 1
-                                                        ? Color(0xFF4B39EF)
-                                                        : Colors.black,
+                                                color: data[index]['status'] ==
+                                                        1
+                                                    ? Color(0xFF4B39EF)
+                                                    : data[index]['status'] == 0
+                                                        ? Colors.black
+                                                        : Colors.red,
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -398,29 +402,22 @@ class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
                           .collection('enquiries')
                           // .where('status', isEqualTo: 0)
                           .where('branchId', isEqualTo: currentBranchId)
+                          .where('search',
+                              arrayContains: search.text.toUpperCase())
                           .orderBy('date', descending: true)
                           .snapshots(),
                       builder: (context, snapshot) {
+                        print(snapshot);
                         if (!snapshot.hasData) {
                           return Center(
-                            child: CircularProgressIndicator(),
+                            child: LottieBuilder.network(
+                              'https://assets9.lottiefiles.com/packages/lf20_HpFqiS.json',
+                              height: 500,
+                            ),
                           );
                         }
                         var data = snapshot.data.docs;
-                        List items = [];
-                        for (dynamic item in data) {
-                          if (item['name']
-                                  .toString()
-                                  .toLowerCase()
-                                  .startsWith(search.text.toLowerCase()) ||
-                              item['mobile']
-                                  .toString()
-                                  .toLowerCase()
-                                  .startsWith(search.text.toLowerCase())) {
-                            items.add(item);
-                          }
-                        }
-                        return items.length == 0
+                        return data.length == 0
                             ? LottieBuilder.network(
                                 'https://assets9.lottiefiles.com/packages/lf20_HpFqiS.json',
                                 height: 500,
@@ -457,7 +454,7 @@ class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
                                               fontSize: 12)),
                                     ),
                                     DataColumn(
-                                      label: Text("Agent",
+                                      label: Text("c/o",
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 12)),
@@ -476,15 +473,21 @@ class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
                                     ),
                                   ],
                                   rows: List.generate(
-                                    items.length,
+                                    data.length,
                                     (index) {
-                                      final contacts = items[index];
-                                      String name = contacts['name'];
-                                      String careOf =
-                                          agentDataById[contacts['agentId']]
-                                              ['name'];
-                                      String mobile = contacts['mobile'];
-                                      String email = contacts['email'];
+                                      String name = data[index]['name'];
+
+                                      String careOf = agentDataById[data[index]
+                                                      ['agentId']] ==
+                                                  null ||
+                                              data[index]['agentId'] == ''
+                                          ? ''
+                                          : (agentDataById[data[index]
+                                                      ['agentId']]['name'] ??
+                                                  '')
+                                              .toString();
+                                      String mobile = data[index]['mobile'];
+                                      String email = data[index]['email'];
 
                                       return DataRow(
                                         color: index.isOdd
@@ -495,7 +498,7 @@ class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
                                                 Colors.blueGrey.shade50),
                                         cells: [
                                           DataCell(Text(
-                                            contacts.id,
+                                            data[index].id,
                                             style: FlutterFlowTheme.bodyText2
                                                 .override(
                                               fontFamily: 'Lexend Deca',
@@ -506,7 +509,7 @@ class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
                                           )),
                                           DataCell(Text(
                                             dateTimeFormat('d-MMM-y',
-                                                contacts['date'].toDate()),
+                                                data[index]['date'].toDate()),
                                             style: FlutterFlowTheme.bodyText2
                                                 .override(
                                               fontFamily: 'Lexend Deca',
@@ -547,27 +550,32 @@ class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
                                           )),
                                           DataCell(InkWell(
                                             onTap: () {
-                                              if (contacts['status'] == 1) {
+                                              if (data[index]['status'] == 1) {
                                                 Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
                                                             CustomerSinglePage(
-                                                              id: contacts[
-                                                                  'studentId'],
+                                                              id: data[index]
+                                                                  ['studentId'],
                                                             )));
                                               }
                                             },
                                             child: Text(
-                                              contacts['status'] == 0
+                                              data[index]['status'] == 0
                                                   ? 'Pending'
-                                                  : 'Customer',
+                                                  : data[index]['status'] == 1
+                                                      ? 'Customer'
+                                                      : 'Dead',
                                               style: FlutterFlowTheme.bodyText2
                                                   .override(
                                                 fontFamily: 'Lexend Deca',
-                                                color: contacts['status'] == 1
+                                                color: data[index]['status'] ==
+                                                        1
                                                     ? Color(0xFF4B39EF)
-                                                    : Colors.black,
+                                                    : data[index]['status'] == 0
+                                                        ? Colors.black
+                                                        : Colors.red,
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -583,7 +591,8 @@ class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
                                                         MaterialPageRoute(
                                                             builder: (context) =>
                                                                 EnquiryDetailsWidget(
-                                                                  id: contacts
+                                                                  id: data[
+                                                                          index]
                                                                       .id,
                                                                 )));
                                                   },

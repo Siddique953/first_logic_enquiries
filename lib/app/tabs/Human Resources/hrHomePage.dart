@@ -62,6 +62,11 @@ class _HrDashBoardState extends State<HrDashBoard> {
                       // setState(() {
                       widget._tabController.animateTo((6));
                       // });
+                    } else if (index == 1) {
+                      // setState(() {
+
+                      widget._tabController.animateTo((9));
+                      // });
                     } else if (index == 3) {
                       // setState(() {
                       Navigator.push(
@@ -75,11 +80,6 @@ class _HrDashBoardState extends State<HrDashBoard> {
                       // setState(() {
 
                       widget._tabController.animateTo((11));
-                      // });
-                    } else if (index == 1) {
-                      // setState(() {
-
-                      widget._tabController.animateTo((9));
                       // });
                     } else {
                       showUploadMessage(context, 'Coming Soon...');

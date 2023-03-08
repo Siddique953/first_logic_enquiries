@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
@@ -11,10 +9,9 @@ import '../../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../../flutter_flow/flutter_flow_util.dart';
 import '../../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../../flutter_flow/upload_media.dart';
+import '../../../app_widget.dart';
 import '../../../pages/home_page/home.dart';
 import 'package:excel/excel.dart';
-import 'package:universal_html/html.dart' as html;
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'BankSlip/bankSlip.dart';
@@ -103,6 +100,27 @@ class _AddAttendanceState extends State<AddAttendance> {
             break;
           }
 
+          /// SAVING ATTENDANCE DETAILS
+          List toDay = rowDetail[j][0].toString().split('/');
+          print('[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
+          print(toDay);
+          // List toDayList = toDay;
+          bool off = false;
+          bool half = false;
+          bool fullDayLeave = false;
+          DateTime day = DateTime.tryParse(toDay[2] + toDay[1] + toDay[0]);
+
+          print(
+              '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[day]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]');
+          print(day.year);
+          print(day.month);
+          print(day.day);
+          String inTime = rowDetail[j][2].toString();
+
+          String outTime = rowDetail[j][3].toString();
+
+          String totalWorkHour = rowDetail[j][4].toString();
+
           employeeDetails[empCode] = {};
 
           int hours = int.tryParse(rowDetail[j][4].toString().split(':')[0]);
@@ -125,11 +143,41 @@ class _AddAttendanceState extends State<AddAttendance> {
 
           if (cfData.contains('CF')) {
             cf++;
+            off = true;
           } else if (workHour < 3.5) {
             leave++;
+            fullDayLeave = true;
           } else if (workHour >= 3.5 && workHour < 7) {
             halfDay++;
+            half = true;
           }
+
+          /// SAVING EMPLOYEE DETAILS
+
+          FirebaseFirestore.instance
+              .collection('employeeAttendance')
+              .where('date', isEqualTo: day)
+              .where('empId', isEqualTo: empCode)
+              .get()
+              .then((value) {
+            if (value.docs.isEmpty) {
+              FirebaseFirestore.instance.collection('employeeAttendance').add({
+                'branch': currentBranchId,
+                'date': day,
+                'empId': empCode,
+                'inTime': inTime,
+                'outTime': outTime,
+                'totalWorkingHour': totalWorkHour,
+                'leave': fullDayLeave,
+                'halfDay': half,
+                'offDay': off,
+              }).then((value) {
+                value.update({
+                  'id': value.id,
+                });
+              });
+            }
+          });
         }
 
         i = j - 1;
