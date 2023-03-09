@@ -25,31 +25,6 @@ class HrAttendance extends StatefulWidget {
 }
 
 class _HrAttendanceState extends State<HrAttendance> {
-  List payments = [];
-
-  getPaymentDetails(DateTime from, DateTime to) async {
-    FirebaseFirestore.instance
-        .collection('projects')
-        .where('branchId', isEqualTo: currentBranchId)
-        .snapshots()
-        .listen((event) {
-      var student = event.docs;
-      payments = [];
-      for (var doc in student) {
-        Map value = {};
-        value = doc.data();
-        value['amount'] = doc['amount'];
-        value['paidDate'] = doc['datePaid'];
-        value['modeOfPayment'] = doc['paymentMethod'];
-        payments.add(value);
-      }
-
-      if (mounted) {
-        setState(() {});
-      }
-    });
-  }
-
   Map employeeDetails = {};
 
   DateTime fromDate = DateTime(
@@ -65,6 +40,8 @@ class _HrAttendanceState extends State<HrAttendance> {
       'MMMM y',
       date,
     ));
+
+    employeeDetails = {};
 
     FirebaseFirestore.instance
         .collection('paySlipInfo')

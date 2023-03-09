@@ -81,6 +81,7 @@ dependencies:
   flutter_excel: ^1.0.1
   intl_phone_field: ^3.1.0
   pie_chart: ^5.3.2
+  shimmer:
   intl:
 
 

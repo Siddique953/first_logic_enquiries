@@ -3,6 +3,7 @@ import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:month_picker_dialog_2/month_picker_dialog_2.dart';
 import '../../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../../flutter_flow/flutter_flow_theme.dart';
@@ -30,9 +31,9 @@ class _AddAttendanceState extends State<AddAttendance> {
 
   String filename = '';
 
-  /*Map<String, Map<String, dynamic>>*/ var employeeDetails = {};
-
-  List employeeDetailsList = [];
+  /*Map<String, Map<String, dynamic>>*/
+  var employeeDetails = {};
+  var employeeAttendance = {};
 
   void pickFile() async {
     final result = await FilePicker.platform.pickFiles(
@@ -68,6 +69,7 @@ class _AddAttendanceState extends State<AddAttendance> {
         int cf = 0;
 
         String empCode = 'FL${rowDetail[i][1]}';
+        employeeAttendance[empCode] = {};
 
         int lateCount = 0;
 
@@ -84,6 +86,7 @@ class _AddAttendanceState extends State<AddAttendance> {
         double payable = 0;
 
         double basicSalary = 0;
+
         if (empDataById[empCode] == null) {
           basicSalary = double.tryParse('0');
         } else {
@@ -101,7 +104,11 @@ class _AddAttendanceState extends State<AddAttendance> {
           }
 
           /// SAVING ATTENDANCE DETAILS
-          List toDay = rowDetail[j][0].toString().split('/');
+          List toDay = [];
+          print(rowDetail[j][0].toString().contains('/'));
+          rowDetail[j][0].toString().contains('/')
+              ? toDay = rowDetail[j][0].toString().split('/')
+              : toDay = rowDetail[j][0].toString().split('-');
           print('[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
           print(toDay);
           // List toDayList = toDay;
@@ -123,8 +130,16 @@ class _AddAttendanceState extends State<AddAttendance> {
 
           employeeDetails[empCode] = {};
 
-          int hours = int.tryParse(rowDetail[j][4].toString().split(':')[0]);
-          int minuit = int.tryParse(rowDetail[j][4].toString().split(':')[1]);
+          int hours = 0;
+          int minuit = 0;
+
+          try {
+            hours = int.tryParse(rowDetail[j][4].toString().split(':')[0]);
+            minuit = int.tryParse(rowDetail[j][4].toString().split(':')[1]);
+          } catch (e) {
+            hours = 0;
+            minuit = 0;
+          }
 
           double workHour = hours + minuit / 60.0;
           if (workHour >= 7.0) {
@@ -153,31 +168,42 @@ class _AddAttendanceState extends State<AddAttendance> {
           }
 
           /// SAVING EMPLOYEE DETAILS
+          employeeAttendance[empCode][DateFormat('dd-MM-yyyy').format(day)] = {
+            'branch': currentBranchId,
+            'date': day,
+            'empId': empCode,
+            'inTime': inTime,
+            'outTime': outTime,
+            'totalWorkingHour': totalWorkHour,
+            'leave': fullDayLeave,
+            'halfDay': half,
+            'offDay': off,
+          };
 
-          FirebaseFirestore.instance
-              .collection('employeeAttendance')
-              .where('date', isEqualTo: day)
-              .where('empId', isEqualTo: empCode)
-              .get()
-              .then((value) {
-            if (value.docs.isEmpty) {
-              FirebaseFirestore.instance.collection('employeeAttendance').add({
-                'branch': currentBranchId,
-                'date': day,
-                'empId': empCode,
-                'inTime': inTime,
-                'outTime': outTime,
-                'totalWorkingHour': totalWorkHour,
-                'leave': fullDayLeave,
-                'halfDay': half,
-                'offDay': off,
-              }).then((value) {
-                value.update({
-                  'id': value.id,
-                });
-              });
-            }
-          });
+          // FirebaseFirestore.instance
+          //     .collection('employeeAttendance')
+          //     .where('date', isEqualTo: day)
+          //     .where('empId', isEqualTo: empCode)
+          //     .get()
+          //     .then((value) {
+          //   if (value.docs.isEmpty) {
+          //     FirebaseFirestore.instance.collection('employeeAttendance').add({
+          //       'branch': currentBranchId,
+          //       'date': day,
+          //       'empId': empCode,
+          //       'inTime': inTime,
+          //       'outTime': outTime,
+          //       'totalWorkingHour': totalWorkHour,
+          //       'leave': fullDayLeave,
+          //       'halfDay': half,
+          //       'offDay': off,
+          //     }).then((value) {
+          //       value.update({
+          //         'id': value.id,
+          //       });
+          //     });
+          //   }
+          // });
         }
 
         i = j - 1;
@@ -222,6 +248,9 @@ class _AddAttendanceState extends State<AddAttendance> {
             )),
         bytes,
         'csv');
+
+    print('[[[[[[[[[[[[[[[[[[[[[[[[employeeAttendance]]]]]]]]]]]]]]]]]]]]]]]]');
+    print(employeeAttendance);
 
     setState(() {});
   }
@@ -289,9 +318,6 @@ class _AddAttendanceState extends State<AddAttendance> {
   @override
   void initState() {
     super.initState();
-    print(
-        '[[[[[[[[[[[[[[[[[[[[[[[[employeeDetailsList]]]]]]]]]]]]]]]]]]]]]]]]');
-    print(employeeList.length);
   }
 
   @override
@@ -404,6 +430,8 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                   .then((value) {
                                                 employeeDetails =
                                                     value['salaryInfo'];
+                                                employeeAttendance =
+                                                    value['attendanceInfo'];
                                                 showUploadMessage(context,
                                                     'Details Successfully Updated...');
                                                 setState(() {});
@@ -491,6 +519,8 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                         )))
                                                     .set({
                                                   'salaryInfo': employeeDetails,
+                                                  'attendanceInfo':
+                                                      employeeAttendance,
                                                 });
 
                                                 showUploadMessage(context,
@@ -835,17 +865,17 @@ class _AddAttendanceState extends State<AddAttendance> {
                                         String name =
                                             empDataById[data].name ?? '';
 
-                                        String totalDays =
-                                            employeeDetails[data] != null &&
-                                                    employeeDetails[data]
-                                                            ['offDay'] !=
-                                                        null
-                                                ? (30 -
-                                                        (employeeDetails[data]
-                                                                ['offDay'] ??
-                                                            0))
-                                                    .toString()
-                                                : '';
+                                        // String totalDays =
+                                        //     employeeDetails[data] != null &&
+                                        //             employeeDetails[data]
+                                        //                     ['offDay'] !=
+                                        //                 null
+                                        //         ? (30 -
+                                        //                 (employeeDetails[data]
+                                        //                         ['offDay'] ??
+                                        //                     0))
+                                        //             .toString()
+                                        //         : '';
 
                                         String leaves = employeeDetails[data] !=
                                                     null &&
@@ -1565,7 +1595,7 @@ class _AddAttendanceState extends State<AddAttendance> {
     }
 
     excel.setDefaultSheet('Pay Slip');
-    var fileBytes = excel.encode();
+    // var fileBytes = excel.encode();
     var data = excel.save(
         fileName:
             "PaySlip-${dateTimeFormat('dd MMM yyyy', DateTime.now())}.xlsx");
@@ -1819,6 +1849,44 @@ class _AddAttendanceState extends State<AddAttendance> {
         //  //   'text': 'Monthly Salary Details',
         //  //   'html': html,
         //  // },
+      }).then((value) {
+        FirebaseFirestore.instance
+            .collection('employees')
+            .doc(employeeList[i]['empId'])
+            .collection('attendance')
+            .doc(dateTimeFormat(
+                'MMM y',
+                DateTime(
+                  DateTime.now().year,
+                  DateTime.now().month - 1,
+                  DateTime.now().day,
+                )))
+            .set({
+          'attendance': employeeAttendance[employeeList[i]['empId']],
+        });
+
+        FirebaseFirestore.instance
+            .collection('employees')
+            .doc(employeeList[i]['empId'])
+            .collection('salaryInfo')
+            .doc(dateTimeFormat(
+                'MMM y',
+                DateTime(
+                  DateTime.now().year,
+                  DateTime.now().month - 1,
+                  DateTime.now().day,
+                )))
+            .set({
+          'totalWorkingDays':
+              (30 - (employeeDetails[employeeList[i]['empId']]['offDay'] ?? 0)),
+          'totalLeave': employeeDetails[employeeList[i]['empId']]['leave'],
+          'basicSalary': empDataById[employeeList[i]['empId']].ctc,
+          'payableSalary': employeeDetails[employeeList[i]['empId']]['payable'],
+          'incentive': employeeDetails[employeeList[i]['empId']]['incentive'],
+          'overTime': employeeDetails[employeeList[i]['empId']]['ot'],
+          'deduction': employeeDetails[employeeList[i]['empId']]['deduction'],
+          'takeHome': employeeDetails[employeeList[i]['empId']]['takeHome'],
+        });
       });
     }
     showUploadMessage(context, 'Pay Slip Successfully Shared..');
