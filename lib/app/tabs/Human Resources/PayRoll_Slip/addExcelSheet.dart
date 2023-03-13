@@ -530,6 +530,133 @@ class _AddAttendanceState extends State<AddAttendance> {
                                             },
                                           )
                                         : SizedBox(),
+                                    // SizedBox(
+                                    //   width: 20,
+                                    // ),
+                                    // employeeDetails.keys.toList().isNotEmpty
+                                    //     ? FlutterFlowIconButton(
+                                    //         borderColor: Colors.transparent,
+                                    //         borderRadius: 30,
+                                    //         borderWidth: 1,
+                                    //         buttonSize: 50,
+                                    //         icon: Icon(
+                                    //           Icons.upload,
+                                    //           color: Colors.teal,
+                                    //           size: 25,
+                                    //         ),
+                                    //         onPressed: () async {
+                                    //           bool pressed = await alert(
+                                    //               context,
+                                    //               'Do you want Upload');
+                                    //
+                                    //           if (pressed) {
+                                    //             for (int i = 0;
+                                    //                 i < employeeList.length;
+                                    //                 i++) {
+                                    //               if (employeeDetails[
+                                    //                           employeeList[i]
+                                    //                               ['empId']]
+                                    //                       ['takeHome'] ==
+                                    //                   0) {
+                                    //                 continue;
+                                    //               }
+                                    //
+                                    //               FirebaseFirestore.instance
+                                    //                   .collection('employees')
+                                    //                   .doc(employeeList[i]
+                                    //                       ['empId'])
+                                    //                   .collection('attendance')
+                                    //                   .doc(dateTimeFormat(
+                                    //                       'MMM y',
+                                    //                       DateTime(
+                                    //                         DateTime.now().year,
+                                    //                         DateTime.now()
+                                    //                                 .month -
+                                    //                             1,
+                                    //                         DateTime.now().day,
+                                    //                       )))
+                                    //                   .set({
+                                    //                 'attendance':
+                                    //                     employeeAttendance[
+                                    //                         employeeList[i]
+                                    //                             ['empId']],
+                                    //                 'month': dateTimeFormat(
+                                    //                     'MMM y',
+                                    //                     DateTime(
+                                    //                       DateTime.now().year,
+                                    //                       DateTime.now().month -
+                                    //                           1,
+                                    //                       DateTime.now().day,
+                                    //                     )),
+                                    //               });
+                                    //
+                                    //               FirebaseFirestore.instance
+                                    //                   .collection('employees')
+                                    //                   .doc(employeeList[i]
+                                    //                       ['empId'])
+                                    //                   .collection('salaryInfo')
+                                    //                   .doc(dateTimeFormat(
+                                    //                       'MMM y',
+                                    //                       DateTime(
+                                    //                         DateTime.now().year,
+                                    //                         DateTime.now()
+                                    //                                 .month -
+                                    //                             1,
+                                    //                         DateTime.now().day,
+                                    //                       )))
+                                    //                   .set({
+                                    //                 'totalWorkingDays': (30 -
+                                    //                     (employeeDetails[
+                                    //                                 employeeList[
+                                    //                                         i][
+                                    //                                     'empId']]
+                                    //                             ['offDay'] ??
+                                    //                         0)),
+                                    //                 'totalLeave':
+                                    //                     employeeDetails[
+                                    //                             employeeList[i]
+                                    //                                 ['empId']]
+                                    //                         ['leave'],
+                                    //                 'basicSalary': empDataById[
+                                    //                         employeeList[i]
+                                    //                             ['empId']]
+                                    //                     .ctc,
+                                    //                 'payableSalary':
+                                    //                     employeeDetails[
+                                    //                             employeeList[i]
+                                    //                                 ['empId']]
+                                    //                         ['payable'],
+                                    //                 'incentive':
+                                    //                     employeeDetails[
+                                    //                             employeeList[i]
+                                    //                                 ['empId']]
+                                    //                         ['incentive'],
+                                    //                 'overTime': employeeDetails[
+                                    //                     employeeList[i]
+                                    //                         ['empId']]['ot'],
+                                    //                 'deduction':
+                                    //                     employeeDetails[
+                                    //                             employeeList[i]
+                                    //                                 ['empId']]
+                                    //                         ['deduction'],
+                                    //                 'takeHome': employeeDetails[
+                                    //                         employeeList[i]
+                                    //                             ['empId']]
+                                    //                     ['takeHome'],
+                                    //                 'month': dateTimeFormat(
+                                    //                     'MMM y',
+                                    //                     DateTime(
+                                    //                       DateTime.now().year,
+                                    //                       DateTime.now().month -
+                                    //                           1,
+                                    //                       DateTime.now().day,
+                                    //                     )),
+                                    //               });
+                                    //             }
+                                    //           }
+                                    //         },
+                                    //       )
+                                    //     : SizedBox(),
                                   ],
                                 ),
                               ),
@@ -1863,6 +1990,13 @@ class _AddAttendanceState extends State<AddAttendance> {
                 )))
             .set({
           'attendance': employeeAttendance[employeeList[i]['empId']],
+          'month': dateTimeFormat(
+              'MMM y',
+              DateTime(
+                DateTime.now().year,
+                DateTime.now().month - 1,
+                DateTime.now().day,
+              )),
         });
 
         FirebaseFirestore.instance
@@ -1886,6 +2020,13 @@ class _AddAttendanceState extends State<AddAttendance> {
           'overTime': employeeDetails[employeeList[i]['empId']]['ot'],
           'deduction': employeeDetails[employeeList[i]['empId']]['deduction'],
           'takeHome': employeeDetails[employeeList[i]['empId']]['takeHome'],
+          'month': dateTimeFormat(
+              'MMM y',
+              DateTime(
+                DateTime.now().year,
+                DateTime.now().month - 1,
+                DateTime.now().day,
+              )),
         });
       });
     }

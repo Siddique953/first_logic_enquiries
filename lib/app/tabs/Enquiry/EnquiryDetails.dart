@@ -19,8 +19,9 @@ import 'EditEnquiry.dart';
 
 class EnquiryDetailsWidget extends StatefulWidget {
   final String id;
+  final int tab;
 
-  const EnquiryDetailsWidget({Key key, this.id}) : super(key: key);
+  const EnquiryDetailsWidget({Key key, this.id, this.tab}) : super(key: key);
 
   @override
   _EnquiryDetailsWidgetState createState() => _EnquiryDetailsWidgetState();
@@ -100,6 +101,7 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
 
   @override
   void initState() {
+    currentTab = widget.tab ?? 1;
     super.initState();
     status = TextEditingController();
     assignee = TextEditingController();
@@ -109,6 +111,7 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
   @override
   Widget build(BuildContext context) {
     print('Build Start  !!!!!!!!!!!!!!!!!!!!');
+    currentTab = widget.tab ?? 1;
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(

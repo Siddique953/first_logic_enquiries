@@ -46,7 +46,7 @@ class UserProfile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "V 1.6.2",
+                "V 1.6.3",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 10,
