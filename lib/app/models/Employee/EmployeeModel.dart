@@ -22,6 +22,7 @@ class EmployeeModel {
   String profile;
   bool delete;
   String accountNumber;
+  String teamLead;
 
   EmployeeModel(
       {this.name,
@@ -45,6 +46,7 @@ class EmployeeModel {
       this.delete,
       this.empId,
       this.profile,
+      this.teamLead,
       this.accountNumber,
       this.createdDate});
 
@@ -53,6 +55,7 @@ class EmployeeModel {
     email = json['email'];
     phone = json['phone'];
     empId = json['empId'];
+    teamLead = json['teamLead'];
     delete = json['delete'];
     joinedDate = json['joinedDate'].toDate();
     createdDate = json['createdDate'].toDate();
@@ -79,6 +82,7 @@ class EmployeeModel {
     data['name'] = this.name;
     data['email'] = this.email;
     data['phone'] = this.phone;
+    data['teamLead'] = this.teamLead;
     data['profile'] = this.profile;
     data['joinedDate'] = this.joinedDate;
     data['createdDate'] = this.createdDate;

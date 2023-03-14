@@ -10,6 +10,7 @@ import '../../../pages/home_page/home.dart';
 
 class EmployeeAttendance extends StatefulWidget {
   final String empId;
+  final String id;
   final String empName;
   final DateTime date;
   final double totalWork;
@@ -20,6 +21,7 @@ class EmployeeAttendance extends StatefulWidget {
   const EmployeeAttendance(
       {Key key,
       this.empId,
+      this.id,
       this.empName,
       this.date,
       this.totalWork,
@@ -34,26 +36,28 @@ class EmployeeAttendance extends StatefulWidget {
 }
 
 class _EmployeeAttendanceState extends State<EmployeeAttendance> {
-  List attendanceDetails = [];
+  Map<String, dynamic> attendanceDetails = {};
+  Map<String, dynamic> attendanceDetailsMap = {};
 
-  getPaymentDetails(DateTime from, DateTime to) {
+  getPaymentDetails() {
+    Map attendance = {};
     FirebaseFirestore.instance
-        .collection('employeeAttendance')
-        .where('empId', isEqualTo: widget.empId)
-        .where('date', isGreaterThanOrEqualTo: fromDate)
-        .where('date', isLessThanOrEqualTo: toDate)
-        .orderBy('date', descending: false)
+        .collection('employees')
+        .doc(widget.empId)
+        .collection('attendance')
+        .doc(widget.id)
+        // .where('date', isLessThanOrEqualTo: toDate)
+        // .orderBy('date', descending: false)
         .snapshots()
         .listen((event) {
-      attendanceDetails = [];
-
-      for (var doc in event.docs) {
-        showChart = true;
-
-        attendanceDetails.add(doc.data());
-      }
+      attendanceDetails = event.data();
+      attendance = event['attendance'];
 
       if (mounted) {
+        var sortedByKeyMap = Map.fromEntries(attendance.entries.toList()
+          ..sort((e1, e2) => e1.value['date'].compareTo(e2.value['date'])));
+        attendanceDetails['attendance'] = sortedByKeyMap;
+
         setState(() {});
       }
     });
@@ -193,7 +197,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
     fromDate = widget.date;
     toDate = DateTime(fromDate.year, fromDate.month + 1, 0, 23, 59, 59);
 
-    getPaymentDetails(fromDate, toDate);
+    getPaymentDetails();
   }
 
   @override
@@ -500,16 +504,43 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                           ),
                         ],
                         rows: List.generate(
-                          attendanceDetails.length,
+                          attendanceDetails['attendance'].length,
                           (index) {
-                            DateTime day =
-                                attendanceDetails[index]['date'].toDate();
+                            int hours = 0;
+                            int minuit = 0;
 
-                            String strIn = attendanceDetails[index]['inTime'];
-                            String strOut = attendanceDetails[index]['outTime'];
+                            String dayIndex = attendanceDetails['attendance']
+                                .keys
+                                .toList()[index];
+
+                            DateTime day = attendanceDetails['attendance']
+                                    [dayIndex]['date']
+                                .toDate();
+                            String strIn = attendanceDetails['attendance']
+                                [dayIndex]['inTime'];
+                            String strOut = attendanceDetails['attendance']
+                                [dayIndex]['outTime'];
 
                             DateTime inTime;
                             DateTime outTime;
+
+                            try {
+                              hours = int.tryParse(
+                                  attendanceDetails['attendance'][dayIndex]
+                                          ['totalWorkingHour']
+                                      .toString()
+                                      .split(':')[0]);
+                              minuit = int.tryParse(
+                                  attendanceDetails['attendance'][dayIndex]
+                                          ['totalWorkingHour']
+                                      .toString()
+                                      .split(':')[1]);
+                            } catch (e) {
+                              hours = 0;
+                              minuit = 0;
+                            }
+
+                            double workHour = hours + minuit / 60.0;
 
                             if (strIn != '--:--') {
                               inTime = DateTime(
@@ -538,12 +569,12 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                               cells: [
                                 DataCell(
                                   Text(
-                                    dateTimeFormat(
-                                            'd-MMM-y',
-                                            attendanceDetails[index]['date']
-                                                .toDate())
+                                    DateFormat('d-MMM-y')
+                                        .format(attendanceDetails['attendance']
+                                                [dayIndex]['date']
+                                            .toDate())
                                         .toString(),
-                                    style: FlutterFlowTheme.bodyText2.override(
+                                    style: TextStyle(
                                       fontFamily: 'Lexend Deca',
                                       color: Colors.black,
                                       fontSize: 12,
@@ -553,11 +584,12 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                 ),
                                 DataCell(
                                   Text(
-                                    attendanceDetails[index]['inTime'] ==
+                                    attendanceDetails['attendance'][dayIndex]
+                                                ['inTime'] ==
                                             '--:--'
                                         ? '--:--'
                                         : DateFormat.jm().format(inTime),
-                                    style: FlutterFlowTheme.bodyText2.override(
+                                    style: TextStyle(
                                       fontFamily: 'Lexend Deca',
                                       color: Colors.black,
                                       fontSize: 12,
@@ -567,11 +599,12 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                 ),
                                 DataCell(
                                   Text(
-                                    attendanceDetails[index]['outTime'] ==
+                                    attendanceDetails['attendance'][dayIndex]
+                                                ['outTime'] ==
                                             '--:--'
                                         ? '--:--'
                                         : DateFormat.jm().format(outTime),
-                                    style: FlutterFlowTheme.bodyText2.override(
+                                    style: TextStyle(
                                       fontFamily: 'Lexend Deca',
                                       color: Colors.black,
                                       fontSize: 12,
@@ -582,29 +615,35 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
 
                                 DataCell(
                                   Text(
-                                    attendanceDetails[index]['totalWorkingHour']
+                                    attendanceDetails['attendance'][dayIndex]
+                                            ['totalWorkingHour']
                                         // dateTimeFormat(
                                         //         // 'hh:mm',
                                         //         'jm',
                                         //
                                         //             .toDate())
                                         .toString(),
-                                    style: FlutterFlowTheme.bodyText2.override(
+                                    style: TextStyle(
                                       fontFamily: 'Lexend Deca',
-                                      color: Colors.black,
+                                      color: workHour >= 7.0 && workHour < 7.75
+                                          ? Colors.orange
+                                          : Colors.black,
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
                                 DataCell(Text(
-                                  attendanceDetails[index]['halfDay'] == true
+                                  attendanceDetails['attendance'][dayIndex]
+                                              ['halfDay'] ==
+                                          true
                                       ? 'HALF DAY'
-                                      : attendanceDetails[index]['leave'] ==
+                                      : attendanceDetails['attendance']
+                                                  [dayIndex]['leave'] ==
                                               true
                                           ? 'LEAVE'
-                                          : attendanceDetails[index]
-                                                      ['offDay'] ==
+                                          : attendanceDetails['attendance']
+                                                      [dayIndex]['offDay'] ==
                                                   true
                                               ? 'HOLIDAY'
                                               : 'PRESENT'
@@ -615,17 +654,18 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                                   //                 ['totalWorkingHour']
                                                   //             .toDate())
                                                   .toString(),
-                                  style: FlutterFlowTheme.bodyText2.override(
+                                  style: TextStyle(
                                     fontFamily: 'Lexend Deca',
-                                    color: attendanceDetails[index]
-                                                ['halfDay'] ==
+                                    color: attendanceDetails['attendance']
+                                                [dayIndex]['halfDay'] ==
                                             true
                                         ? Colors.black
-                                        : attendanceDetails[index]['leave'] ==
+                                        : attendanceDetails['attendance']
+                                                    [dayIndex]['leave'] ==
                                                 true
                                             ? Colors.red
-                                            : attendanceDetails[index]
-                                                        ['offDay'] ==
+                                            : attendanceDetails['attendance']
+                                                        [dayIndex]['offDay'] ==
                                                     true
                                                 ? Colors.redAccent
                                                 : Colors.teal,

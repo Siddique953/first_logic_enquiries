@@ -94,6 +94,7 @@ class _CustomerStatementState extends State<CustomerStatement> {
     FirebaseFirestore.instance
         .collection('customerServices')
         .where('customerId', isEqualTo: customerId)
+        .where('delete', isEqualTo: false)
         .snapshots()
         .listen((event) {
       serviceData = [];
@@ -455,9 +456,17 @@ class _CustomerStatementState extends State<CustomerStatement> {
                                                 ),
                                                 DataCell(
                                                   SelectableText(
-                                                    _formatNumber(debitTotal
-                                                        .toString()
-                                                        .replaceAll(',', '')),
+                                                    debitTotal > creditTotal
+                                                        ? _formatNumber(
+                                                            debitTotal
+                                                                .toString()
+                                                                .replaceAll(
+                                                                    ',', ''))
+                                                        : _formatNumber(
+                                                            creditTotal
+                                                                .toString()
+                                                                .replaceAll(
+                                                                    ',', '')),
                                                     // .toStringAsFixed(2),
                                                     style: FlutterFlowTheme
                                                         .bodyText2
@@ -472,9 +481,17 @@ class _CustomerStatementState extends State<CustomerStatement> {
                                                 ),
                                                 DataCell(
                                                   SelectableText(
-                                                    _formatNumber(creditTotal
-                                                        .toString()
-                                                        .replaceAll(',', '')),
+                                                    debitTotal > creditTotal
+                                                        ? _formatNumber(
+                                                            debitTotal
+                                                                .toString()
+                                                                .replaceAll(
+                                                                    ',', ''))
+                                                        : _formatNumber(
+                                                            creditTotal
+                                                                .toString()
+                                                                .replaceAll(
+                                                                    ',', '')),
                                                     // .toStringAsFixed(2),
                                                     style: FlutterFlowTheme
                                                         .bodyText2

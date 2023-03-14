@@ -34,6 +34,7 @@ class _AddAttendanceState extends State<AddAttendance> {
   /*Map<String, Map<String, dynamic>>*/
   var employeeDetails = {};
   var employeeAttendance = {};
+  bool closed = false;
 
   void pickFile() async {
     final result = await FilePicker.platform.pickFiles(
@@ -369,7 +370,7 @@ class _AddAttendanceState extends State<AddAttendance> {
                         blurRadius: 5,
                         color: Color(0x44111417),
                         offset: Offset(0, 2),
-                      )
+                      ),
                     ],
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -432,6 +433,7 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                     value['salaryInfo'];
                                                 employeeAttendance =
                                                     value['attendanceInfo'];
+                                                closed = value['closed'];
                                                 showUploadMessage(context,
                                                     'Details Successfully Updated...');
                                                 setState(() {});
@@ -491,22 +493,262 @@ class _AddAttendanceState extends State<AddAttendance> {
                                       width: 20,
                                     ),
                                     employeeDetails.keys.toList().isNotEmpty
-                                        ? FlutterFlowIconButton(
-                                            borderColor: Colors.transparent,
-                                            borderRadius: 30,
-                                            borderWidth: 1,
-                                            buttonSize: 50,
-                                            icon: Icon(
-                                              Icons.cloud_upload_sharp,
-                                              color: Colors.teal,
-                                              size: 25,
-                                            ),
-                                            onPressed: () async {
-                                              bool pressed = await alert(
-                                                  context,
-                                                  'Do you want Upload');
+                                        ? closed
+                                            ? SizedBox()
+                                            : FlutterFlowIconButton(
+                                                borderColor: Colors.transparent,
+                                                borderRadius: 30,
+                                                borderWidth: 1,
+                                                buttonSize: 50,
+                                                icon: Icon(
+                                                  Icons.cloud_upload_sharp,
+                                                  color: Colors.teal,
+                                                  size: 25,
+                                                ),
+                                                onPressed: () async {
+                                                  bool pressed = await alert(
+                                                      context,
+                                                      'Do you want Upload');
 
-                                              if (pressed) {
+                                                  if (pressed) {
+                                                    FirebaseFirestore.instance
+                                                        .collection(
+                                                            'paySlipInfo')
+                                                        .doc(dateTimeFormat(
+                                                            'MMMM y',
+                                                            DateTime(
+                                                              DateTime.now()
+                                                                  .year,
+                                                              DateTime.now()
+                                                                      .month -
+                                                                  1,
+                                                              DateTime.now()
+                                                                  .day,
+                                                            )))
+                                                        .set({
+                                                      'salaryInfo':
+                                                          employeeDetails,
+                                                      'attendanceInfo':
+                                                          employeeAttendance,
+                                                      'closed': false,
+                                                    });
+
+                                                    showUploadMessage(context,
+                                                        'Details Uploaded Success...');
+                                                    setState(() {});
+                                                  }
+                                                },
+                                              )
+                                        : SizedBox(),
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                    // employeeDetails.keys.toList().isNotEmpty
+                                    //     ? closed
+                                    //         ? SizedBox()
+                                    //         : FlutterFlowIconButton(
+                                    //             borderColor: Colors.transparent,
+                                    //             borderRadius: 30,
+                                    //             borderWidth: 1,
+                                    //             buttonSize: 50,
+                                    //             icon: Icon(
+                                    //               Icons.upload,
+                                    //               color: Colors.teal,
+                                    //               size: 25,
+                                    //             ),
+                                    //             onPressed: () async {
+                                    //               bool pressed = await alert(
+                                    //                   context,
+                                    //                   'Do you want Upload');
+                                    //
+                                    //               if (pressed) {
+                                    //                 DateTime monthDay =
+                                    //                     DateTime(
+                                    //                         DateTime.now().year,
+                                    //                         DateTime.now()
+                                    //                             .month,
+                                    //                         0);
+                                    //                 int lastDay = monthDay.day;
+                                    //                 for (int i = 0;
+                                    //                     i < employeeList.length;
+                                    //                     i++) {
+                                    //                   if (employeeDetails[
+                                    //                               employeeList[
+                                    //                                       i]
+                                    //                                   ['empId']]
+                                    //                           ['takeHome'] ==
+                                    //                       0) {
+                                    //                     continue;
+                                    //                   }
+                                    //
+                                    //                   FirebaseFirestore.instance
+                                    //                       .collection(
+                                    //                           'employees')
+                                    //                       .doc(employeeList[i]
+                                    //                           ['empId'])
+                                    //                       .collection(
+                                    //                           'attendance')
+                                    //                       .doc(dateTimeFormat(
+                                    //                           'MMM y',
+                                    //                           DateTime(
+                                    //                             DateTime.now()
+                                    //                                 .year,
+                                    //                             DateTime.now()
+                                    //                                     .month -
+                                    //                                 1,
+                                    //                             DateTime.now()
+                                    //                                 .day,
+                                    //                           )))
+                                    //                       .set({
+                                    //                     'attendance':
+                                    //                         employeeAttendance[
+                                    //                             employeeList[i]
+                                    //                                 ['empId']],
+                                    //                     'month': dateTimeFormat(
+                                    //                         'MMM y',
+                                    //                         DateTime(
+                                    //                           DateTime.now()
+                                    //                               .year,
+                                    //                           DateTime.now()
+                                    //                                   .month -
+                                    //                               1,
+                                    //                           DateTime.now()
+                                    //                               .day,
+                                    //                         )),
+                                    //                   });
+                                    //
+                                    //                   FirebaseFirestore.instance
+                                    //                       .collection(
+                                    //                           'employees')
+                                    //                       .doc(employeeList[i]
+                                    //                           ['empId'])
+                                    //                       .collection(
+                                    //                           'salaryInfo')
+                                    //                       .doc(dateTimeFormat(
+                                    //                           'MMM y',
+                                    //                           DateTime(
+                                    //                             DateTime.now()
+                                    //                                 .year,
+                                    //                             DateTime.now()
+                                    //                                     .month -
+                                    //                                 1,
+                                    //                             DateTime.now()
+                                    //                                 .day,
+                                    //                           )))
+                                    //                       .set({
+                                    //                     'totalWorkingDays': (lastDay -
+                                    //                         (employeeDetails[employeeList[
+                                    //                                         i][
+                                    //                                     'empId']]
+                                    //                                 [
+                                    //                                 'offDay'] ??
+                                    //                             4)),
+                                    //                     'totalLeave':
+                                    //                         employeeDetails[
+                                    //                                 employeeList[
+                                    //                                         i][
+                                    //                                     'empId']]
+                                    //                             ['leave'],
+                                    //                     'basicSalary':
+                                    //                         empDataById[
+                                    //                                 employeeList[
+                                    //                                         i][
+                                    //                                     'empId']]
+                                    //                             .ctc,
+                                    //                     'payableSalary':
+                                    //                         employeeDetails[
+                                    //                                 employeeList[
+                                    //                                         i][
+                                    //                                     'empId']]
+                                    //                             ['payable'],
+                                    //                     'incentive':
+                                    //                         employeeDetails[
+                                    //                                 employeeList[
+                                    //                                         i][
+                                    //                                     'empId']]
+                                    //                             ['incentive'],
+                                    //                     'overTime':
+                                    //                         employeeDetails[
+                                    //                                 employeeList[
+                                    //                                         i]
+                                    //                                     [
+                                    //                                     'empId']]
+                                    //                             ['ot'],
+                                    //                     'deduction':
+                                    //                         employeeDetails[
+                                    //                                 employeeList[
+                                    //                                         i][
+                                    //                                     'empId']]
+                                    //                             ['deduction'],
+                                    //                     'takeHome':
+                                    //                         employeeDetails[
+                                    //                                 employeeList[
+                                    //                                         i]
+                                    //                                     [
+                                    //                                     'empId']]
+                                    //                             ['takeHome'],
+                                    //                     'month': dateTimeFormat(
+                                    //                         'MMM y',
+                                    //                         DateTime(
+                                    //                           DateTime.now()
+                                    //                               .year,
+                                    //                           DateTime.now()
+                                    //                                   .month -
+                                    //                               1,
+                                    //                           DateTime.now()
+                                    //                               .day,
+                                    //                         )),
+                                    //                   });
+                                    //                 }
+                                    //               }
+                                    //             },
+                                    //           )
+                                    //     : SizedBox(),
+                                  ],
+                                ),
+                              ),
+                              employeeDetails.keys.toList().isNotEmpty
+                                  ? closed
+                                      ? SizedBox()
+                                      : Row(
+                                          children: [
+                                            FFButtonWidget(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          BankSlipPage(
+                                                        paySlip:
+                                                            employeeDetails,
+                                                      ),
+                                                    ));
+                                              },
+                                              text: 'Bank Slip',
+                                              options: FFButtonOptions(
+                                                width: 150,
+                                                height: 49,
+                                                color: Color(0xFF0F1113),
+                                                textStyle: FlutterFlowTheme
+                                                    .subtitle2
+                                                    .override(
+                                                  fontFamily: 'Poppins',
+                                                  color: Color(0xFFF1F4F8),
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.normal,
+                                                ),
+                                                borderSide: BorderSide(
+                                                  color: Colors.transparent,
+                                                  width: 1,
+                                                ),
+                                                borderRadius: 12,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 20,
+                                            ),
+                                            FFButtonWidget(
+                                              onPressed: () {
                                                 FirebaseFirestore.instance
                                                     .collection('paySlipInfo')
                                                     .doc(dateTimeFormat(
@@ -521,264 +763,111 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                   'salaryInfo': employeeDetails,
                                                   'attendanceInfo':
                                                       employeeAttendance,
+                                                  'closed': false,
+                                                }).then((value) {
+                                                  try {
+                                                    importData();
+                                                  } catch (e) {
+                                                    print(e);
+
+                                                    return showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return AlertDialog(
+                                                            title:
+                                                                Text('error'),
+                                                            content: Text(
+                                                                e.toString()),
+                                                            actions: <Widget>[
+                                                              ElevatedButton(
+                                                                child: new Text(
+                                                                    'ok'),
+                                                                onPressed: () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                },
+                                                              )
+                                                            ],
+                                                          );
+                                                        });
+                                                  }
                                                 });
-
-                                                showUploadMessage(context,
-                                                    'Details Uploaded Success...');
-                                                setState(() {});
-                                              }
-                                            },
-                                          )
-                                        : SizedBox(),
-                                    // SizedBox(
-                                    //   width: 20,
-                                    // ),
-                                    // employeeDetails.keys.toList().isNotEmpty
-                                    //     ? FlutterFlowIconButton(
-                                    //         borderColor: Colors.transparent,
-                                    //         borderRadius: 30,
-                                    //         borderWidth: 1,
-                                    //         buttonSize: 50,
-                                    //         icon: Icon(
-                                    //           Icons.upload,
-                                    //           color: Colors.teal,
-                                    //           size: 25,
-                                    //         ),
-                                    //         onPressed: () async {
-                                    //           bool pressed = await alert(
-                                    //               context,
-                                    //               'Do you want Upload');
-                                    //
-                                    //           if (pressed) {
-                                    //             for (int i = 0;
-                                    //                 i < employeeList.length;
-                                    //                 i++) {
-                                    //               if (employeeDetails[
-                                    //                           employeeList[i]
-                                    //                               ['empId']]
-                                    //                       ['takeHome'] ==
-                                    //                   0) {
-                                    //                 continue;
-                                    //               }
-                                    //
-                                    //               FirebaseFirestore.instance
-                                    //                   .collection('employees')
-                                    //                   .doc(employeeList[i]
-                                    //                       ['empId'])
-                                    //                   .collection('attendance')
-                                    //                   .doc(dateTimeFormat(
-                                    //                       'MMM y',
-                                    //                       DateTime(
-                                    //                         DateTime.now().year,
-                                    //                         DateTime.now()
-                                    //                                 .month -
-                                    //                             1,
-                                    //                         DateTime.now().day,
-                                    //                       )))
-                                    //                   .set({
-                                    //                 'attendance':
-                                    //                     employeeAttendance[
-                                    //                         employeeList[i]
-                                    //                             ['empId']],
-                                    //                 'month': dateTimeFormat(
-                                    //                     'MMM y',
-                                    //                     DateTime(
-                                    //                       DateTime.now().year,
-                                    //                       DateTime.now().month -
-                                    //                           1,
-                                    //                       DateTime.now().day,
-                                    //                     )),
-                                    //               });
-                                    //
-                                    //               FirebaseFirestore.instance
-                                    //                   .collection('employees')
-                                    //                   .doc(employeeList[i]
-                                    //                       ['empId'])
-                                    //                   .collection('salaryInfo')
-                                    //                   .doc(dateTimeFormat(
-                                    //                       'MMM y',
-                                    //                       DateTime(
-                                    //                         DateTime.now().year,
-                                    //                         DateTime.now()
-                                    //                                 .month -
-                                    //                             1,
-                                    //                         DateTime.now().day,
-                                    //                       )))
-                                    //                   .set({
-                                    //                 'totalWorkingDays': (30 -
-                                    //                     (employeeDetails[
-                                    //                                 employeeList[
-                                    //                                         i][
-                                    //                                     'empId']]
-                                    //                             ['offDay'] ??
-                                    //                         0)),
-                                    //                 'totalLeave':
-                                    //                     employeeDetails[
-                                    //                             employeeList[i]
-                                    //                                 ['empId']]
-                                    //                         ['leave'],
-                                    //                 'basicSalary': empDataById[
-                                    //                         employeeList[i]
-                                    //                             ['empId']]
-                                    //                     .ctc,
-                                    //                 'payableSalary':
-                                    //                     employeeDetails[
-                                    //                             employeeList[i]
-                                    //                                 ['empId']]
-                                    //                         ['payable'],
-                                    //                 'incentive':
-                                    //                     employeeDetails[
-                                    //                             employeeList[i]
-                                    //                                 ['empId']]
-                                    //                         ['incentive'],
-                                    //                 'overTime': employeeDetails[
-                                    //                     employeeList[i]
-                                    //                         ['empId']]['ot'],
-                                    //                 'deduction':
-                                    //                     employeeDetails[
-                                    //                             employeeList[i]
-                                    //                                 ['empId']]
-                                    //                         ['deduction'],
-                                    //                 'takeHome': employeeDetails[
-                                    //                         employeeList[i]
-                                    //                             ['empId']]
-                                    //                     ['takeHome'],
-                                    //                 'month': dateTimeFormat(
-                                    //                     'MMM y',
-                                    //                     DateTime(
-                                    //                       DateTime.now().year,
-                                    //                       DateTime.now().month -
-                                    //                           1,
-                                    //                       DateTime.now().day,
-                                    //                     )),
-                                    //               });
-                                    //             }
-                                    //           }
-                                    //         },
-                                    //       )
-                                    //     : SizedBox(),
-                                  ],
-                                ),
-                              ),
-                              employeeDetails.keys.toList().isNotEmpty
-                                  ? Row(
-                                      children: [
-                                        FFButtonWidget(
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      BankSlipPage(
-                                                    paySlip: employeeDetails,
-                                                  ),
-                                                ));
-                                          },
-                                          text: 'Bank Slip',
-                                          options: FFButtonOptions(
-                                            width: 150,
-                                            height: 49,
-                                            color: Color(0xFF0F1113),
-                                            textStyle: FlutterFlowTheme
-                                                .subtitle2
-                                                .override(
-                                              fontFamily: 'Poppins',
-                                              color: Color(0xFFF1F4F8),
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
+                                              },
+                                              text: 'Generate Excel',
+                                              options: FFButtonOptions(
+                                                width: 150,
+                                                height: 49,
+                                                color: Color(0xFF0F1113),
+                                                textStyle: FlutterFlowTheme
+                                                    .subtitle2
+                                                    .override(
+                                                  fontFamily: 'Poppins',
+                                                  color: Color(0xFFF1F4F8),
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.normal,
+                                                ),
+                                                borderSide: BorderSide(
+                                                  color: Colors.transparent,
+                                                  width: 1,
+                                                ),
+                                                borderRadius: 12,
+                                              ),
                                             ),
-                                            borderSide: BorderSide(
-                                              color: Colors.transparent,
-                                              width: 1,
+                                            SizedBox(
+                                              width: 20,
                                             ),
-                                            borderRadius: 12,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        FFButtonWidget(
-                                          onPressed: () {
-                                            try {
-                                              importData();
-                                            } catch (e) {
-                                              print(e);
+                                            FFButtonWidget(
+                                              onPressed: () async {
+                                                bool pressed = await alert(
+                                                    context,
+                                                    'Confirm to send Pay Slip');
 
-                                              return showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return AlertDialog(
-                                                      title: Text('error'),
-                                                      content:
-                                                          Text(e.toString()),
-                                                      actions: <Widget>[
-                                                        ElevatedButton(
-                                                          child: new Text('ok'),
-                                                          onPressed: () {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                        )
-                                                      ],
-                                                    );
+                                                if (pressed) {
+                                                  FirebaseFirestore.instance
+                                                      .collection('paySlipInfo')
+                                                      .doc(dateTimeFormat(
+                                                          'MMMM y',
+                                                          DateTime(
+                                                            DateTime.now().year,
+                                                            DateTime.now()
+                                                                    .month -
+                                                                1,
+                                                            DateTime.now().day,
+                                                          )))
+                                                      .set({
+                                                    'salaryInfo':
+                                                        employeeDetails,
+                                                    'attendanceInfo':
+                                                        employeeAttendance,
+                                                    'closed': true,
+                                                  }).then((value) {
+                                                    sendMail();
                                                   });
-                                            }
-                                          },
-                                          text: 'Generate Excel',
-                                          options: FFButtonOptions(
-                                            width: 150,
-                                            height: 49,
-                                            color: Color(0xFF0F1113),
-                                            textStyle: FlutterFlowTheme
-                                                .subtitle2
-                                                .override(
-                                              fontFamily: 'Poppins',
-                                              color: Color(0xFFF1F4F8),
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
+                                                }
+                                              },
+                                              text: 'Send Email',
+                                              options: FFButtonOptions(
+                                                width: 150,
+                                                height: 49,
+                                                color: Color(0xFF0F1113),
+                                                textStyle: FlutterFlowTheme
+                                                    .subtitle2
+                                                    .override(
+                                                  fontFamily: 'Poppins',
+                                                  color: Color(0xFFF1F4F8),
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.normal,
+                                                ),
+                                                borderSide: BorderSide(
+                                                  color: Colors.transparent,
+                                                  width: 1,
+                                                ),
+                                                borderRadius: 12,
+                                              ),
                                             ),
-                                            borderSide: BorderSide(
-                                              color: Colors.transparent,
-                                              width: 1,
-                                            ),
-                                            borderRadius: 12,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        FFButtonWidget(
-                                          onPressed: () async {
-                                            bool pressed = await alert(context,
-                                                'Confirm to send Pay Slip');
-
-                                            if (pressed) {
-                                              sendMail();
-                                            }
-                                          },
-                                          text: 'Send Email',
-                                          options: FFButtonOptions(
-                                            width: 150,
-                                            height: 49,
-                                            color: Color(0xFF0F1113),
-                                            textStyle: FlutterFlowTheme
-                                                .subtitle2
-                                                .override(
-                                              fontFamily: 'Poppins',
-                                              color: Color(0xFFF1F4F8),
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                            borderSide: BorderSide(
-                                              color: Colors.transparent,
-                                              width: 1,
-                                            ),
-                                            borderRadius: 12,
-                                          ),
-                                        ),
-                                      ],
-                                    )
+                                          ],
+                                        )
                                   : SizedBox(),
                             ],
                           ),
@@ -1079,6 +1168,7 @@ class _AddAttendanceState extends State<AddAttendance> {
 
                                             DataCell(
                                               TextFormField(
+                                                readOnly: closed,
                                                 controller: workingDays,
                                                 obscureText: false,
 
@@ -1154,6 +1244,7 @@ class _AddAttendanceState extends State<AddAttendance> {
 
                                             DataCell(
                                               TextFormField(
+                                                readOnly: closed,
                                                 controller: payable,
                                                 obscureText: false,
 
@@ -1282,6 +1373,7 @@ class _AddAttendanceState extends State<AddAttendance> {
 
                                             DataCell(
                                               TextFormField(
+                                                readOnly: closed,
                                                 controller: incentive,
                                                 obscureText: false,
 
@@ -1397,6 +1489,7 @@ class _AddAttendanceState extends State<AddAttendance> {
 
                                             DataCell(
                                               TextFormField(
+                                                readOnly: closed,
                                                 controller: ot,
                                                 obscureText: false,
 
@@ -1489,6 +1582,7 @@ class _AddAttendanceState extends State<AddAttendance> {
 
                                             DataCell(
                                               TextFormField(
+                                                readOnly: closed,
                                                 controller: deduction,
                                                 obscureText: false,
 
@@ -1749,103 +1843,12 @@ class _AddAttendanceState extends State<AddAttendance> {
   }
 
   sendMail() {
+    DateTime monthDay = DateTime(DateTime.now().year, DateTime.now().month, 0);
+    int lastDay = monthDay.day;
     for (int i = 0; i < employeeList.length; i++) {
       if (employeeDetails[employeeList[i]['empId']]['takeHome'] == 0) {
         continue;
       }
-
-      // String html = '<!DOCTYPE html>'
-      //     '<html>'
-      //     '<head>'
-      //     '<title>Salary Slip</title>'
-      //     '</head>'
-      //     ' <body>'
-      //     '<header>'
-      //     '<img src="https://firebasestorage.googleapis.com/v0/b/first-logic-erp.appspot.com/o/fl_new.png?alt=media&token=2300d95a-a061-4b9c-a06d-8e3f5906c24f" style="width:120px" alt="Company Logo">'
-      //     '<h1>First Logic Meta Lab</h1>'
-      //     '</header>'
-      //     ' <section>'
-      //     ' <h2>Employee Information</h2>'
-      //     ' <ul>'
-      //     ' <li>Name: ${empDataById[employeeList[i]['empId']].name}</li>'
-      //     ' <li>Employee ID: ${empDataById[employeeList[i]['empId']].empId}</li>'
-      //     ' <li>Total Working Days: ${(30 - (employeeDetails[employeeList[i]['empId']]['offDay'] ?? 0))}</li>'
-      //     '<li>Number of Leaves: ${employeeDetails[employeeList[i]['empId']]['leave']}</li>'
-      //     ' </ul>'
-      //     ' </section>';
-      //
-      // html += '<section>'
-      //     '<h2>Salary Details</h2>'
-      //     '<ul>'
-      //     '<li>Basic Salary: ₹${empDataById[employeeList[i]['empId']].ctc}</li>'
-      //     '<li>Payable Salary: ₹${employeeDetails[employeeList[i]['empId']]['payable']}</li>';
-      //
-      // html += employeeDetails[employeeList[i]['empId']]['incentive'] == 0
-      //     ? ''
-      //     : '<li>Incentive: ₹${employeeDetails[employeeList[i]['empId']]['incentive']}</li>';
-      //
-      // html += employeeDetails[employeeList[i]['empId']]['ot'] == 0
-      //     ? ''
-      //     : '<li>Over Time: ₹${employeeDetails[employeeList[i]['empId']]['ot']}</li>';
-      //
-      // html += employeeDetails[employeeList[i]['empId']]['deduction'] == 0
-      //     ? ''
-      //     : '<li>Advance: ₹${employeeDetails[employeeList[i]['empId']]['deduction']}</li>';
-      //
-      // html +=
-      //     '<li>Take Home: ₹${employeeDetails[employeeList[i]['empId']]['takeHome']}</li>'
-      //     '</ul>'
-      //     '</section>'
-      //     '<section>'
-      //     '<h2>Payment Details</h2>'
-      //     '<ul>'
-      //     '<li>Bank Account Number: ${empDataById[employeeList[i]['empId']].accountNumber}</li>'
-      //     '<li>Payment Date: ${dateTimeFormat('dd/MM/yyyy', DateTime.now())}</li>'
-      //     '</ul>'
-      //     '</section>'
-      //     ' <footer>'
-      //     ' <p>Contact us at: <a href="mailto:hr@firstlogicmetalab.com">hr@firstlogicmetalab.com</a></p>'
-      //     ' <p>Legal Disclosures: This salary slip is for informational purposes only and should not be considered as an official document.</p>'
-      //     '</footer>'
-      //     ' </body>'
-      //     '</html>';
-
-      // String html =
-      // '<html>'
-      // '<head>'
-      // '<title>Salary Credit Notification</title>'
-      // ' </head>'
-      // '<body>'
-      // '<header>'
-      // '<img src="https://firebasestorage.googleapis.com/v0/b/first-logic-erp.appspot.com/o/new_logo.jpeg?alt=media&token=981d964a-7480-420d-a9c6-341e8948922b" style="width:120px" alt="Company Logo">'
-      // //     '<h1>First Logic Meta Lab</h1>'
-      // '</header>'
-      // '<p>Dear <b>${empDataById[employeeList[i]['empId']].name}</b>,</p>'
-      // '<p>I hope this email finds you in good health and spirits. I am writing to inform you that your salary for the month of <b>${dateTimeFormat('MMM y', DateTime(
-      //       DateTime.now().year,
-      //       DateTime.now().month - 1,
-      //       DateTime.now().day,
-      //     ))}</b> has been credited to your account.</p>'
-      // '<p>Your total salary amount is <b>₹${employeeDetails[employeeList[i]['empId']]['takeHome']}</b>. Please find the details of your leaves below:</p>'
-      // '<br>'
-      // ' <section>'
-      // // ' <h2>Employee Information</h2>'
-      // ' <ul>'
-      // // ' <li>Name: ${empDataById[employeeList[i]['empId']].name}</li>'
-      // // ' <li>Employee ID: ${empDataById[employeeList[i]['empId']].empId}</li>'
-      // ' <li>Total Working Days: ${(30 - (employeeDetails[employeeList[i]['empId']]['offDay'] ?? 0))}</li>'
-      // '<li>Number of Leaves: ${employeeDetails[employeeList[i]['empId']]['leave']}</li>'
-      // ' </ul>'
-      // ' </section>'
-      // '<br>'
-      // '<p>In case of any discrepancy, please bring it to our notice within 2 days. We would be happy to assist you with any questions or concerns you may have.</p>'
-      // '<p>Thank you for your continued contributions to the company.</p>'
-      // '<br>'
-      // '<p>Best regards,</p>'
-      // '<p>HR Manager<br>'
-      // 'First Logic Meta Lab Pvt. Ltd</p>'
-      // '</body>'
-      // '</html>';
 
       String html = '<html>'
           '<head>'
@@ -1971,11 +1974,6 @@ class _AddAttendanceState extends State<AddAttendance> {
         'html': html,
         'status': 'Salary Information',
         'emailList': [empDataById[employeeList[i]['empId']].email],
-        //  // 'message': {
-        //  //   'subject': 'Pay Slip',
-        //  //   'text': 'Monthly Salary Details',
-        //  //   'html': html,
-        //  // },
       }).then((value) {
         FirebaseFirestore.instance
             .collection('employees')
@@ -1989,7 +1987,7 @@ class _AddAttendanceState extends State<AddAttendance> {
                   DateTime.now().day,
                 )))
             .set({
-          'attendance': employeeAttendance[employeeList[i]['empId']],
+          'attendance': employeeAttendance[employeeList[i]['empId']] ?? {},
           'month': dateTimeFormat(
               'MMM y',
               DateTime(
@@ -2011,8 +2009,8 @@ class _AddAttendanceState extends State<AddAttendance> {
                   DateTime.now().day,
                 )))
             .set({
-          'totalWorkingDays':
-              (30 - (employeeDetails[employeeList[i]['empId']]['offDay'] ?? 0)),
+          'totalWorkingDays': (lastDay -
+              (employeeDetails[employeeList[i]['empId']]['offDay'] ?? 4)),
           'totalLeave': employeeDetails[employeeList[i]['empId']]['leave'],
           'basicSalary': empDataById[employeeList[i]['empId']].ctc,
           'payableSalary': employeeDetails[employeeList[i]['empId']]['payable'],

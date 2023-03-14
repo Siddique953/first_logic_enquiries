@@ -510,6 +510,9 @@ class _HrAttendanceState extends State<HrAttendance> {
                                                             MaterialPageRoute(
                                                               builder: (context) =>
                                                                   EmployeeAttendance(
+                                                                id: dateTimeFormat(
+                                                                    'yMMM',
+                                                                    fromDate),
                                                                 date: fromDate,
                                                                 empId:
                                                                     data ?? '',
@@ -598,6 +601,7 @@ class _HrAttendanceState extends State<HrAttendance> {
             ),
 
             ///
+            //
           ],
         ),
       ),

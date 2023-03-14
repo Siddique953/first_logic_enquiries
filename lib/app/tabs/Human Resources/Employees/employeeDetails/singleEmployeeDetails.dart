@@ -46,6 +46,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
   List<String> subDepartments = [''];
   TextEditingController designation = TextEditingController();
   TextEditingController reportingManager = TextEditingController();
+  TextEditingController teamLead = TextEditingController();
   TextEditingController empType = TextEditingController();
   TextEditingController probationPeriod = TextEditingController(text: '0');
   int probation = 0;
@@ -156,7 +157,21 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
 
       subDept.text = employeeDetails.subDept;
       designation.text = employeeDetails.designation;
-      reportingManager.text = employeeDetails.reportingManager;
+      reportingManager.text =
+          empDataById[employeeDetails.reportingManager ?? ''] == null
+              ? ''
+              : empDataById[employeeDetails.reportingManager ?? ''].name;
+
+      try {
+        teamLead.text = empDataById[employeeDetails.teamLead ?? ''] == null
+            ? ''
+            : empDataById[employeeDetails.teamLead ?? ''].name;
+      } catch (e) {
+        print(e);
+        teamLead.text = '';
+      }
+
+      // employeeDetails.reportingManager;
       empType.text = employeeDetails.empType;
       probationPeriod.text = employeeDetails.probation.toString();
       probation = employeeDetails.probation;
@@ -1534,6 +1549,73 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                         child: Padding(
                                           padding:
                                               EdgeInsets.fromLTRB(16, 0, 0, 0),
+                                          child: SearchField(
+                                            suggestions: empNames,
+                                            controller: teamLead,
+                                            searchStyle: TextStyle(
+                                              fontSize: 18,
+                                              color:
+                                                  Colors.black.withOpacity(0.8),
+                                            ),
+                                            searchInputDecoration:
+                                                InputDecoration(
+                                              labelText: 'Team Leader',
+                                              labelStyle: FlutterFlowTheme
+                                                  .bodyText2
+                                                  .override(
+                                                fontFamily: 'Montserrat',
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 12,
+                                              ),
+                                              enabledBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Colors.grey,
+                                                  width: 2,
+                                                ),
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                  topLeft: Radius.circular(4.0),
+                                                  topRight:
+                                                      Radius.circular(4.0),
+                                                ),
+                                              ),
+                                              focusedBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Colors.blue,
+                                                  width: 2,
+                                                ),
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                  topLeft: Radius.circular(4.0),
+                                                  topRight:
+                                                      Radius.circular(4.0),
+                                                ),
+                                              ),
+                                            ),
+                                            onTap: (x) {
+                                              teamLead.text = x;
+                                              oError = '';
+
+                                              setState(() {
+                                                print(x);
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        height: 60,
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(16, 0, 0, 0),
                                           child: Column(
                                             children: [
                                               CustomDropdown(
@@ -1571,9 +1653,15 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
                                     Expanded(
                                       child: Container(
                                         height: 50,
@@ -1709,15 +1797,9 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
+                                    SizedBox(
+                                      width: 10,
+                                    ),
                                     !preRegistered
                                         ? Expanded(
                                             child: Container(
@@ -1837,14 +1919,6 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                             ),
                                           )
                                         : Spacer(),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        height: 60,
-                                      ),
-                                    ),
                                     SizedBox(
                                       width: 10,
                                     ),
@@ -2542,6 +2616,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                 subDept.text != '' &&
                                                 designation.text != '' &&
                                                 reportingManager.text != '' &&
+                                                // teamLead.text != '' &&
                                                 empType.text != '' &&
                                                 joinedDate != null &&
                                                 ctc.text != '' &&
@@ -2573,8 +2648,11 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                 ifsc: ifsc.text,
                                                 joinedDate: joinedDate,
                                                 probation: probation,
-                                                reportingManager:
-                                                    reportingManager.text,
+                                                reportingManager: empIdByName[
+                                                    reportingManager.text],
+                                                teamLead:
+                                                    empIdByName[teamLead.text],
+                                                profile: '',
                                                 subDept: subDept.text,
                                                 delete: false,
                                                 empId: employeeId,
@@ -2616,7 +2694,14 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                                           ''
                                                                       ? oError =
                                                                           '* Must Provide a Reporting Manager'
-                                                                      : empType.text ==
+                                                                      :
+                                                                      // :teamLead
+                                                                      //         .text ==
+                                                                      //     ''
+                                                                      // ? oError =
+                                                                      //     '* Must Provide a Team Lead Name'
+                                                                      // :
+                                                                      empType.text ==
                                                                               ''
                                                                           ? oError =
                                                                               '* Must Choose a Employee Type'

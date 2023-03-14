@@ -556,9 +556,17 @@ class _EmployeeListState extends State<EmployeeList> {
                                       listOfFilteredCustomers[index]
                                           ['designation'];
 
-                                  String manager =
-                                      listOfFilteredCustomers[index]
-                                          ['reportingManager'];
+                                  String manager = empDataById[
+                                              listOfFilteredCustomers[index]
+                                                      ['reportingManager'] ??
+                                                  ''] ==
+                                          null
+                                      ? ''
+                                      : empDataById[
+                                              listOfFilteredCustomers[index]
+                                                      ['reportingManager'] ??
+                                                  '']
+                                          .name;
 
                                   String email =
                                       listOfFilteredCustomers[index]['email'];
@@ -638,7 +646,7 @@ class _EmployeeListState extends State<EmployeeList> {
                                       ),
                                       DataCell(
                                         SelectableText(
-                                          designation,
+                                          designation ?? '',
                                           style: FlutterFlowTheme.bodyText2
                                               .override(
                                             fontFamily: 'Lexend Deca',
@@ -653,7 +661,7 @@ class _EmployeeListState extends State<EmployeeList> {
                                       ),
                                       DataCell(
                                         SelectableText(
-                                          manager,
+                                          manager ?? '',
                                           style: FlutterFlowTheme.bodyText2
                                               .override(
                                             fontFamily: 'Lexend Deca',

@@ -196,6 +196,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
     FirebaseFirestore.instance
         .collection('customerServices')
         .where('customerId', isEqualTo: widget.id)
+        .where('delete', isEqualTo: false)
         .snapshots()
         .listen((event) {
       print('HEREEEEEEEEEEEEEE');
@@ -5834,7 +5835,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                   'serviceStartingDate': serviceStartingDate,
                                                                                   'serviceEndingDate': serviceEndingDate,
                                                                                   'description': serviceDescription.text,
-                                                                                  'serviceAmount': double.tryParse(serviceAmount.text),
+                                                                                  'delete': false,
+                                                                                  'serviceAmount': double.tryParse(serviceAmount.text.replaceAll(',', '')),
                                                                                   'customerId': widget.id,
                                                                                   'paymentDetails': [],
                                                                                   'totalPaid': 0,
@@ -6037,6 +6039,15 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                           fontSize:
                                                                               12)),
                                                                 ),
+                                                                DataColumn(
+                                                                  label: Text(
+                                                                      "",
+                                                                      style: TextStyle(
+                                                                          fontWeight: FontWeight
+                                                                              .bold,
+                                                                          fontSize:
+                                                                              12)),
+                                                                ),
                                                               ],
                                                               rows:
                                                                   List.generate(
@@ -6071,31 +6082,69 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                 feeDetail['serviceEndingDate'].toDate()),
                                                                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
                                                                       ),
-                                                                      DataCell(SelectableText(
-                                                                          projectDataById[feeDetail['project']]
-                                                                              [
-                                                                              'projectName'],
-                                                                          style: TextStyle(
-                                                                              fontWeight: FontWeight.bold,
-                                                                              fontSize: 12))),
-                                                                      DataCell(Text(
-                                                                          feeDetail[
-                                                                              'serviceName'],
-                                                                          style: TextStyle(
-                                                                              fontWeight: FontWeight.bold,
-                                                                              fontSize: 12))),
-                                                                      DataCell(Text(
-                                                                          feeDetail[
-                                                                              'description'],
-                                                                          style: TextStyle(
-                                                                              fontWeight: FontWeight.bold,
-                                                                              fontSize: 12))),
-                                                                      DataCell(Text(
-                                                                          feeDetail['serviceAmount']
-                                                                              .toString(),
-                                                                          style: TextStyle(
-                                                                              fontWeight: FontWeight.bold,
-                                                                              fontSize: 12))),
+                                                                      DataCell(
+                                                                        SelectableText(
+                                                                            projectDataById[feeDetail['project']][
+                                                                                'projectName'],
+                                                                            style:
+                                                                                TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                                                                      ),
+                                                                      DataCell(
+                                                                        Text(
+                                                                            feeDetail[
+                                                                                'serviceName'],
+                                                                            style:
+                                                                                TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                                                                      ),
+                                                                      DataCell(
+                                                                        Text(
+                                                                            feeDetail[
+                                                                                'description'],
+                                                                            style:
+                                                                                TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                                                                      ),
+                                                                      DataCell(
+                                                                        Text(
+                                                                            feeDetail['serviceAmount']
+                                                                                .toString(),
+                                                                            style:
+                                                                                TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                                                                      ),
+                                                                      DataCell(
+                                                                        FlutterFlowIconButton(
+                                                                          borderColor:
+                                                                              Colors.transparent,
+                                                                          borderRadius:
+                                                                              30,
+                                                                          borderWidth:
+                                                                              1,
+                                                                          buttonSize:
+                                                                              50,
+                                                                          icon:
+                                                                              Icon(
+                                                                            Icons.delete,
+                                                                            color:
+                                                                                Color(0xFFEE0000),
+                                                                            size:
+                                                                                25,
+                                                                          ),
+                                                                          onPressed:
+                                                                              () async {
+                                                                            bool
+                                                                                pressed =
+                                                                                await alert(context, 'Do you want Delete');
+
+                                                                            if (pressed) {
+                                                                              FirebaseFirestore.instance.collection('customerServices').doc(feeDetail['serviceId']).update({
+                                                                                'delete': true,
+                                                                              });
+
+                                                                              showUploadMessage(context, 'Details Deleted...');
+                                                                              setState(() {});
+                                                                            }
+                                                                          },
+                                                                        ),
+                                                                      ),
                                                                     ],
                                                                   );
                                                                 },
