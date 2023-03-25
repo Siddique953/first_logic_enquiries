@@ -49,6 +49,8 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   int firstIndex = 0;
   int lastIndex = 0;
+  bool showNButton = false;
+  bool showPButton = false;
 
   // listOfCustomers
   List listOfFilteredCustomers = [];
@@ -135,17 +137,26 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
 
   //GET FIRST 20 SEARCHED DATA
   getSearchedProjects(String txt) {
+    showNButton = false;
     listOfFilteredCustomers = [];
     for (int i = 0; i < listOfCustomers.length; i++) {
       if (listOfCustomers[i]['name'].toString().toLowerCase().contains(txt) ||
           listOfCustomers[i]['mobile'].toString().toLowerCase().contains(txt) ||
           listOfCustomers[i]['email'].toString().toLowerCase().contains(txt)) {
+        print(i);
+        // if (listOfFilteredCustomers.length == 20) {
+        //   showNButton = true;
+        //   setState(() {});
+        // }
+
         if (listOfFilteredCustomers.length < 20) {
+          showNButton = false;
           Map<String, dynamic> data = {};
           data = listOfCustomers[i];
-          data['index'] = i;
+          data['index'] = listOfFilteredCustomers.length;
           listOfFilteredCustomers.add(data);
         } else if (listOfFilteredCustomers.length == 20) {
+          showNButton = true;
           lastIndex = i - 1;
           break;
         }
@@ -160,11 +171,21 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
 
   //GET NEXT 20 SEARCHED DATA
   getNextSearchProjects(String txt) {
+    showPButton = true;
+    showNButton = false;
     listOfFilteredCustomers = [];
     for (int i = firstIndex; i < listOfCustomers.length; i++) {
       if (listOfCustomers[i]['name'].toString().toLowerCase().contains(txt) ||
           listOfCustomers[i]['mobile'].toString().toLowerCase().contains(txt) ||
           listOfCustomers[i]['email'].toString().toLowerCase().contains(txt)) {
+        if (i > 20) {
+          showNButton = true;
+          setState(() {});
+        } else if (i <= 20) {
+          showNButton = false;
+          setState(() {});
+        }
+
         if (listOfFilteredCustomers.length < 20) {
           Map<String, dynamic> data = {};
           data = listOfCustomers[i];
@@ -186,6 +207,7 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
 
   //GET PREVIOUS 20 SEARCHED DATA
   getPrevSearchProjects(String txt) {
+    showPButton = false;
     listOfFilteredCustomers = [];
     List prev = [];
     print('[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
@@ -194,6 +216,14 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
       if (listOfCustomers[i]['name'].toString().toLowerCase().contains(txt) ||
           listOfCustomers[i]['mobile'].toString().toLowerCase().contains(txt) ||
           listOfCustomers[i]['email'].toString().toLowerCase().contains(txt)) {
+        if (i > 20) {
+          showPButton = true;
+          setState(() {});
+        } else if (i <= 20) {
+          showPButton = false;
+          setState(() {});
+        }
+
         if (prev.length < 20) {
           Map<String, dynamic> data = {};
           data = listOfCustomers[i];
@@ -635,74 +665,146 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
               SizedBox(
                 height: 50,
               ),
+
+              ///
+
               Padding(
                 padding: const EdgeInsets.only(bottom: 20, left: 15, right: 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    firstIndex > 0
-                        ? FFButtonWidget(
-                            onPressed: () {
-                              setState(() {
-                                if (search.text == '') {
-                                  lastIndex = firstIndex - 1;
-                                  prev();
-                                } else {
-                                  lastIndex = firstIndex - 1;
-                                  getPrevSearchProjects(search.text);
-                                }
-                              });
-                            },
-                            text: 'Prev',
-                            options: FFButtonOptions(
-                              width: 80,
-                              height: 30,
-                              color: Color(0xff0054FF),
-                              textStyle: FlutterFlowTheme.subtitle2.override(
-                                  fontFamily: 'Poppins',
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
-                              borderSide: BorderSide(
-                                color: Colors.transparent,
-                                width: 1,
-                              ),
-                              borderRadius: 8,
-                            ),
-                          )
-                        : SizedBox(),
+                    search.text == ''
+                        ? firstIndex > 0
+                            ? FFButtonWidget(
+                                onPressed: () {
+                                  setState(() {
+                                    if (search.text == '') {
+                                      lastIndex = firstIndex - 1;
+                                      prev();
+                                    } else {
+                                      lastIndex = firstIndex - 1;
+                                      getPrevSearchProjects(search.text);
+                                    }
+                                  });
+                                },
+                                text: 'Prev',
+                                options: FFButtonOptions(
+                                  width: 80,
+                                  height: 30,
+                                  color: Color(0xff0054FF),
+                                  textStyle: FlutterFlowTheme.subtitle2
+                                      .override(
+                                          fontFamily: 'Poppins',
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
+                                  borderSide: BorderSide(
+                                    color: Colors.transparent,
+                                    width: 1,
+                                  ),
+                                  borderRadius: 8,
+                                ),
+                              )
+                            : SizedBox()
+                        : showPButton
+                            ? FFButtonWidget(
+                                onPressed: () {
+                                  setState(() {
+                                    if (search.text == '') {
+                                      lastIndex = firstIndex - 1;
+                                      prev();
+                                    } else {
+                                      lastIndex = firstIndex - 1;
+                                      getPrevSearchProjects(search.text);
+                                    }
+                                  });
+                                },
+                                text: 'Prev',
+                                options: FFButtonOptions(
+                                  width: 80,
+                                  height: 30,
+                                  color: Color(0xff0054FF),
+                                  textStyle: FlutterFlowTheme.subtitle2
+                                      .override(
+                                          fontFamily: 'Poppins',
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
+                                  borderSide: BorderSide(
+                                    color: Colors.transparent,
+                                    width: 1,
+                                  ),
+                                  borderRadius: 8,
+                                ),
+                              )
+                            : SizedBox(),
                     // SizedBox(width:50,),
-                    lastIndex + 1 < listOfCustomers.length
-                        ? FFButtonWidget(
-                            onPressed: () {
-                              setState(() {
-                                if (search.text == '') {
-                                  firstIndex = lastIndex + 1;
-                                  next();
-                                } else {
-                                  firstIndex = lastIndex + 1;
-                                  getNextSearchProjects(search.text);
-                                }
-                              });
-                            },
-                            text: 'Next',
-                            options: FFButtonOptions(
-                              width: 80,
-                              height: 30,
-                              color: Color(0xff0054FF),
-                              textStyle: FlutterFlowTheme.subtitle2.override(
-                                  fontFamily: 'Poppins',
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
-                              borderSide: BorderSide(
-                                color: Colors.transparent,
-                                width: 1,
-                              ),
-                              borderRadius: 8,
-                            ),
-                          )
-                        : SizedBox(),
+
+                    search.text == ''
+                        ? lastIndex + 1 < listOfCustomers.length
+                            ? FFButtonWidget(
+                                onPressed: () {
+                                  setState(() {
+                                    if (search.text == '') {
+                                      firstIndex = lastIndex + 1;
+                                      next();
+                                    } else {
+                                      firstIndex = lastIndex + 1;
+                                      getNextSearchProjects(search.text);
+                                    }
+                                  });
+                                },
+                                text: 'Next',
+                                options: FFButtonOptions(
+                                  width: 80,
+                                  height: 30,
+                                  color: Color(0xff0054FF),
+                                  textStyle: FlutterFlowTheme.subtitle2
+                                      .override(
+                                          fontFamily: 'Poppins',
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
+                                  borderSide: BorderSide(
+                                    color: Colors.transparent,
+                                    width: 1,
+                                  ),
+                                  borderRadius: 8,
+                                ),
+                              )
+                            : SizedBox()
+                        : showNButton
+                            ? FFButtonWidget(
+                                onPressed: () {
+                                  setState(() {
+                                    if (search.text == '') {
+                                      firstIndex = lastIndex + 1;
+                                      next();
+                                    } else {
+                                      firstIndex = lastIndex + 1;
+                                      getNextSearchProjects(search.text);
+                                    }
+                                  });
+                                },
+                                text: 'Next',
+                                options: FFButtonOptions(
+                                  width: 80,
+                                  height: 30,
+                                  color: Color(0xff0054FF),
+                                  textStyle: FlutterFlowTheme.subtitle2
+                                      .override(
+                                          fontFamily: 'Poppins',
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
+                                  borderSide: BorderSide(
+                                    color: Colors.transparent,
+                                    width: 1,
+                                  ),
+                                  borderRadius: 8,
+                                ),
+                              )
+                            : SizedBox(),
                   ],
                 ),
               ),

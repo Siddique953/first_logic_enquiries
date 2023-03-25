@@ -224,6 +224,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
           value['description'] = data[i]['description'];
           value['projectId'] = data[i]['serviceId'];
           value['paymentProof'] = data[i]['paymentProof'] ?? [];
+          value['type'] = 'Service';
 
           value['billCode'] =
               data[i]['billCode'].toString().replaceFirst('PMNA', '');
@@ -404,6 +405,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
           value['description'] = data[i]['description'];
           value['projectId'] = data[i]['projectId'];
           value['paymentProof'] = data[i]['paymentProof'] ?? [];
+          value['type'] = 'Project';
           value['billCode'] =
               data[i]['billCode'].toString().replaceFirst('PMNA', '');
           double exp = double.tryParse(data[i]['amount'].toString());
@@ -511,52 +513,136 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
     data.addAll(paymentsSort);
     payments.clear();
 
+    print('[[[[[[[[[[[[[[[values]]]]]]]]]]]]]]]');
+    print(projectNameSortValue.text);
+    print(staffNameSortValue.text);
+
     for (int i = 0; i < data.length; i++) {
-      if ((projectDataById[data[i]['projectId']]['projectName'] ==
-                  projectNameSortValue.text ||
-              serviceDataById[data[i]['serviceId']]['serviceName'] ==
-                  projectNameSortValue.text) &&
-          data[i]['staffName'] == staffNameSortValue.text) {
-        Map value = {};
-        value = data[i];
+      try {
+        print('[[[[[[[[[[try]]]]]]]]]]');
 
-        payments.add(value);
-      } else if ((projectDataById[data[i]['projectId']]['projectName'] ==
-                  projectNameSortValue.text ||
-              serviceDataById[data[i]['serviceId']]['serviceName'] ==
-                  projectNameSortValue.text) &&
-          (staffNameSortValue.text == 'All' || staffNameSortValue.text == '')) {
-        Map value = {};
-        value = data[i];
+        if ((projectDataById[data[i]['projectId']]['projectName'] ==
+                projectNameSortValue.text) &&
+            data[i]['staffName'] == staffNameSortValue.text) {
+          Map value = {};
+          value = data[i];
 
-        payments.add(value);
-      } else if (data[i]['staffName'] == staffNameSortValue.text &&
-          (projectNameSortValue.text == 'All' ||
-              projectNameSortValue.text == '')) {
-        Map value = {};
-        value = data[i];
+          payments.add(value);
+        }
 
-        payments.add(value);
-      } else if (projectNameSortValue.text == 'All' &&
-          staffNameSortValue.text == 'All') {
-        Map value = {};
-        value = data[i];
+        ///
+        else if ((projectDataById[data[i]['projectId']]['projectName'] ==
+                projectNameSortValue.text) &&
+            (staffNameSortValue.text == 'All' ||
+                staffNameSortValue.text == '')) {
+          Map value = {};
+          value = data[i];
 
-        payments.add(value);
-      } else if ((projectNameSortValue.text == '' &&
-              staffNameSortValue.text == 'All') ||
-          (projectNameSortValue.text == 'All' &&
-              staffNameSortValue.text == '')) {
-        Map value = {};
-        value = data[i];
+          payments.add(value);
+        }
 
-        payments.add(value);
-      } else if (projectNameSortValue.text == '' &&
-          staffNameSortValue.text == '') {
-        Map value = {};
-        value = data[i];
+        ///
+        else if (data[i]['staffName'] == staffNameSortValue.text &&
+            (projectNameSortValue.text == 'All' ||
+                projectNameSortValue.text == '')) {
+          Map value = {};
+          value = data[i];
 
-        payments.add(value);
+          payments.add(value);
+        }
+
+        ///
+
+        else if (projectNameSortValue.text == 'All' &&
+            staffNameSortValue.text == 'All') {
+          Map value = {};
+          value = data[i];
+
+          payments.add(value);
+        }
+
+        ///
+        else if ((projectNameSortValue.text == '' &&
+                staffNameSortValue.text == 'All') ||
+            (projectNameSortValue.text == 'All' &&
+                staffNameSortValue.text == '')) {
+          Map value = {};
+          value = data[i];
+
+          payments.add(value);
+        }
+
+        ///
+        else if (projectNameSortValue.text == '' &&
+            staffNameSortValue.text == '') {
+          Map value = {};
+          value = data[i];
+
+          payments.add(value);
+        }
+      } catch (er) {
+        print('[[[[[[[[[[[[[catch]]]]]]]]]]]]]');
+        print(er);
+
+        if ((serviceDataById[data[i]['serviceId']]['serviceName'] ==
+                projectNameSortValue.text) &&
+            data[i]['staffName'] == staffNameSortValue.text) {
+          Map value = {};
+          value = data[i];
+
+          payments.add(value);
+        }
+
+        ///
+        else if ((serviceDataById[data[i]['serviceId']]['serviceName'] ==
+                projectNameSortValue.text) &&
+            (staffNameSortValue.text == 'All' ||
+                staffNameSortValue.text == '')) {
+          Map value = {};
+          value = data[i];
+
+          payments.add(value);
+        }
+
+        ///
+        else if (data[i]['staffName'] == staffNameSortValue.text &&
+            (projectNameSortValue.text == 'All' ||
+                projectNameSortValue.text == '')) {
+          Map value = {};
+          value = data[i];
+
+          payments.add(value);
+        }
+
+        ///
+
+        else if (projectNameSortValue.text == 'All' &&
+            staffNameSortValue.text == 'All') {
+          Map value = {};
+          value = data[i];
+
+          payments.add(value);
+        }
+
+        ///
+        else if ((projectNameSortValue.text == '' &&
+                staffNameSortValue.text == 'All') ||
+            (projectNameSortValue.text == 'All' &&
+                staffNameSortValue.text == '')) {
+          Map value = {};
+          value = data[i];
+
+          payments.add(value);
+        }
+
+        ///
+        else if (projectNameSortValue.text == '' &&
+            staffNameSortValue.text == '') {
+          Map value = {};
+          value = data[i];
+
+          payments.add(value);
+        }
       }
     }
     setState(() {
@@ -4274,49 +4360,56 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                         .blueGrey
                                                                         .shade50),
                                                             cells: [
-                                                              DataCell(Text(
-                                                                  dateTimeFormat(
-                                                                      'd-MMM-y',
-                                                                      feeDetail[
-                                                                              'paidDate']
-                                                                          .toDate()),
-                                                                  style: TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontSize:
-                                                                          12))),
-                                                              DataCell(Text(
-                                                                  (feeDetail['projectName'] ??
-                                                                          feeDetail[
-                                                                              'serviceName'])
-                                                                      .toString(),
-                                                                  style: TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontSize:
-                                                                          12))),
-                                                              DataCell(Text(
-                                                                  feeDetail[
-                                                                          'amount']
-                                                                      .toString(),
-                                                                  style: TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontSize:
-                                                                          12))),
-                                                              DataCell(Text(
-                                                                  feeDetail[
-                                                                          'description']
-                                                                      .toString(),
-                                                                  style: TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontSize:
-                                                                          12))),
+                                                              DataCell(
+                                                                Text(
+                                                                    dateTimeFormat(
+                                                                        'd-MMM-y',
+                                                                        feeDetail['paidDate']
+                                                                            .toDate()),
+                                                                    style: TextStyle(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        fontSize:
+                                                                            12)),
+                                                              ),
+                                                              DataCell(
+                                                                Text(
+                                                                    (feeDetail['projectName'] ??
+                                                                            feeDetail[
+                                                                                'serviceName'])
+                                                                        .toString(),
+                                                                    style: TextStyle(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        fontSize:
+                                                                            12)),
+                                                              ),
+                                                              DataCell(
+                                                                Text(
+                                                                    feeDetail[
+                                                                            'amount']
+                                                                        .toString(),
+                                                                    style: TextStyle(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        fontSize:
+                                                                            12)),
+                                                              ),
+                                                              DataCell(
+                                                                Text(
+                                                                    feeDetail[
+                                                                            'description']
+                                                                        .toString(),
+                                                                    style: TextStyle(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        fontSize:
+                                                                            12)),
+                                                              ),
                                                               DataCell(
                                                                 Text(
                                                                   feeDetail[
@@ -4330,79 +4423,82 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                           12),
                                                                 ),
                                                               ),
-                                                              DataCell(InkWell(
-                                                                onTap: () {
-                                                                  List proofs =
-                                                                      feeDetail[
-                                                                          'paymentProof'];
-                                                                  print(
-                                                                      '[[[[[[[[[[[[[[[[[PROOF]]]]]]]]]]]]]]]]]');
-                                                                  print(
-                                                                      feeDetail);
-                                                                  print('here');
-                                                                  print(proofs
-                                                                      .isNotEmpty);
-                                                                  print(
-                                                                      'hereasdawds');
-                                                                  if (proofs
-                                                                      .isNotEmpty) {
+                                                              DataCell(
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    List
+                                                                        proofs =
+                                                                        feeDetail[
+                                                                            'paymentProof'];
                                                                     print(
-                                                                        proofs);
-                                                                    List<ImageProvider>
-                                                                        images =
-                                                                        [];
+                                                                        '[[[[[[[[[[[[[[[[[PROOF]]]]]]]]]]]]]]]]]');
+                                                                    print(
+                                                                        feeDetail);
+                                                                    print(
+                                                                        'here');
+                                                                    print(proofs
+                                                                        .isNotEmpty);
+                                                                    print(
+                                                                        'hereasdawds');
+                                                                    if (proofs
+                                                                        .isNotEmpty) {
+                                                                      print(
+                                                                          proofs);
+                                                                      List<ImageProvider>
+                                                                          images =
+                                                                          [];
 
-                                                                    for (var a
-                                                                        in proofs) {
-                                                                      images.add(
-                                                                          Image.network(a)
-                                                                              .image);
-                                                                    }
+                                                                      for (var a
+                                                                          in proofs) {
+                                                                        images.add(
+                                                                            Image.network(a).image);
+                                                                      }
 
-                                                                    MultiImageProvider
-                                                                        multiImageProvider =
-                                                                        MultiImageProvider(
-                                                                            images);
-                                                                    showImageViewerPager(
-                                                                      context,
-                                                                      multiImageProvider,
-                                                                      immersive:
-                                                                          false,
-                                                                      doubleTapZoomable:
-                                                                          true,
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .transparent,
-                                                                      swipeDismissible:
-                                                                          true,
-                                                                    );
-                                                                  } else {
-                                                                    showUploadMessage(
+                                                                      MultiImageProvider
+                                                                          multiImageProvider =
+                                                                          MultiImageProvider(
+                                                                              images);
+                                                                      showImageViewerPager(
                                                                         context,
-                                                                        'There is no Proof to view');
-                                                                  }
-                                                                },
-                                                                child: Text(
-                                                                    'View',
+                                                                        multiImageProvider,
+                                                                        immersive:
+                                                                            false,
+                                                                        doubleTapZoomable:
+                                                                            true,
+                                                                        backgroundColor:
+                                                                            Colors.transparent,
+                                                                        swipeDismissible:
+                                                                            true,
+                                                                      );
+                                                                    } else {
+                                                                      showUploadMessage(
+                                                                          context,
+                                                                          'There is no Proof to view');
+                                                                    }
+                                                                  },
+                                                                  child: Text(
+                                                                      'View',
+                                                                      style: TextStyle(
+                                                                          fontWeight: FontWeight
+                                                                              .bold,
+                                                                          color: Colors
+                                                                              .blueAccent,
+                                                                          fontSize:
+                                                                              12)),
+                                                                ),
+                                                              ),
+                                                              DataCell(
+                                                                Text(
+                                                                    feeDetail[
+                                                                            'staffName']
+                                                                        .toString(),
                                                                     style: TextStyle(
                                                                         fontWeight:
                                                                             FontWeight
                                                                                 .bold,
-                                                                        color: Colors
-                                                                            .blueAccent,
                                                                         fontSize:
                                                                             12)),
-                                                              )),
-                                                              DataCell(Text(
-                                                                  feeDetail[
-                                                                          'staffName']
-                                                                      .toString(),
-                                                                  style: TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontSize:
-                                                                          12))),
+                                                              ),
                                                               DataCell(
                                                                 Row(
                                                                   children: [
@@ -4432,12 +4528,12 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                         print(
                                                                             feeDetail);
                                                                         try {
-                                                                          double projectCost = projectAndServicePaymentList[index]['projectId'] == null
+                                                                          double projectCost = projectAndServicePaymentList[index]['type'] == 'Service'
                                                                               ? serviceDataById[projectAndServicePaymentList[index]['serviceId']]['serviceAmount']
                                                                               : projectDataById[projectAndServicePaymentList[index]['projectId']]['projectCost'];
                                                                           final invoice =
                                                                               paymentDetail(
-                                                                            nameOfProject: projectAndServicePaymentList[index]['projectName'] == null
+                                                                            nameOfProject: projectAndServicePaymentList[index]['type'] == 'Service'
                                                                                 ? projectAndServicePaymentList[index]['serviceName']
                                                                                 : projectAndServicePaymentList[index]['projectName'],
                                                                             name:
@@ -4479,107 +4575,116 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                   ],
                                                                 ),
                                                               ),
-                                                              DataCell(Row(
-                                                                children: [
-                                                                  FlutterFlowIconButton(
-                                                                    borderColor:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    borderRadius:
-                                                                        30,
-                                                                    borderWidth:
-                                                                        1,
-                                                                    buttonSize:
-                                                                        50,
-                                                                    fillColor:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .download,
-                                                                      color: Colors
-                                                                          .teal,
-                                                                      size: 25,
-                                                                    ),
-                                                                    onPressed:
-                                                                        () async {
-                                                                      print(
-                                                                          "[[[[[[[[[[[[[[[[feeDetail['billCode']]]]]]]]]]]]]]]]]");
-                                                                      print(feeDetail[
-                                                                          'billCode']);
-                                                                      try {
-                                                                        double projectCost = projectAndServicePaymentList[index]['projectId'] ==
-                                                                                null
-                                                                            ? serviceDataById[projectAndServicePaymentList[index]['serviceId']]['serviceAmount']
-                                                                            : projectDataById[projectAndServicePaymentList[index]['projectId']]['projectCost'];
-                                                                        final invoice =
-                                                                            paymentDetail(
-                                                                          nameOfProject: projectAndServicePaymentList[index]['projectName'] == null
-                                                                              ? projectAndServicePaymentList[index]['serviceName']
-                                                                              : projectAndServicePaymentList[index]['projectName'],
-                                                                          name:
-                                                                              nameController.text,
-                                                                          // selectedProjectType: projectDataById[payments[index]['projectId']]['projectType'],
-                                                                          totalProjectCost:
-                                                                              projectCost,
-                                                                          lastPaymentAmount:
-                                                                              projectAndServicePaymentList[index]['amount'],
-                                                                          // totalAmountPaid: payments[index]['totalPaid'],
-                                                                          totalDue:
-                                                                              projectCost - projectAndServicePaymentList[index]['totalPaid'],
-                                                                          paymentMethod:
-                                                                              projectAndServicePaymentList[index]['paymentMethode'],
-                                                                          date: projectAndServicePaymentList[index]['paidDate']
-                                                                              .toDate()
-                                                                              .toString()
-                                                                              .substring(0, 10),
-                                                                          customerName:
-                                                                              cust['name'],
-                                                                          customerPhoneNo:
-                                                                              cust['mobile'],
-                                                                          desc:
-                                                                              feeDetail['description'],
-                                                                          staff:
-                                                                              feeDetail['staffName'],
-                                                                          receiptNo:
-                                                                              feeDetail['billCode'],
-                                                                        );
-
-                                                                        await GeneratePdf.downloadPdf(
-                                                                            invoice);
-
-                                                                        // final pdfFile =
-                                                                        //     await PrintingFunction.createPrint(
-                                                                        //         invoice);
-                                                                        // await PdfApi
-                                                                        //     .openFile(
-                                                                        //         pdfFile);
-                                                                      } catch (e) {
+                                                              DataCell(
+                                                                Row(
+                                                                  children: [
+                                                                    FlutterFlowIconButton(
+                                                                      borderColor:
+                                                                          Colors
+                                                                              .transparent,
+                                                                      borderRadius:
+                                                                          30,
+                                                                      borderWidth:
+                                                                          1,
+                                                                      buttonSize:
+                                                                          50,
+                                                                      fillColor:
+                                                                          Colors
+                                                                              .transparent,
+                                                                      icon:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .download,
+                                                                        color: Colors
+                                                                            .teal,
+                                                                        size:
+                                                                            25,
+                                                                      ),
+                                                                      onPressed:
+                                                                          () async {
                                                                         print(
-                                                                            e);
-                                                                        // return showDialog(
-                                                                        //     context: context,
-                                                                        //     builder: (context) {
-                                                                        //       return AlertDialog(
-                                                                        //         title: Text('error'),
-                                                                        //         content: Text(e.toString()),
-                                                                        //
-                                                                        //         actions: <Widget>[
-                                                                        //           new FlatButton(
-                                                                        //             child: new Text('ok'),
-                                                                        //             onPressed: () {
-                                                                        //               Navigator.of(context).pop();
-                                                                        //             },
-                                                                        //           )
-                                                                        //         ],
-                                                                        //       );
-                                                                        //     });
+                                                                            "[[[[[[[[[[[[[[[[feeDetail['billCode']]]]]]]]]]]]]]]]]");
+                                                                        print(feeDetail[
+                                                                            'billCode']);
+                                                                        try {
+                                                                          print(
+                                                                              '[[test]]');
+                                                                          print(projectAndServicePaymentList[index]
+                                                                              [
+                                                                              'type']);
+                                                                          // print();
+                                                                          // print();
+                                                                          // print();
+                                                                          double projectCost = projectAndServicePaymentList[index]['type'] == 'Service'
+                                                                              ? serviceDataById[projectAndServicePaymentList[index]['serviceId']]['serviceAmount']
+                                                                              : projectDataById[projectAndServicePaymentList[index]['projectId']]['projectCost'];
+                                                                          final invoice =
+                                                                              paymentDetail(
+                                                                            nameOfProject: projectAndServicePaymentList[index]['type'] == 'Service'
+                                                                                ? projectAndServicePaymentList[index]['serviceName']
+                                                                                : projectAndServicePaymentList[index]['projectName'],
+                                                                            name:
+                                                                                nameController.text,
+                                                                            // selectedProjectType: projectDataById[payments[index]['projectId']]['projectType'],
+                                                                            totalProjectCost:
+                                                                                projectCost,
+                                                                            lastPaymentAmount:
+                                                                                projectAndServicePaymentList[index]['amount'],
+                                                                            // totalAmountPaid: payments[index]['totalPaid'],
+                                                                            totalDue:
+                                                                                projectCost - projectAndServicePaymentList[index]['totalPaid'],
+                                                                            paymentMethod:
+                                                                                projectAndServicePaymentList[index]['paymentMethode'],
+                                                                            date:
+                                                                                projectAndServicePaymentList[index]['paidDate'].toDate().toString().substring(0, 10),
+                                                                            customerName:
+                                                                                cust['name'],
+                                                                            customerPhoneNo:
+                                                                                cust['mobile'],
+                                                                            desc:
+                                                                                feeDetail['description'],
+                                                                            staff:
+                                                                                feeDetail['staffName'],
+                                                                            receiptNo:
+                                                                                feeDetail['billCode'],
+                                                                          );
 
-                                                                      }
-                                                                    },
-                                                                  ),
-                                                                ],
-                                                              ))
+                                                                          await GeneratePdf.downloadPdf(
+                                                                              invoice);
+
+                                                                          // final pdfFile =
+                                                                          //     await PrintingFunction.createPrint(
+                                                                          //         invoice);
+                                                                          // await PdfApi
+                                                                          //     .openFile(
+                                                                          //         pdfFile);
+                                                                        } catch (e) {
+                                                                          print(
+                                                                              e);
+                                                                          // return showDialog(
+                                                                          //     context: context,
+                                                                          //     builder: (context) {
+                                                                          //       return AlertDialog(
+                                                                          //         title: Text('error'),
+                                                                          //         content: Text(e.toString()),
+                                                                          //
+                                                                          //         actions: <Widget>[
+                                                                          //           new FlatButton(
+                                                                          //             child: new Text('ok'),
+                                                                          //             onPressed: () {
+                                                                          //               Navigator.of(context).pop();
+                                                                          //             },
+                                                                          //           )
+                                                                          //         ],
+                                                                          //       );
+                                                                          //     });
+
+                                                                        }
+                                                                      },
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
                                                             ],
                                                           );
                                                         },
@@ -5822,13 +5927,16 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                               FFButtonWidget(
                                                                             onPressed:
                                                                                 () async {
-                                                                              if (serviceName.text != '' && serviceAmount.text != '' && serviceDescription.text != '' && serviceStartingDate != null && serviceEndingDate != null
+                                                                              print('[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
+                                                                              print(projectIdByName[projectNameInServices.text]);
+
+                                                                              if (serviceName.text != '' && serviceAmount.text != '' && projectNameInServices.text != '' && serviceStartingDate != null && serviceEndingDate != null
                                                                                   // &&
                                                                                   // (urlDownload != '' &&
                                                                                   //     urlDownload != null)
                                                                                   ) {
                                                                                 FirebaseFirestore.instance.collection('customerServices').add({
-                                                                                  'project': projectIdByName[projectName.text] ?? '',
+                                                                                  'project': projectIdByName[projectNameInServices.text] ?? '',
                                                                                   'branch': currentBranchId,
                                                                                   'serviceName': serviceName.text,
                                                                                   'createdDate': FieldValue.serverTimestamp(),
@@ -6057,6 +6165,11 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                   var feeDetail =
                                                                       selectedServicesList[
                                                                           index];
+
+                                                                  print(
+                                                                      '[[[[[[[[[[[[[[[[[[feeDetail["project"]]]]]]]]]]]]]]]]]]]');
+                                                                  print(feeDetail[
+                                                                      'project']);
 
                                                                   return DataRow(
                                                                     color: index
