@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:universal_html/html.dart' as html;
 import 'package:multiple_select/Item.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import '../../../auth/auth_util.dart';
@@ -41,6 +41,11 @@ import '../../tabs/Enquiry/EnquiryList.dart';
 import '../../tabs/homeTab.dart';
 import '../../tabs/users/users/addBranchUser.dart';
 import 'components/side_menu.dart';
+
+/// ERP VERSIONS
+String webVersion = "1.7.0";
+
+///
 
 //LIST OF AGENTS
 List<String> agentNumberList = [];
@@ -127,6 +132,7 @@ List<String> listOfDomain = [
   'Server',
   'Domains'
 ];
+
 List<String> platforms = [
   'Android',
   'IOS',
@@ -648,6 +654,48 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     });
   }
 
+  getCurrentVersion() async {
+    DocumentSnapshot<Map<String, dynamic>> event = await FirebaseFirestore
+        .instance
+        .collection('settings')
+        .doc(currentBranchId)
+        .get();
+
+    if (event.data()['version'] != webVersion) {
+      await showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            // <-- SEE HERE
+            title: const Text('Warning'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                      'New version found!!! Please refresh to version ${event.data()['version']} '),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ok'),
+                onPressed: () {
+                  html.window.location.reload();
+                  // Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -656,8 +704,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
+    getCurrentVersion();
     super.initState();
-    // // addFieldtoAlldoc();
+
+    // addFieldToAllDoc();
+    //
     // sendMail();
     getEmployees();
     getCustomers();
@@ -769,32 +820,38 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     );
   }
 
-  addFieldtoAlldoc() {
-    // List list = [
-    //   {
-    //     'name': 'Personal Details',
-    //     'completed': false,
-    //   },
-    //   {
-    //     'name': 'Project Details',
-    //     'completed': false,
-    //   },
-    //   {
-    //     'name': 'Payment Details',
-    //     'completed': false,
-    //   },
-    //   {
-    //     'name': 'Documents',
-    //     'completed': false,
-    //   },
-    //   {
-    //     'name': 'Services',
-    //     'completed': false,
-    //   },
-    // ];
-    FirebaseFirestore.instance.collection('customer').get().then(
+  addFieldToAllDoc() {
+    List list = [
+      {
+        'name': 'Personal Details',
+        'completed': false,
+      },
+      {
+        'name': 'Project Details',
+        'completed': false,
+      },
+      {
+        'name': 'Payment Details',
+        'completed': false,
+      },
+      {
+        'name': 'Documents',
+        'completed': false,
+      },
+      {
+        'name': 'Services',
+        'completed': false,
+      },
+      {
+        'name': 'Statement',
+        'completed': false,
+      },
+    ];
+
+    FirebaseFirestore.instance.collection('projects').get().then(
           (value) => value.docs.forEach(
             (element) {
+              ///
               // String str = element['careOf'];asd
               //'agentName':
               //        careOfNo.text ?? '',
@@ -816,11 +873,16 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               // print('====================================================');
               // print(element['projectName']);
               // print(paymentDetails);
+              ///
+
               FirebaseFirestore.instance
-                  .collection('customer')
+                  .collection('projects')
                   .doc(element.id)
                   .update({
-                'email': '',
+                // 'email': '',
+
+                'totalCost': element['projectCost'],
+
                 // 'careOf': FieldValue.delete(),
                 // 'careOfNo':FieldValue.delete(),
               });

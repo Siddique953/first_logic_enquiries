@@ -642,6 +642,7 @@ class _CreateProjectState extends State<CreateProject> {
                           'paymentDetails': [],
                           'projectCost': 0.00,
                           'totalPaid': 0.00,
+                          'totalCost': 0.00,
                           'projectName': projectName.text,
                           'companyName': '',
                           'companyAddress': '',

@@ -66,8 +66,7 @@ class _CustomerListingWidgetState extends State<CustomerListingWidget> {
 //GET FIRST 20 DATA
   getFirst20() {
     listOfFilteredCustomers = [];
-    print('===============================================');
-    print(listOfCostomers.length);
+
     for (int i = 0; i < listOfCostomers.length; i++) {
       firstIndex = 0;
       if (listOfFilteredCustomers.length < 20) {

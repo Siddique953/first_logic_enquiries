@@ -58,7 +58,7 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
 //GET FIRST 20 DATA
   getFirst20() {
     listOfFilteredCustomers = [];
-    print('===============================================');
+
     print(listOfCostomers.length);
     for (int i = 0; i < listOfCostomers.length; i++) {
       firstIndex = 0;
@@ -144,10 +144,6 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
           listOfCustomers[i]['mobile'].toString().toLowerCase().contains(txt) ||
           listOfCustomers[i]['email'].toString().toLowerCase().contains(txt)) {
         print(i);
-        // if (listOfFilteredCustomers.length == 20) {
-        //   showNButton = true;
-        //   setState(() {});
-        // }
 
         if (listOfFilteredCustomers.length < 20) {
           showNButton = false;

@@ -545,6 +545,10 @@ class _CreateNewPopupState extends State<CreateNewPopup> {
                               'name': 'Services',
                               'completed': false,
                             },
+                            {
+                              'name': 'Statement',
+                              'completed': false,
+                            },
                           ];
 
                           List statusList = [];

@@ -2505,6 +2505,10 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
         'name': 'Services',
         'completed': false,
       },
+      {
+        'name': 'Statement',
+        'completed': false,
+      },
     ];
 
     List statusList = [];
@@ -2590,7 +2594,8 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
         'companyName': '',
         'companyAddress': '',
         'customerID': 'C' + currentbranchShortName + customerId.toString(),
-        'projectId': 'P' + currentbranchShortName + projectNo.toString()
+        'projectId': 'P' + currentbranchShortName + projectNo.toString(),
+        'totalCost': 0.00,
       });
     }).then((value) {
       FirebaseFirestore.instance.collection('status').add({
