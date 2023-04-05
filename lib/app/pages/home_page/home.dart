@@ -12,6 +12,7 @@ import '../../tabs/Agent/add/createAgent.dart';
 import '../../tabs/Agent/list/agentList.dart';
 import '../../tabs/Bank Transfer/deposite/withdraw.dart';
 import '../../tabs/Branch/AddBranch.dart';
+import '../../tabs/Customers/Projects/projectListMain.dart';
 import '../../tabs/Customers/customerList.dart';
 import '../../tabs/Enquiry/AddEnquiry.dart';
 import '../../tabs/Enquiry/followUp.dart';
@@ -43,7 +44,7 @@ import '../../tabs/users/users/addBranchUser.dart';
 import 'components/side_menu.dart';
 
 /// ERP VERSIONS
-String webVersion = "1.7.0";
+String webVersion = "1.7.4";
 
 ///
 
@@ -658,7 +659,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     DocumentSnapshot<Map<String, dynamic>> event = await FirebaseFirestore
         .instance
         .collection('settings')
-        .doc(currentBranchId)
+        .doc('settings')
         .get();
 
     if (event.data()['version'] != webVersion) {
@@ -674,6 +675,29 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 children: <Widget>[
                   Text(
                       'New version found!!! Please refresh to version ${event.data()['version']} '),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(' "Changes :-'),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ListBody(
+                    children: List.generate(event['updates'].length, (ind) {
+                      return Row(
+                        children: [
+                          Icon(
+                            Icons.circle_rounded,
+                            size: 15,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(event['updates'][ind]),
+                        ],
+                      );
+                    }),
+                  )
                 ],
               ),
             ),
@@ -722,7 +746,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
     getProjectData();
 
-    _tabController = TabController(vsync: this, length: 30, initialIndex: 0);
+    _tabController = TabController(vsync: this, length: 31, initialIndex: 0);
     // updateProduct();
   }
 
@@ -810,6 +834,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           CreateUsersWidget(), //27
                           AddBranchWidget(), //28
                           ExpenseHeadPage(), //29
+
+                          ///EXTRA ADDED Pages
+                          ProjectList(), //30
+                          ///
                         ],
                       ),
                     ),

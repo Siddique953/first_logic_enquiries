@@ -279,6 +279,25 @@ class _SideMenuState extends State<SideMenu> {
                                               ? FontWeight.bold
                                               : FontWeight.normal),
                                     )),
+                                InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        widget._tabController.animateTo((30));
+                                        selectedTab = 2;
+                                        subTab = 30;
+                                      });
+                                    },
+                                    child: ColaspeItem(
+                                      label: "Project List",
+                                      icon: Icons.stop_rounded,
+                                      style: TextStyle(
+                                          color: subTab == 30
+                                              ? Color(0xff0054FF)
+                                              : Colors.grey,
+                                          fontWeight: subTab == 30
+                                              ? FontWeight.bold
+                                              : FontWeight.normal),
+                                    )),
                               ],
                             ),
                           ),
@@ -1838,6 +1857,26 @@ class _SideMenuState extends State<SideMenu> {
                                                       ? Color(0xff0054FF)
                                                       : Colors.grey,
                                                   fontWeight: subTab == 4
+                                                      ? FontWeight.bold
+                                                      : FontWeight.normal),
+                                            )),
+                                        InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                widget._tabController
+                                                    .animateTo((30));
+                                                selectedTab = 2;
+                                                subTab = 30;
+                                              });
+                                            },
+                                            child: ColaspeItem(
+                                              label: "Project List",
+                                              icon: Icons.stop_rounded,
+                                              style: TextStyle(
+                                                  color: subTab == 30
+                                                      ? Color(0xff0054FF)
+                                                      : Colors.grey,
+                                                  fontWeight: subTab == 30
                                                       ? FontWeight.bold
                                                       : FontWeight.normal),
                                             )),

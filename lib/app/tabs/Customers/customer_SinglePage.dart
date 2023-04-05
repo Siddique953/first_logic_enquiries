@@ -6256,16 +6256,22 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                 print(
                                                                     '2222222');
 
-                                                                await StatementPDF.downloadPdf(
-                                                                    data,
-                                                                    statementData,
-                                                                    creditTotal,
-                                                                    debitTotal);
+                                                                ///
+                                                                // generateDocument(
+                                                                //     PdfPageFormat
+                                                                //         .a4,
+                                                                //     data,
+                                                                //     statementData,
+                                                                //     creditTotal,
+                                                                //     debitTotal);
 
-                                                                // createStatement(
-                                                                //     nameController
-                                                                //         .text);
+                                                                /// EXCEL
+
+                                                                createStatement(
+                                                                    nameController
+                                                                        .text);
                                                               } catch (e) {
+                                                                print(e);
                                                                 return showDialog(
                                                                     context:
                                                                         context,
@@ -6299,6 +6305,96 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                               height: 45,
                                                               color: Color(
                                                                   0xff0054FF),
+                                                              textStyle:
+                                                                  FlutterFlowTheme
+                                                                      .subtitle2
+                                                                      .override(
+                                                                fontFamily:
+                                                                    'Poppins',
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                              elevation: 2,
+                                                              borderSide:
+                                                                  BorderSide(
+                                                                color: Colors
+                                                                    .transparent,
+                                                                width: 1,
+                                                              ),
+                                                              borderRadius: 50,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(0,
+                                                                      0, 8, 0),
+                                                          child: FFButtonWidget(
+                                                            onPressed:
+                                                                () async {
+                                                              try {
+                                                                print(
+                                                                    '11111111');
+
+                                                                final data =
+                                                                    StatementModel(
+                                                                  address:
+                                                                      address
+                                                                          .text,
+                                                                  customerName:
+                                                                      nameController
+                                                                          .text,
+                                                                  customerPhoneNo:
+                                                                      mobile
+                                                                          .text,
+                                                                );
+
+                                                                ///PDF
+                                                                StatementPDF.downloadPdf(
+                                                                    data,
+                                                                    statementData,
+                                                                    creditTotal,
+                                                                    debitTotal);
+                                                              } catch (e) {
+                                                                print(e);
+                                                                return showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return AlertDialog(
+                                                                        title: Text(
+                                                                            'error'),
+                                                                        content:
+                                                                            Text(e.toString()),
+                                                                        actions: <
+                                                                            Widget>[
+                                                                          ElevatedButton(
+                                                                            child:
+                                                                                new Text('ok'),
+                                                                            onPressed:
+                                                                                () {
+                                                                              Navigator.of(context).pop();
+                                                                            },
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    });
+                                                              }
+                                                            },
+                                                            text:
+                                                                'Download PDF',
+                                                            options:
+                                                                FFButtonOptions(
+                                                              width: 150,
+                                                              height: 45,
+                                                              color:
+                                                                  Colors.teal,
                                                               textStyle:
                                                                   FlutterFlowTheme
                                                                       .subtitle2

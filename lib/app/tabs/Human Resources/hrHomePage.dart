@@ -67,6 +67,11 @@ class _HrDashBoardState extends State<HrDashBoard> {
 
                       widget._tabController.animateTo((9));
                       // });
+                    } else if (index == 2) {
+                      // setState(() {
+
+                      widget._tabController.animateTo((10));
+                      // });
                     } else if (index == 3) {
                       // setState(() {
                       Navigator.push(
