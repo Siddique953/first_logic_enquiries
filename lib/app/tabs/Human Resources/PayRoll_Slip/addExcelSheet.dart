@@ -316,10 +316,38 @@ class _AddAttendanceState extends State<AddAttendance> {
     });
   }
 
+  /// GET CASUAL LEAVES IN LAST MONTH
+  DateTime lastMonthStart;
+  DateTime lastMonthEnd;
+  Map casualLeaves={};
+
+  getLeaves(){
+    FirebaseFirestore.instance
+        .collection('leaveRequest')
+        .where('accepted',isEqualTo: true)
+        .where('type',isEqualTo: 'Casual Leave')
+        .where('from',isGreaterThanOrEqualTo: lastMonthStart)
+        .where('to',isLessThanOrEqualTo: lastMonthEnd)
+        .get().then((value) {
+
+    });
+  }
+
   @override
   void initState() {
+    DateTime now=DateTime.now();
+    lastMonthStart=DateTime(now.year,now.month-1,1);
+    lastMonthEnd=DateTime(now.year,now.month,0);
+
     super.initState();
   }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {

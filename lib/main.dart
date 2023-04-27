@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'app/app_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -5,9 +6,25 @@ import 'package:firebase_core/firebase_core.dart';
 const myColors = Color(0xFF4B39EF);
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MyApp());
+  if(kIsWeb){
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(options: FirebaseOptions(
+
+        apiKey: "AIzaSyBNYYjGrcGw9gOFfAg9rr2ACeEofhZC0x0",
+        authDomain: "first-logic-erp.firebaseapp.com",
+        projectId: "first-logic-erp",
+        storageBucket: "first-logic-erp.appspot.com",
+        messagingSenderId: "1006994680466",
+        appId: "1:1006994680466:web:e0a6260b5a8a502e40d44b",
+        measurementId: "G-58TS14550F"
+    ));
+    runApp(MyApp());
+  }else {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    runApp(MyApp());
+  }
+
 }
 
 setSearchParam(String caseNumber) {
