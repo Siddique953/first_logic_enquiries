@@ -44,7 +44,7 @@ import '../../tabs/users/users/addBranchUser.dart';
 import 'components/side_menu.dart';
 
 /// ERP VERSIONS
-String webVersion = "1.7.4";
+String webVersion = "1.7.5";
 
 ///
 

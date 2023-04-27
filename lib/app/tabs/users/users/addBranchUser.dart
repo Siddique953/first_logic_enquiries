@@ -443,8 +443,8 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                                     validator: (value) {
                                       if (value.isEmpty) {
                                         return "Enter password number";
-                                      } else if (value.length != 6) {
-                                        return "password length must be six characters";
+                                      } else if (value.length < 6) {
+                                        return "password length must be more than six characters";
                                       } else {
                                         return null;
                                       }
@@ -560,15 +560,16 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                                           .collection('admin_users')
                                           .doc(newUser.user.uid)
                                           .set({
-                                        'display_name': name.text,
+                                        'branchName': currentbranchName,
+                                        'branchId': currentBranchId,
+                                        'createdDate':
+                                            FieldValue.serverTimestamp(),
+                                        'name': name.text,
                                         'email': email.text,
                                         'password': password.text,
-                                        'mobileNumber': phone.text,
-                                        'branchId': branch.text == ''
-                                            ? currentBranchId
-                                            : branchNameMap[branch.text],
-                                        'role': userSelectValue,
+                                        'phone': phone.text,
                                         'photo_url': uploadedFileUrl,
+                                        'role': userSelectValue,
                                         'uid': newUser.user.uid,
                                         'verified': true,
                                       }).then((value) {
