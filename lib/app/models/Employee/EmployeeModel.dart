@@ -23,6 +23,7 @@ class EmployeeModel {
   bool delete;
   String accountNumber;
   String teamLead;
+  String pan;
 
   EmployeeModel(
       {this.name,
@@ -48,10 +49,12 @@ class EmployeeModel {
       this.profile,
       this.teamLead,
       this.accountNumber,
+      this.pan,
       this.createdDate});
 
   EmployeeModel.fromJson(Map<String, dynamic> json) {
     name = json['name'];
+    pan = json['pan'];
     email = json['email'];
     phone = json['phone'];
     empId = json['empId'];
@@ -81,6 +84,7 @@ class EmployeeModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
     data['email'] = this.email;
+    data['pan'] = this.pan;
     data['phone'] = this.phone;
     data['teamLead'] = this.teamLead;
     data['profile'] = this.profile;

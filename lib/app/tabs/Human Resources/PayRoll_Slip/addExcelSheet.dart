@@ -8,6 +8,8 @@ import 'package:month_picker_dialog_2/month_picker_dialog_2.dart';
 import '../../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../../flutter_flow/flutter_flow_util.dart';
+import 'package:fl_erp/app/tabs/Human%20Resources/PayRoll_Slip/paySlipPdf/paySlipModel.dart';
+import 'package:fl_erp/app/tabs/Human%20Resources/PayRoll_Slip/paySlipPdf/paySlipPdf.dart';
 import '../../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../../flutter_flow/upload_media.dart';
 import '../../../app_widget.dart';
@@ -54,14 +56,10 @@ class _AddAttendanceState extends State<AddAttendance> {
   List<List<dynamic>> rowDetail;
 
   void _openFile(PlatformFile file, Uint8List bytes) {
-    print(file.name);
     filename = file.name;
 
     rowDetail =
         const CsvToListConverter().convert(String.fromCharCodes(file.bytes));
-    print(rowDetail);
-
-    print('EXEL EXEL EXEL EXEL EXEL EXEL ');
 
     for (int i = 0; i < rowDetail.length; i++) {
       if (rowDetail[i][0] == 'Empcode') {
@@ -106,23 +104,16 @@ class _AddAttendanceState extends State<AddAttendance> {
 
           /// SAVING ATTENDANCE DETAILS
           List toDay = [];
-          print(rowDetail[j][0].toString().contains('/'));
           rowDetail[j][0].toString().contains('/')
               ? toDay = rowDetail[j][0].toString().split('/')
               : toDay = rowDetail[j][0].toString().split('-');
-          print('[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
-          print(toDay);
+
           // List toDayList = toDay;
           bool off = false;
           bool half = false;
           bool fullDayLeave = false;
           DateTime day = DateTime.tryParse(toDay[2] + toDay[1] + toDay[0]);
 
-          print(
-              '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[day]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]');
-          print(day.year);
-          print(day.month);
-          print(day.day);
           String inTime = rowDetail[j][2].toString();
 
           String outTime = rowDetail[j][3].toString();
@@ -177,6 +168,7 @@ class _AddAttendanceState extends State<AddAttendance> {
             'outTime': outTime,
             'totalWorkingHour': totalWorkHour,
             'leave': fullDayLeave,
+            'casualLeave': casualLeaves[empCode] ?? 0,
             'halfDay': half,
             'offDay': off,
           };
@@ -214,19 +206,38 @@ class _AddAttendanceState extends State<AddAttendance> {
         print(
             '[[[[[[[[[[[[[[[[[[[[[[[[[[[totalWork]]]]]]]]]]]]]]]]]]]]]]]]]]]');
         print(empCode);
+        print(casualLeaves[empCode]);
         print(totalWork - (0.5 * lateCut));
+        print((leave -
+                (casualLeaves.containsKey(empCode) == true
+                    ? casualLeaves[empCode]
+                    : 0)) +
+            ((halfDay + lateCut) * 0.5));
 
-        if ((leave + ((halfDay + lateCut) * 0.5)) > 5) {
+        if (((leave -
+                    (casualLeaves.containsKey(empCode) == true
+                        ? casualLeaves[empCode]
+                        : 0)) +
+                ((halfDay + lateCut) * 0.5)) >
+            5) {
           payable = (basicSalary / 30) * (totalWork - (0.5 * lateCut));
+          print('hereeeeeeeeeeee');
         } else {
-          payable =
-              (basicSalary / 30) * (30 - (leave + ((halfDay + lateCut) * 0.5)));
+          payable = (basicSalary / 30) *
+              (30 -
+                  ((leave -
+                          (casualLeaves.containsKey(empCode) == true
+                              ? casualLeaves[empCode]
+                              : 0)) +
+                      ((halfDay + lateCut) * 0.5)));
+          print('elseeeeeeeeeeeee');
         }
 
         employeeDetails[empCode]['workDay'] = totalWork - (0.5 * lateCut);
         employeeDetails[empCode]['offDay'] = cf;
         employeeDetails[empCode]['lateCut'] = lateCut;
         employeeDetails[empCode]['halfDay'] = halfDay;
+        employeeDetails[empCode]['casualLeave'] = casualLeaves[empCode] ?? 0;
         employeeDetails[empCode]['leave'] = leave + ((halfDay + lateCut) * 0.5);
         employeeDetails[empCode]['payable'] = payable.round();
         employeeDetails[empCode]['incentive'] = incentive;
@@ -250,9 +261,6 @@ class _AddAttendanceState extends State<AddAttendance> {
         bytes,
         'csv');
 
-    print('[[[[[[[[[[[[[[[[[[[[[[[[employeeAttendance]]]]]]]]]]]]]]]]]]]]]]]]');
-    print(employeeAttendance);
-
     setState(() {});
   }
 
@@ -262,28 +270,29 @@ class _AddAttendanceState extends State<AddAttendance> {
 
     // final ref=FirebaseStorage.instance.ref().child(path);
     // uploadTask = ref.putFile(file);
-    var uploadTask = FirebaseStorage.instance
-        .ref('Pay Slips/${dateTimeFormat('MMMM y', DateTime(
-              DateTime.now().year,
-              DateTime.now().month - 1,
-              DateTime.now().day,
-            ))}/attendanceFile--$name.$ext')
-        .putData(fileBytes);
-    final snapshot = await uploadTask.whenComplete(() {});
-    final urlDownload = await snapshot.ref.getDownloadURL();
-
-    FirebaseFirestore.instance
-        .collection('paySlips')
-        .doc(dateTimeFormat(
-            'MMMM y',
-            DateTime(
-              DateTime.now().year,
-              DateTime.now().month - 1,
-              DateTime.now().day,
-            )))
-        .set({
-      'attendanceFile': urlDownload,
-    });
+    ///
+    // var uploadTask = FirebaseStorage.instance
+    //     .ref('Pay Slips/${dateTimeFormat('MMMM y', DateTime(
+    //           DateTime.now().year,
+    //           DateTime.now().month - 1,
+    //           DateTime.now().day,
+    //         ))}/attendanceFile--$name.$ext')
+    //     .putData(fileBytes);
+    // final snapshot = await uploadTask.whenComplete(() {});
+    // final urlDownload = await snapshot.ref.getDownloadURL();
+    //
+    // FirebaseFirestore.instance
+    //     .collection('paySlips')
+    //     .doc(dateTimeFormat(
+    //         'MMMM y',
+    //         DateTime(
+    //           DateTime.now().year,
+    //           DateTime.now().month - 1,
+    //           DateTime.now().day,
+    //         )))
+    //     .set({
+    //   'attendanceFile': urlDownload,
+    // });
   }
 
   Future updateFileInFireBase(String name, fileBytes, String ext) async {
@@ -319,35 +328,49 @@ class _AddAttendanceState extends State<AddAttendance> {
   /// GET CASUAL LEAVES IN LAST MONTH
   DateTime lastMonthStart;
   DateTime lastMonthEnd;
-  Map casualLeaves={};
+  Map casualLeaves = {};
 
-  getLeaves(){
+  getLeaves() {
     FirebaseFirestore.instance
         .collection('leaveRequest')
-        .where('accepted',isEqualTo: true)
-        .where('type',isEqualTo: 'Casual Leave')
-        .where('from',isGreaterThanOrEqualTo: lastMonthStart)
-        .where('to',isLessThanOrEqualTo: lastMonthEnd)
-        .get().then((value) {
+        .where('accepted', isEqualTo: true)
+        .where('type', isEqualTo: 'Casual Leave')
+        .where('from', isGreaterThanOrEqualTo: lastMonthStart)
+        // .where('to', isLessThanOrEqualTo: lastMonthEnd)
+        .get()
+        .then((value) {
+      for (var doc in value.docs) {
+        DateTime from = doc['from'].toDate();
+        DateTime to = doc['to'].toDate();
 
+        if ((lastMonthStart.isBefore(from) || lastMonthStart == from) &&
+            (lastMonthEnd.isAfter(to) || lastMonthEnd == to)) {
+          try {
+            casualLeaves[doc['empId']] = casualLeaves[doc['empId']] + 1;
+          } catch (er) {
+            print(er);
+            casualLeaves[doc['empId']] = 1;
+          }
+        }
+      }
+      setState(() {});
     });
   }
 
   @override
   void initState() {
-    DateTime now=DateTime.now();
-    lastMonthStart=DateTime(now.year,now.month-1,1);
-    lastMonthEnd=DateTime(now.year,now.month,0);
+    DateTime now = DateTime.now();
+    lastMonthStart = DateTime(now.year, now.month - 1, 1);
+    lastMonthEnd = DateTime(now.year, now.month, 0);
 
+    getLeaves();
     super.initState();
   }
-
 
   @override
   void dispose() {
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -447,9 +470,6 @@ class _AddAttendanceState extends State<AddAttendance> {
                                           // yearFirst: true,
                                         ).then((date) {
                                           if (date != null) {
-                                            print(
-                                                dateTimeFormat('MMMM y', date));
-
                                             try {
                                               FirebaseFirestore.instance
                                                   .collection('paySlipInfo')
@@ -983,6 +1003,14 @@ class _AddAttendanceState extends State<AddAttendance> {
                                       ),
                                       DataColumn(
                                         label: Flexible(
+                                          child: Text("Casual Leaves",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12)),
+                                        ),
+                                      ),
+                                      DataColumn(
+                                        label: Flexible(
                                           child: Text("Basic Salary",
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,
@@ -1046,6 +1074,7 @@ class _AddAttendanceState extends State<AddAttendance> {
                                               "lateCut": 0,
                                               "halfDay": 0,
                                               "leave": 0,
+                                              'casualLeave': 0,
                                               "payable": 0,
                                               "incentive": 0,
                                               "ot": 0,
@@ -1131,6 +1160,17 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                 .toString()
                                             : '';
 
+                                        String casualLeave =
+                                            employeeDetails[data] != null &&
+                                                    employeeDetails[data]
+                                                            ['casualLeave'] !=
+                                                        null
+                                                ? (employeeDetails[data]
+                                                            ['casualLeave'] ??
+                                                        0)
+                                                    .toString()
+                                                : '';
+
                                         double basicSalary = double.tryParse(
                                             empDataById[data].ctc.toString());
 
@@ -1209,9 +1249,6 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                 // },
 
                                                 onFieldSubmitted: (s) {
-                                                  print(
-                                                      "[[[[[[[[[[[[[[[[[[[workingDays.text]]]]]]]]]]]]]]]]]]]");
-                                                  print(workingDays.text);
                                                   try {
                                                     for (var id
                                                         in employeeDetails.keys
@@ -1261,6 +1298,14 @@ class _AddAttendanceState extends State<AddAttendance> {
                                             ),
 
                                             DataCell(
+                                              Text('$casualLeave',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 12)),
+                                            ),
+
+                                            DataCell(
                                               Text(basicSalary.toString(),
                                                   style: TextStyle(
                                                       fontWeight:
@@ -1286,15 +1331,11 @@ class _AddAttendanceState extends State<AddAttendance> {
 
                                                 onFieldSubmitted: (s) {
                                                   try {
-                                                    print('0');
-
                                                     if (payable.text != '') {
-                                                      print('1');
                                                       double salary =
                                                           double.tryParse(
                                                               payable.text);
 
-                                                      print('1.1');
                                                       double incentiv =
                                                           double.tryParse(
                                                               incentive.text ==
@@ -1317,8 +1358,6 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                                   : deduction
                                                                       .text);
 
-                                                      print('2');
-
                                                       employeeDetails[data]
                                                               ['takeHome'] =
                                                           salary +
@@ -1326,12 +1365,8 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                                   otAmt) -
                                                               ded;
 
-                                                      print('3');
-
                                                       employeeDetails[data]
                                                           ['payable'] = salary;
-
-                                                      print('4');
 
                                                       setState(() {});
                                                     } else {
@@ -1339,7 +1374,6 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                           double.tryParse(
                                                               payable.text);
 
-                                                      print('1.1');
                                                       double incentiv =
                                                           double.tryParse(
                                                               incentive.text ==
@@ -1362,8 +1396,6 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                                   ? '0'
                                                                   : payable
                                                                       .text);
-
-                                                      print('2');
 
                                                       employeeDetails[data]
                                                               ['takeHome'] =
@@ -1415,7 +1447,6 @@ class _AddAttendanceState extends State<AddAttendance> {
 
                                                 onFieldSubmitted: (s) {
                                                   try {
-                                                    print('0');
                                                     // if (employeeDetails[data]==null||employeeDetails[data]['ot'] ==
                                                     //     null) {
                                                     //   employeeDetails[data] = {'ot':0};
@@ -1430,20 +1461,16 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                     // }
 
                                                     if (incentive.text != '') {
-                                                      print('1');
                                                       int incentives =
                                                           double.tryParse(
                                                                   incentive
                                                                       .text)
                                                               .round();
 
-                                                      print('1.1');
                                                       int pay =
                                                           employeeDetails[data]
                                                                   ['payable']
                                                               .round();
-
-                                                      print('2');
 
                                                       employeeDetails[data]
                                                           ['takeHome'] = pay +
@@ -1458,12 +1485,9 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                                   'deduction'] ??
                                                           0;
 
-                                                      print('3');
-
                                                       employeeDetails[data]
                                                               ['incentive'] =
                                                           incentives;
-                                                      print('4');
 
                                                       setState(() {});
                                                     } else {
@@ -1743,15 +1767,12 @@ class _AddAttendanceState extends State<AddAttendance> {
   }
 
   Future<void> importData() async {
-    print('1');
     var excel = Excel.createExcel();
 
     Sheet sheetObject = excel['Pay Slip'];
     CellStyle cellStyle = CellStyle(
         // backgroundColorHex: "#1AFF1A",
         fontFamily: getFontFamily(FontFamily.Calibri));
-
-    print('2');
 
     //HEADINGS
 
@@ -1791,14 +1812,10 @@ class _AddAttendanceState extends State<AddAttendance> {
       cell11.cellStyle = cellStyle;
     }
 
-    print(employeeDetails.keys.toList().length);
-
     //CELL VALUES
 
     for (int i = 0; i < employeeList.length; i++) {
       String id = employeeList[i]['empId'];
-
-      print(employeeDetails[id]['takeHome']);
 
       var cell1 = sheetObject.cell(CellIndex.indexByString("A${i + 2}"));
       cell1.value = '${i + 1}'; // dynamic values support provided;
@@ -1878,183 +1895,51 @@ class _AddAttendanceState extends State<AddAttendance> {
         continue;
       }
 
-      String html = '<html>'
-          '<head>'
-          '<meta name="viewport" content="width=device-width, initial-scale=1">'
-          '<link href="https://fonts.googleapis.com/css2?family=Gotham:wght@400;700&display=swap" rel="stylesheet">'
-          '<style>'
-          'body {'
-          'font-family: "Gotham", sans-serif;'
-          '}'
-          '.header {'
-          'background-color: #0058ff;'
-          'color: #fff;'
-          'text-align: center;'
-          'padding: 10px;'
-          'display: flex;'
-          'align-items: center;'
-          ' }'
-          '.header img {'
-          ' margin-right: 20px;'
-          '}'
-          '.container {'
-          'width: 80%;'
-          'margin: 0 auto;'
-          'background-color: #f2f2f2;'
-          'padding: 20px;'
-          ' }'
-          'table {'
-          'width: 100%;'
-          'border-collapse: collapse;'
-          'margin-top: 20px;'
-          '}'
-          'th,'
-          'td {'
-          'border: 1px solid #333;'
-          'padding: 10px;'
-          '}'
-          'th {'
-          'background-color: #0058ff;'
-          ' color: #fff;'
-          '}'
-          '@media (max-width: 767px) {'
-          '.container {'
-          'width: 90%;'
-          '}'
-          'th,'
-          'td {'
-          'font-size: 14px;'
-          ' }'
-          ' }'
-          '</style>'
-          ' </head>'
-          '<body>'
-          '<div class="header">'
-          ' <img src="https://firebasestorage.googleapis.com/v0/b/first-logic-erp.appspot.com/o/webicon-01.png?alt=media&token=424afef7-b36f-47e0-aa12-ec5dd178085b" style="width:50px;height:50px;" alt="Company Logo" />'
-          '<h3>First Logic Meta Lab Pvt. Ltd</h3>'
-          '</div>'
-          '<div class="container">'
-          '<p>'
-          'Dear <b>${empDataById[employeeList[i]['empId']].name}</b>,'
-          '</p>'
-          '<p>'
-          'I hope this email finds you in good health and spirits. I am writing to '
-          'inform you that your salary for the month of <b>${dateTimeFormat('MMM y', DateTime(
-                DateTime.now().year,
-                DateTime.now().month - 1,
-                DateTime.now().day,
-              ))}</b> has been '
-          'credited to your account.'
-          '</p>'
-          '<p>'
-          'Your total salary amount is <b>₹${employeeDetails[employeeList[i]['empId']]['takeHome']}</b>.'
-          ' Please find the details below:'
-          '</p>'
-          ' <section>'
-          ' <h2>Employee Information</h2>'
-          ' <ul>'
-          ' <li>Name: ${empDataById[employeeList[i]['empId']].name}</li>'
-          ' <li>Employee ID: ${empDataById[employeeList[i]['empId']].empId}</li>'
-          ' <li>Total Working Days: ${(30 - (employeeDetails[employeeList[i]['empId']]['offDay'] ?? 0))}</li>'
-          '<li>Number of Leaves: ${employeeDetails[employeeList[i]['empId']]['leave']}</li>'
-          ' </ul>'
-          ' </section>';
+      int offDays = int.tryParse(
+          (employeeDetails[employeeList[i]['empId']]['offDay'] ?? 4)
+              .toString());
+      int workingDays = int.tryParse((30 - offDays).toString());
+      PaySlipModel data = PaySlipModel(
+        workingDays: 26,
+        totalDeduction:
+            employeeDetails[employeeList[i]['empId']]['deduction'].toString(),
+        spAllowance: '',
+        pan: empDataById[employeeList[i]['empId']].pan ?? '',
+        netSalary:
+            employeeDetails[employeeList[i]['empId']]['takeHome'].toString(),
+        month: dateTimeFormat(
+            'MMM y',
+            DateTime(
+              DateTime.now().year,
+              DateTime.now().month - 1,
+              DateTime.now().day,
+            )),
+        medicalAlowance: '',
+        leaves: '',
+        leavesTaken: employeeDetails[employeeList[i]['empId']]['leave'],
+        incentives: employeeDetails[employeeList[i]['empId']]['incentive'] == 0
+            ? ''
+            : employeeDetails[employeeList[i]['empId']]['incentive'].toString(),
+        hra: '',
+        dearnessAllo: '',
+        code: employeeList[i]['empId'],
+        cityAllow: '',
+        balanceLeaves: 0,
+        basicPay: empDataById[employeeList[i]['empId']].ctc ?? '',
+        attended: employeeDetails[employeeList[i]['empId']]['workDay'],
+        advance:
+            employeeDetails[employeeList[i]['empId']]['deduction'].toString(),
+        accNumber: empDataById[employeeList[i]['empId']].accountNumber,
+        total: (employeeDetails[employeeList[i]['empId']]['incentive'] +
+                int.tryParse(empDataById[employeeList[i]['empId']].ctc))
+            .toString(),
+        name: empDataById[employeeList[i]['empId']].name,
+        bankName: empDataById[employeeList[i]['empId']].bankName,
+        designation: empDataById[employeeList[i]['empId']].designation,
+      );
 
-      html += '<section>'
-          '<h2>Salary Details</h2>'
-          '<ul>'
-          '<li>Basic Salary: ₹${empDataById[employeeList[i]['empId']].ctc}</li>'
-          '<li>Payable Salary: ₹${employeeDetails[employeeList[i]['empId']]['payable']}</li>';
-
-      html += employeeDetails[employeeList[i]['empId']]['incentive'] == 0
-          ? ''
-          : '<li>Incentive: ₹${employeeDetails[employeeList[i]['empId']]['incentive']}</li>';
-
-      html += employeeDetails[employeeList[i]['empId']]['ot'] == 0
-          ? ''
-          : '<li>Over Time: ₹${employeeDetails[employeeList[i]['empId']]['ot']}</li>';
-
-      html += employeeDetails[employeeList[i]['empId']]['deduction'] == 0
-          ? ''
-          : '<li>Deductions: ₹${employeeDetails[employeeList[i]['empId']]['deduction']}</li>';
-
-      html +=
-          '<li>Take Home: ₹${employeeDetails[employeeList[i]['empId']]['takeHome']}</li>'
-          '</ul>'
-          '</section>'
-          '<p>'
-          'In case of any discrepancy, please bring it to our notice within 2 days. '
-          'We would be happy to assist you with any questions or concerns you may '
-          'have.'
-          ' </p>'
-          ' <p>'
-          ' Thank you for your continued contributions to the company.'
-          ' </p>'
-          '<p>'
-          'Best regards,<br />'
-          'HR Manager'
-          '</p>'
-          '</div>'
-          ' </body>'
-          '</html>';
-
-      FirebaseFirestore.instance.collection('mail').add({
-        'html': html,
-        'status': 'Salary Information',
-        'emailList': [empDataById[employeeList[i]['empId']].email],
-      }).then((value) {
-        FirebaseFirestore.instance
-            .collection('employees')
-            .doc(employeeList[i]['empId'])
-            .collection('attendance')
-            .doc(dateTimeFormat(
-                'MMM y',
-                DateTime(
-                  DateTime.now().year,
-                  DateTime.now().month - 1,
-                  DateTime.now().day,
-                )))
-            .set({
-          'attendance': employeeAttendance[employeeList[i]['empId']] ?? {},
-          'month': dateTimeFormat(
-              'MMM y',
-              DateTime(
-                DateTime.now().year,
-                DateTime.now().month - 1,
-                DateTime.now().day,
-              )),
-        });
-
-        FirebaseFirestore.instance
-            .collection('employees')
-            .doc(employeeList[i]['empId'])
-            .collection('salaryInfo')
-            .doc(dateTimeFormat(
-                'MMM y',
-                DateTime(
-                  DateTime.now().year,
-                  DateTime.now().month - 1,
-                  DateTime.now().day,
-                )))
-            .set({
-          'totalWorkingDays': (lastDay -
-              (employeeDetails[employeeList[i]['empId']]['offDay'] ?? 4)),
-          'totalLeave': employeeDetails[employeeList[i]['empId']]['leave'],
-          'basicSalary': empDataById[employeeList[i]['empId']].ctc,
-          'payableSalary': employeeDetails[employeeList[i]['empId']]['payable'],
-          'incentive': employeeDetails[employeeList[i]['empId']]['incentive'],
-          'overTime': employeeDetails[employeeList[i]['empId']]['ot'],
-          'deduction': employeeDetails[employeeList[i]['empId']]['deduction'],
-          'takeHome': employeeDetails[employeeList[i]['empId']]['takeHome'],
-          'month': dateTimeFormat(
-              'MMM y',
-              DateTime(
-                DateTime.now().year,
-                DateTime.now().month - 1,
-                DateTime.now().day,
-              )),
-        });
-      });
+      PaySlip.downloadPdf(data, employeeDetails, employeeAttendance,
+          employeeList[i]['empId'], lastDay);
     }
     showUploadMessage(context, 'Pay Slip Successfully Shared..');
   }

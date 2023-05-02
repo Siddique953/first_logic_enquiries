@@ -34,6 +34,7 @@ class _AddEmployeeState extends State<AddEmployee> {
   TextEditingController email = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController dateOfJoining = TextEditingController();
+  TextEditingController pan = TextEditingController();
   DateTime joinedDate;
 
   //OPTIONAL INFORMATION
@@ -276,7 +277,7 @@ class _AddEmployeeState extends State<AddEmployee> {
         child: Column(
           children: [
             Center(
-              child: tabIndex == 0
+              child: tabIndex == 1
                   ? Padding(
                       padding: EdgeInsets.only(
                           top: height * 0.2, bottom: height * 0.2),
@@ -1049,7 +1050,8 @@ class _AddEmployeeState extends State<AddEmployee> {
                                                         Row(
                                                           children: [
                                                             Icon(
-                                                              Icons.male,
+                                                              Icons
+                                                                  .female_outlined,
                                                               color: gender ==
                                                                       'Female'
                                                                   ? Colors.blue
@@ -1099,7 +1101,8 @@ class _AddEmployeeState extends State<AddEmployee> {
                                                         Row(
                                                           children: [
                                                             Icon(
-                                                              Icons.male,
+                                                              Icons
+                                                                  .transgender_outlined,
                                                               color: gender ==
                                                                       'Others'
                                                                   ? Colors.blue
@@ -1152,6 +1155,94 @@ class _AddEmployeeState extends State<AddEmployee> {
                                         backgroundColor: Colors.blueGrey,
                                       ),
                                     )
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        height: 50,
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(16, 0, 0, 0),
+                                          child: TextFormField(
+                                            controller: pan,
+                                            obscureText: false,
+                                            decoration: InputDecoration(
+                                              labelText: 'PAN Number',
+                                              labelStyle: FlutterFlowTheme
+                                                  .bodyText2
+                                                  .override(
+                                                      fontFamily: 'Montserrat',
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 15),
+
+                                              // hintText: 'Please Enter Name',
+                                              // hintStyle: FlutterFlowTheme.bodyText2.override(
+                                              //     fontFamily: 'Montserrat',
+                                              //     color: Colors.black,
+                                              //     fontWeight: FontWeight.w500,
+                                              //     fontSize: 12),
+                                              enabledBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Colors.grey,
+                                                  width: 2,
+                                                ),
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                  topLeft: Radius.circular(4.0),
+                                                  topRight:
+                                                      Radius.circular(4.0),
+                                                ),
+                                              ),
+                                              focusedBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Colors.blue,
+                                                  width: 2,
+                                                ),
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                  topLeft: Radius.circular(4.0),
+                                                  topRight:
+                                                      Radius.circular(4.0),
+                                                ),
+                                              ),
+                                            ),
+                                            style: FlutterFlowTheme.bodyText2
+                                                .override(
+                                                    fontFamily: 'Montserrat',
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 13),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        height: 56,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 100,
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        height: 56,
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 SizedBox(

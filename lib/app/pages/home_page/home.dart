@@ -26,6 +26,7 @@ import '../../tabs/Human Resources/HRSettings/addDept.dart';
 import '../../tabs/Human Resources/Leaves/leaves.dart';
 import '../../tabs/Human Resources/PayRoll_Slip/BankSlip/bankSlip.dart';
 import '../../tabs/Human Resources/PayRoll_Slip/addExcelSheet.dart';
+import '../../tabs/Human Resources/PayRoll_Slip/paySlipPdf/demoPage.dart';
 import '../../tabs/Human Resources/hrHomePage.dart';
 import '../../tabs/Reports/contra Report.dart';
 import '../../tabs/Reports/customer Statement/customerListPage.dart';
@@ -44,7 +45,7 @@ import '../../tabs/users/users/addBranchUser.dart';
 import 'components/side_menu.dart';
 
 /// ERP VERSIONS
-String webVersion = "1.7.5";
+String webVersion = "1.7.6";
 
 ///
 
@@ -746,7 +747,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
     getProjectData();
 
-    _tabController = TabController(vsync: this, length: 31, initialIndex: 0);
+    _tabController = TabController(vsync: this, length: 31, initialIndex: 7);
     // updateProduct();
   }
 

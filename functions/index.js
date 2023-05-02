@@ -8,6 +8,7 @@ functions.firestore.document("/mail/{uid}").onCreate((event, context) =>{
   const html =event.data().html;
   const status =event.data().status;
   const emailList =event.data().emailList;
+  const attachmentUrl =event.data().att;
   console.log(" ============ transporter function =====================");
   const nodemailer =require("nodemailer");
   const transporter = nodemailer.createTransport({
@@ -27,6 +28,10 @@ functions.firestore.document("/mail/{uid}").onCreate((event, context) =>{
       to: element,
       subject: status,
       html: html,
+      attachments: [{
+        filename: 'PaySlip.pdf',
+        path: attachmentUrl
+      }],
     });
     console.log("**");
     console.log(rslt);
