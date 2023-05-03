@@ -757,6 +757,108 @@ class _SideMenuState extends State<SideMenu> {
                         ),
 
                         //6,16
+                        //LEADZ
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              widget._tabController.animateTo((0));
+                            });
+                          },
+                          child: ExpandablePanel(
+                              theme: ExpandableThemeData(
+                                iconColor: Colors.white,
+                                iconSize: 14,
+                              ),
+                              header: Container(
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  border: selectedTab == 7
+                                      ? Border(
+                                          left: BorderSide(
+                                            color: Color(0xff0087cd),
+                                            width: 3,
+                                          ),
+                                        )
+                                      : null,
+                                ),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Icon(
+                                      Icons.person_pin_rounded,
+                                      color: Colors.white,
+                                      size: 18,
+                                    ),
+                                    SizedBox(
+                                      width: 7,
+                                    ),
+                                    Text(
+                                      "Leadz",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              expanded: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
+                                child: Column(
+                                  children: [
+                                    InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            widget._tabController
+                                                .animateTo((32));
+                                            selectedTab = 7;
+                                            subTab = 17;
+                                          });
+                                        },
+                                        child: ColaspeItem(
+                                          label: "Add Leadz",
+                                          icon: Icons.stop_rounded,
+                                          style: TextStyle(
+                                              color: subTab == 17
+                                                  ? Colors.blue.shade300
+                                                  : Colors.grey,
+                                              fontWeight: subTab == 17
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal),
+                                        )),
+                                    InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            widget._tabController
+                                                .animateTo((31));
+                                            selectedTab = 7;
+                                            subTab = 18;
+                                          });
+                                        },
+                                        child: ColaspeItem(
+                                          label: "Lead List",
+                                          icon: Icons.stop_rounded,
+                                          style: TextStyle(
+                                              color: subTab == 18
+                                                  ? Colors.blue.shade300
+                                                  : Colors.grey,
+                                              fontWeight: subTab == 18
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal),
+                                        )),
+                                  ],
+                                ),
+                              )),
+                        ),
+                        Divider(
+                          color: Colors.blueGrey.shade800,
+                        ),
+
+                        //7,18
                         //Settings
                         InkWell(
                           onTap: () {},
@@ -768,7 +870,7 @@ class _SideMenuState extends State<SideMenu> {
                               header: Container(
                                 height: 30,
                                 decoration: BoxDecoration(
-                                  border: selectedTab == 7
+                                  border: selectedTab == 8
                                       ? Border(
                                           left: BorderSide(
                                             color: Color(0xff0054FF),
@@ -811,52 +913,12 @@ class _SideMenuState extends State<SideMenu> {
                                           setState(() {
                                             widget._tabController
                                                 .animateTo((25));
-                                            selectedTab = 7;
-                                            subTab = 17;
-                                          });
-                                        },
-                                        child: ColaspeItem(
-                                          label: "Add Project Type",
-                                          icon: Icons.stop_rounded,
-                                          style: TextStyle(
-                                              color: subTab == 17
-                                                  ? Color(0xff0054FF)
-                                                  : Colors.grey,
-                                              fontWeight: subTab == 17
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal),
-                                        )),
-                                    InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            widget._tabController
-                                                .animateTo((26));
-                                            selectedTab = 7;
-                                            subTab = 18;
-                                          });
-                                        },
-                                        child: ColaspeItem(
-                                          label: "Add Services",
-                                          icon: Icons.stop_rounded,
-                                          style: TextStyle(
-                                              color: subTab == 18
-                                                  ? Color(0xff0054FF)
-                                                  : Colors.grey,
-                                              fontWeight: subTab == 18
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal),
-                                        )),
-                                    InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            widget._tabController
-                                                .animateTo((27));
-                                            selectedTab = 7;
+                                            selectedTab = 8;
                                             subTab = 19;
                                           });
                                         },
                                         child: ColaspeItem(
-                                          label: "Add User",
+                                          label: "Add Project Type",
                                           icon: Icons.stop_rounded,
                                           style: TextStyle(
                                               color: subTab == 19
@@ -866,24 +928,64 @@ class _SideMenuState extends State<SideMenu> {
                                                   ? FontWeight.bold
                                                   : FontWeight.normal),
                                         )),
+                                    InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            widget._tabController
+                                                .animateTo((26));
+                                            selectedTab = 8;
+                                            subTab = 20;
+                                          });
+                                        },
+                                        child: ColaspeItem(
+                                          label: "Add Services",
+                                          icon: Icons.stop_rounded,
+                                          style: TextStyle(
+                                              color: subTab == 20
+                                                  ? Color(0xff0054FF)
+                                                  : Colors.grey,
+                                              fontWeight: subTab == 20
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal),
+                                        )),
+                                    InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            widget._tabController
+                                                .animateTo((27));
+                                            selectedTab = 8;
+                                            subTab = 21;
+                                          });
+                                        },
+                                        child: ColaspeItem(
+                                          label: "Add User",
+                                          icon: Icons.stop_rounded,
+                                          style: TextStyle(
+                                              color: subTab == 21
+                                                  ? Color(0xff0054FF)
+                                                  : Colors.grey,
+                                              fontWeight: subTab == 21
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal),
+                                        )),
                                     currentUserRole == 'Super Admin'
                                         ? InkWell(
                                             onTap: () {
                                               setState(() {
                                                 widget._tabController
                                                     .animateTo((28));
-                                                selectedTab = 7;
-                                                subTab = 20;
+                                                selectedTab = 8;
+                                                subTab = 22;
                                               });
                                             },
                                             child: ColaspeItem(
                                               label: "Add Branch",
                                               icon: Icons.stop_rounded,
                                               style: TextStyle(
-                                                  color: subTab == 20
+                                                  color: subTab == 22
                                                       ? Color(0xff0054FF)
                                                       : Colors.grey,
-                                                  fontWeight: subTab == 20
+                                                  fontWeight: subTab == 22
                                                       ? FontWeight.bold
                                                       : FontWeight.normal),
                                             ))
@@ -893,18 +995,18 @@ class _SideMenuState extends State<SideMenu> {
                                           setState(() {
                                             widget._tabController
                                                 .animateTo((29));
-                                            selectedTab = 7;
-                                            subTab = 21;
+                                            selectedTab = 8;
+                                            subTab = 23;
                                           });
                                         },
                                         child: ColaspeItem(
                                           label: "Add Expense Head",
                                           icon: Icons.stop_rounded,
                                           style: TextStyle(
-                                              color: subTab == 21
+                                              color: subTab == 23
                                                   ? Color(0xff0054FF)
                                                   : Colors.grey,
-                                              fontWeight: subTab == 21
+                                              fontWeight: subTab == 23
                                                   ? FontWeight.bold
                                                   : FontWeight.normal),
                                         )),

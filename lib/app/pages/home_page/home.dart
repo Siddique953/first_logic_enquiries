@@ -41,11 +41,13 @@ import '../../tabs/University/AddProjectType.dart';
 import '../../tabs/Enquiry/EnquiryList.dart';
 
 import '../../tabs/homeTab.dart';
+import '../../tabs/leadz/addLeadzPage.dart';
+import '../../tabs/leadz/leadList.dart';
 import '../../tabs/users/users/addBranchUser.dart';
 import 'components/side_menu.dart';
 
 /// ERP VERSIONS
-String webVersion = "1.7.7";
+String webVersion = "1.7.8";
 
 ///
 
@@ -747,7 +749,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
     getProjectData();
 
-    _tabController = TabController(vsync: this, length: 31, initialIndex: 0);
+    _tabController = TabController(vsync: this, length: 33, initialIndex: 0);
     // updateProduct();
   }
 
@@ -838,6 +840,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
                           ///EXTRA ADDED Pages
                           ProjectList(), //30
+                          LeadList(), //31
+                          AddLeadsWidget(), //32
                           ///
                         ],
                       ),

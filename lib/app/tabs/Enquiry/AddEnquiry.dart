@@ -13,7 +13,13 @@ import '../../pages/home_page/home.dart';
 import 'editProjects.dart';
 
 class AddEnquiryWidget extends StatefulWidget {
-  const AddEnquiryWidget({Key key}) : super(key: key);
+  final String name;
+  final String mobile;
+  final String email;
+  final bool lead;
+  const AddEnquiryWidget(
+      {Key key, this.name, this.mobile, this.email, this.lead})
+      : super(key: key);
 
   @override
   _AddEnquiryWidgetState createState() => _AddEnquiryWidgetState();
@@ -50,21 +56,18 @@ class _AddEnquiryWidgetState extends State<AddEnquiryWidget> {
   @override
   void initState() {
     super.initState();
-    name = TextEditingController();
+    name = TextEditingController(text: widget.name ?? "");
     place = TextEditingController();
-    mobile = TextEditingController();
+    mobile = TextEditingController(text: widget.mobile ?? "");
     description = TextEditingController();
     projectName = TextEditingController();
     domain = TextEditingController();
     deliverables = TextEditingController();
     platform = TextEditingController();
-    email = TextEditingController(text: '');
+    email = TextEditingController(text: widget.email ?? "");
     agentName = TextEditingController(text: '');
     branch = TextEditingController();
     selectedProjectType = TextEditingController();
-
-    print(phnNumbers);
-    print(customerDetailsByNumber);
   }
 
   @override
@@ -83,6 +86,27 @@ class _AddEnquiryWidgetState extends State<AddEnquiryWidget> {
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
+                    widget.lead != null
+                        ? Container(
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: FlutterFlowIconButton(
+                              borderColor: Colors.transparent,
+                              borderRadius: 30,
+                              borderWidth: 1,
+                              buttonSize: 50,
+                              icon: const Icon(
+                                Icons.arrow_back_ios_new_outlined,
+                                color: Colors.blue,
+                              ),
+                              onPressed: () async {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          )
+                        : SizedBox(),
                     Expanded(
                       child: Text(
                         'Add New Enquiry',
@@ -398,10 +422,6 @@ class _AddEnquiryWidgetState extends State<AddEnquiryWidget> {
                                                         // careOfNo.text =
                                                         //     customerDetailsByNumber[
                                                         //         x]['careOfNo'];
-
-                                                        print(
-                                                            '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[customerId]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]');
-                                                        print(customerId);
                                                       },
                                                     ),
                                                   ),
@@ -1254,7 +1274,6 @@ class _AddEnquiryWidgetState extends State<AddEnquiryWidget> {
                                                       if (mounted) {
                                                         setState(() {});
                                                       }
-                                                      print(projectDetails);
 
                                                       domain.text = '';
                                                       deliverables.text = '';
@@ -1688,8 +1707,7 @@ class _AddEnquiryWidgetState extends State<AddEnquiryWidget> {
                                                           projectName.text,
                                                       'customerId': customerId,
                                                     });
-                                                    print(enquiryId.toString() +
-                                                        ' %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+
                                                     showUploadMessage(context,
                                                         'New Enquiry Added...');
 
