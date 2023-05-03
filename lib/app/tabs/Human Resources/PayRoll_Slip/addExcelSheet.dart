@@ -168,7 +168,7 @@ class _AddAttendanceState extends State<AddAttendance> {
             'outTime': outTime,
             'totalWorkingHour': totalWorkHour,
             'leave': fullDayLeave,
-            'casualLeave': casualLeaves[empCode] ?? 0,
+            // 'casualLeave': casualLeaves[empCode] ?? 0,
             'halfDay': half,
             'offDay': off,
           };
@@ -205,31 +205,13 @@ class _AddAttendanceState extends State<AddAttendance> {
 
         print(
             '[[[[[[[[[[[[[[[[[[[[[[[[[[[totalWork]]]]]]]]]]]]]]]]]]]]]]]]]]]');
-        print(empCode);
-        print(casualLeaves[empCode]);
-        print(totalWork - (0.5 * lateCut));
-        print((leave -
-                (casualLeaves.containsKey(empCode) == true
-                    ? casualLeaves[empCode]
-                    : 0)) +
-            ((halfDay + lateCut) * 0.5));
 
-        if (((leave -
-                    (casualLeaves.containsKey(empCode) == true
-                        ? casualLeaves[empCode]
-                        : 0)) +
-                ((halfDay + lateCut) * 0.5)) >
-            5) {
+        if ((leave + ((halfDay + lateCut) * 0.5)) > 5) {
           payable = (basicSalary / 30) * (totalWork - (0.5 * lateCut));
           print('hereeeeeeeeeeee');
         } else {
-          payable = (basicSalary / 30) *
-              (30 -
-                  ((leave -
-                          (casualLeaves.containsKey(empCode) == true
-                              ? casualLeaves[empCode]
-                              : 0)) +
-                      ((halfDay + lateCut) * 0.5)));
+          payable =
+              (basicSalary / 30) * (30 - (leave - ((halfDay + lateCut) * 0.5)));
           print('elseeeeeeeeeeeee');
         }
 
@@ -237,7 +219,7 @@ class _AddAttendanceState extends State<AddAttendance> {
         employeeDetails[empCode]['offDay'] = cf;
         employeeDetails[empCode]['lateCut'] = lateCut;
         employeeDetails[empCode]['halfDay'] = halfDay;
-        employeeDetails[empCode]['casualLeave'] = casualLeaves[empCode] ?? 0;
+        // employeeDetails[empCode]['casualLeave'] = casualLeaves[empCode] ?? 0;
         employeeDetails[empCode]['leave'] = leave + ((halfDay + lateCut) * 0.5);
         employeeDetails[empCode]['payable'] = payable.round();
         employeeDetails[empCode]['incentive'] = incentive;
@@ -328,34 +310,34 @@ class _AddAttendanceState extends State<AddAttendance> {
   /// GET CASUAL LEAVES IN LAST MONTH
   DateTime lastMonthStart;
   DateTime lastMonthEnd;
-  Map casualLeaves = {};
+  // Map casualLeaves = {};
 
-  getLeaves() {
-    FirebaseFirestore.instance
-        .collection('leaveRequest')
-        .where('accepted', isEqualTo: true)
-        .where('type', isEqualTo: 'Casual Leave')
-        .where('from', isGreaterThanOrEqualTo: lastMonthStart)
-        // .where('to', isLessThanOrEqualTo: lastMonthEnd)
-        .get()
-        .then((value) {
-      for (var doc in value.docs) {
-        DateTime from = doc['from'].toDate();
-        DateTime to = doc['to'].toDate();
-
-        if ((lastMonthStart.isBefore(from) || lastMonthStart == from) &&
-            (lastMonthEnd.isAfter(to) || lastMonthEnd == to)) {
-          try {
-            casualLeaves[doc['empId']] = casualLeaves[doc['empId']] + 1;
-          } catch (er) {
-            print(er);
-            casualLeaves[doc['empId']] = 1;
-          }
-        }
-      }
-      setState(() {});
-    });
-  }
+  // getLeaves() {
+  //   FirebaseFirestore.instance
+  //       .collection('leaveRequest')
+  //       .where('accepted', isEqualTo: true)
+  //       .where('type', isEqualTo: 'Casual Leave')
+  //       .where('from', isGreaterThanOrEqualTo: lastMonthStart)
+  //       // .where('to', isLessThanOrEqualTo: lastMonthEnd)
+  //       .get()
+  //       .then((value) {
+  //     for (var doc in value.docs) {
+  //       DateTime from = doc['from'].toDate();
+  //       DateTime to = doc['to'].toDate();
+  //
+  //       if ((lastMonthStart.isBefore(from) || lastMonthStart == from) &&
+  //           (lastMonthEnd.isAfter(to) || lastMonthEnd == to)) {
+  //         try {
+  //           casualLeaves[doc['empId']] = casualLeaves[doc['empId']] + 1;
+  //         } catch (er) {
+  //           print(er);
+  //           casualLeaves[doc['empId']] = 1;
+  //         }
+  //       }
+  //     }
+  //     setState(() {});
+  //   });
+  // }
 
   @override
   void initState() {
@@ -363,7 +345,7 @@ class _AddAttendanceState extends State<AddAttendance> {
     lastMonthStart = DateTime(now.year, now.month - 1, 1);
     lastMonthEnd = DateTime(now.year, now.month, 0);
 
-    getLeaves();
+    // getLeaves();
     super.initState();
   }
 
@@ -1001,14 +983,14 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                   fontSize: 12)),
                                         ),
                                       ),
-                                      DataColumn(
-                                        label: Flexible(
-                                          child: Text("Casual Leaves",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12)),
-                                        ),
-                                      ),
+                                      // DataColumn(
+                                      //   label: Flexible(
+                                      //     child: Text("Casual Leaves",
+                                      //         style: TextStyle(
+                                      //             fontWeight: FontWeight.bold,
+                                      //             fontSize: 12)),
+                                      //   ),
+                                      // ),
                                       DataColumn(
                                         label: Flexible(
                                           child: Text("Basic Salary",
@@ -1297,13 +1279,13 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                       fontSize: 12)),
                                             ),
 
-                                            DataCell(
-                                              Text('$casualLeave',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 12)),
-                                            ),
+                                            // DataCell(
+                                            //   Text('$casualLeave',
+                                            //       style: TextStyle(
+                                            //           fontWeight:
+                                            //               FontWeight.bold,
+                                            //           fontSize: 12)),
+                                            // ),
 
                                             DataCell(
                                               Text(basicSalary.toString(),

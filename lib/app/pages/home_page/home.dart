@@ -45,7 +45,7 @@ import '../../tabs/users/users/addBranchUser.dart';
 import 'components/side_menu.dart';
 
 /// ERP VERSIONS
-String webVersion = "1.7.6";
+String webVersion = "1.7.7";
 
 ///
 
@@ -747,7 +747,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
     getProjectData();
 
-    _tabController = TabController(vsync: this, length: 31, initialIndex: 7);
+    _tabController = TabController(vsync: this, length: 31, initialIndex: 0);
     // updateProduct();
   }
 

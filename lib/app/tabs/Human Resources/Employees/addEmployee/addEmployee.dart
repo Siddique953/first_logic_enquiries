@@ -138,14 +138,14 @@ class _AddEmployeeState extends State<AddEmployee> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        // leading: IconButton(
-        //   onPressed: () {
-        //     setState(() {
-        //       widget._tabController.animateTo(17);
-        //     });
-        //   },
-        //   icon: Icon(Icons.arrow_back_ios),
-        // ),
+        leading: IconButton(
+          onPressed: () {
+            setState(() {
+              widget._tabController.animateTo(6);
+            });
+          },
+          icon: Icon(Icons.arrow_back_ios),
+        ),
         title: Text(
           name.text == ''
               ? 'ONBOARDING NEW EMPLOYEE'
@@ -277,7 +277,7 @@ class _AddEmployeeState extends State<AddEmployee> {
         child: Column(
           children: [
             Center(
-              child: tabIndex == 1
+              child: tabIndex == 0
                   ? Padding(
                       padding: EdgeInsets.only(
                           top: height * 0.2, bottom: height * 0.2),
@@ -2621,6 +2621,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                                                   delete: false,
                                                   empId: id,
                                                   profile: profileUrl,
+                                                  pan: pan.text,
                                                   createdDate: DateTime.now(),
                                                 );
 

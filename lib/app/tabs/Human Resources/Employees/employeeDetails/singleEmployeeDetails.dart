@@ -48,6 +48,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
   TextEditingController reportingManager = TextEditingController();
   TextEditingController teamLead = TextEditingController();
   TextEditingController empType = TextEditingController();
+  TextEditingController pan = TextEditingController();
   TextEditingController probationPeriod = TextEditingController(text: '0');
   int probation = 0;
 
@@ -1225,6 +1226,94 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                       radius: 25,
                                       backgroundColor: Colors.blueGrey,
                                     )
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        height: 50,
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(16, 0, 0, 0),
+                                          child: TextFormField(
+                                            controller: pan,
+                                            obscureText: false,
+                                            decoration: InputDecoration(
+                                              labelText: 'PAN Number',
+                                              labelStyle: FlutterFlowTheme
+                                                  .bodyText2
+                                                  .override(
+                                                      fontFamily: 'Montserrat',
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 15),
+
+                                              // hintText: 'Please Enter Name',
+                                              // hintStyle: FlutterFlowTheme.bodyText2.override(
+                                              //     fontFamily: 'Montserrat',
+                                              //     color: Colors.black,
+                                              //     fontWeight: FontWeight.w500,
+                                              //     fontSize: 12),
+                                              enabledBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Colors.grey,
+                                                  width: 2,
+                                                ),
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                  topLeft: Radius.circular(4.0),
+                                                  topRight:
+                                                      Radius.circular(4.0),
+                                                ),
+                                              ),
+                                              focusedBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Colors.blue,
+                                                  width: 2,
+                                                ),
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                  topLeft: Radius.circular(4.0),
+                                                  topRight:
+                                                      Radius.circular(4.0),
+                                                ),
+                                              ),
+                                            ),
+                                            style: FlutterFlowTheme.bodyText2
+                                                .override(
+                                                    fontFamily: 'Montserrat',
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 13),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        height: 56,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 100,
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        height: 56,
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 SizedBox(
@@ -2629,35 +2718,35 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                 (confirmAccountNumber.text ==
                                                     accountNumber.text)) {
                                               final data = EmployeeModel(
-                                                name: name.text.toUpperCase(),
-                                                phone: phone.text,
-                                                email: email.text,
-                                                gender: gender,
-                                                dob: dob,
-                                                accountHolderName:
-                                                    holderName.text,
-                                                accountNumber:
-                                                    accountNumber.text,
-                                                bankName: bankName.text,
-                                                branchName: branchName.text,
-                                                city: city.text,
-                                                ctc: ctc.text,
-                                                dept: dept.text,
-                                                designation: designation.text,
-                                                empType: empType.text,
-                                                ifsc: ifsc.text,
-                                                joinedDate: joinedDate,
-                                                probation: probation,
-                                                reportingManager: empIdByName[
-                                                    reportingManager.text],
-                                                teamLead:
-                                                    empIdByName[teamLead.text],
-                                                profile: '',
-                                                subDept: subDept.text,
-                                                delete: false,
-                                                empId: employeeId,
-                                                createdDate: createdDate,
-                                              );
+                                                  name: name.text.toUpperCase(),
+                                                  phone: phone.text,
+                                                  email: email.text,
+                                                  gender: gender,
+                                                  dob: dob,
+                                                  accountHolderName:
+                                                      holderName.text,
+                                                  accountNumber:
+                                                      accountNumber.text,
+                                                  bankName: bankName.text,
+                                                  branchName: branchName.text,
+                                                  city: city.text,
+                                                  ctc: ctc.text,
+                                                  dept: dept.text,
+                                                  designation: designation.text,
+                                                  empType: empType.text,
+                                                  ifsc: ifsc.text,
+                                                  joinedDate: joinedDate,
+                                                  probation: probation,
+                                                  reportingManager: empIdByName[
+                                                      reportingManager.text],
+                                                  teamLead: empIdByName[
+                                                      teamLead.text],
+                                                  profile: '',
+                                                  subDept: subDept.text,
+                                                  delete: false,
+                                                  empId: employeeId,
+                                                  createdDate: createdDate,
+                                                  pan: pan.text);
 
                                               FirebaseFirestore.instance
                                                   .collection('employees')
