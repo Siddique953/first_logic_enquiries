@@ -22,6 +22,7 @@ class PaySlipModel {
   String month;
   String netSalary;
   String totalDeduction;
+  String pto;
 
   PaySlipModel(
       {this.name,
@@ -46,5 +47,7 @@ class PaySlipModel {
       this.month,
       this.totalDeduction,
       this.netSalary,
-      this.total});
+      this.total,
+      this.pto,
+      });
 }

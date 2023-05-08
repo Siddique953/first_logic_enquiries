@@ -1881,10 +1881,14 @@ class _AddAttendanceState extends State<AddAttendance> {
           (employeeDetails[employeeList[i]['empId']]['offDay'] ?? 4)
               .toString());
       int workingDays = int.tryParse((30 - offDays).toString());
+
+      double payable =double.tryParse(empDataById[employeeList[i]['empId']].ctc);
+      double leaveCut = payable- employeeDetails[employeeList[i]['empId']]['takeHome'];
       PaySlipModel data = PaySlipModel(
-        workingDays: 26,
+        workingDays: workingDays,
+        pto: leaveCut.toString(),
         totalDeduction:
-            employeeDetails[employeeList[i]['empId']]['deduction'].toString(),
+            ((employeeDetails[employeeList[i]['empId']]['deduction'])+leaveCut).toString(),
         spAllowance: '',
         pan: empDataById[employeeList[i]['empId']].pan ?? '',
         netSalary:

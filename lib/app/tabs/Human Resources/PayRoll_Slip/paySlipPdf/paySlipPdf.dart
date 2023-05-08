@@ -1160,7 +1160,7 @@ class PaySlip {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(left: 3.0),
-                                child: Text('',
+                                child: Text('PTO (Paid Time Off)',
                                     style: TextStyle(
                                         fontSize: 7, color: PdfColors.black)),
                               )
@@ -1172,7 +1172,7 @@ class PaySlip {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text('',
+                              Text(invoice.pto,
                                   style: TextStyle(
                                       fontSize: 7, color: PdfColors.black))
                             ]),
