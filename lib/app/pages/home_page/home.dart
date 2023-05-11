@@ -66,32 +66,11 @@ List employeeList = [];
 Map<String, EmployeeModel> empDataById = {};
 Map<String, dynamic> empIdByName = {};
 
-bool order = false;
-List<String> intakes = ['Select Intake'];
-
-List<Item> intakeMultiple = [];
-
-List<String> visaStatusList = ['Select status'];
-
-List<String> applicationStatusList = ['Select status'];
-
-Map<String, dynamic> intakeById = {};
-
 Map<String, dynamic> currentUserMap = {};
 
-Map<String, dynamic> idByIntake = {};
+Map<String, dynamic> projectType = {};
 
-List<String> countryList = ['Select Country'];
-
-Map<String, dynamic> courseNameById = {};
-
-Map<String, dynamic> courseIdByName = {};
-
-Map<String, dynamic> courseMap = {};
-
-Map<String, dynamic> ProjectType = {};
-
-Map<String, dynamic> ProjectTypeId = {};
+Map<String, dynamic> projectTypeId = {};
 
 List<String> phnNumbers = [];
 Map<String, dynamic> customerDetailsByNumber = {};
@@ -120,8 +99,8 @@ getSelectedProjectType() {
       .listen((event) {
     projectTypeList = [];
     for (DocumentSnapshot doc in event.docs) {
-      ProjectType[doc.get('name')] = doc.id;
-      ProjectTypeId[doc.id] = doc.get('name');
+      projectType[doc.get('name')] = doc.id;
+      projectTypeId[doc.id] = doc.get('name');
 
       projectTypeList.add(doc['name']);
     }
