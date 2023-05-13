@@ -5,6 +5,8 @@ import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:fl_erp/app/tabs/Customers/serviceInvoicePDF/Print/printFunction.dart';
+import 'package:fl_erp/app/tabs/Customers/serviceInvoicePDF/downloadServicePdf.dart';
 import 'package:fl_erp/backend/backend.dart';
 import 'package:lottie/lottie.dart';
 import 'package:searchfield/searchfield.dart';
@@ -5951,37 +5953,48 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                     // (urlDownload != '' &&
                                                                                     //     urlDownload != null)
                                                                                     ) {
-                                                                                  FirebaseFirestore.instance.collection('customerServices').add({
-                                                                                    'project': projectIdByName[projectNameInServices.text] ?? '',
-                                                                                    'branch': currentBranchId,
-                                                                                    'serviceName': serviceName.text,
-                                                                                    'createdDate': FieldValue.serverTimestamp(),
-                                                                                    'serviceStartingDate': serviceStartingDate,
-                                                                                    'serviceEndingDate': serviceEndingDate,
-                                                                                    'description': serviceDescription.text,
-                                                                                    'delete': false,
-                                                                                    'serviceAmount': double.tryParse(serviceAmount.text.replaceAll(',', '')),
-                                                                                    'customerId': widget.id,
-                                                                                    'paymentDetails': [],
-                                                                                    'totalPaid': 0,
-                                                                                  }).then((value) {
-                                                                                    value.update({
-                                                                                      'serviceId': value.id,
+                                                                                  FirebaseFirestore.instance.collection('settings').doc(currentBranchId).get()
+                                                                                  .then((value) {
+                                                                                    FirebaseFirestore.instance.collection('settings').doc(currentBranchId).update({
+
+                                                                                      'invoice':FieldValue.increment(1)
                                                                                     });
 
-                                                                                    FirebaseFirestore.instance.collection('projects').doc(projectIdByName[projectNameInServices.text]).update({
-                                                                                      'totalCost': FieldValue.increment(double.tryParse(serviceAmount.text.replaceAll(',', ''))),
+                                                                                    FirebaseFirestore.instance.collection('customerServices').add({
+                                                                                      'project': projectIdByName[projectNameInServices.text] ?? '',
+                                                                                      'branch': currentBranchId,
+                                                                                      'serviceName': serviceName.text,
+                                                                                      'createdDate': FieldValue.serverTimestamp(),
+                                                                                      'serviceStartingDate': serviceStartingDate,
+                                                                                      'serviceEndingDate': serviceEndingDate,
+                                                                                      'description': serviceDescription.text,
+                                                                                      'delete': false,
+                                                                                      'serviceAmount': double.tryParse(serviceAmount.text.replaceAll(',', '')),
+                                                                                      'customerId': widget.id,
+                                                                                      'paymentDetails': [],
+                                                                                      'totalPaid': 0,
+                                                                                      'invoice':value['invoice'],
+                                                                                    }).then((value) {
+                                                                                      value.update({
+                                                                                        'serviceId': value.id,
+                                                                                      });
+
+                                                                                      // FirebaseFirestore.instance.collection('projects').doc(projectIdByName[projectNameInServices.text]).update({
+                                                                                      //   'totalCost': FieldValue.increment(double.tryParse(serviceAmount.text.replaceAll(',', ''))),
+                                                                                      // });
+
+                                                                                      showUploadMessage(context, 'services added successfully');
+
+                                                                                      projectNameInServices.text = '';
+                                                                                      serviceName.text = '';
+                                                                                      serviceStartingDate = null;
+                                                                                      serviceEndingDate = null;
+                                                                                      serviceDescription.text = '';
+                                                                                      serviceAmount.text = '';
                                                                                     });
 
-                                                                                    showUploadMessage(context, 'services added successfully');
+                                                                                  });
 
-                                                                                    projectNameInServices.text = '';
-                                                                                    serviceName.text = '';
-                                                                                    serviceStartingDate = null;
-                                                                                    serviceEndingDate = null;
-                                                                                    serviceDescription.text = '';
-                                                                                    serviceAmount.text = '';
-                                                                                  }).then((assAmt) {});
                                                                                 } else {
                                                                                   serviceName.text == ''
                                                                                       ? showUploadMessage(context, 'Please Choose Service')
@@ -6179,6 +6192,22 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                 FontWeight.bold,
                                                                             fontSize: 12)),
                                                                   ),
+                                                                  DataColumn(
+                                                                    label: Text(
+                                                                        "",
+                                                                        style: TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            fontSize: 12)),
+                                                                  ),
+                                                                  DataColumn(
+                                                                    label: Text(
+                                                                        "",
+                                                                        style: TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            fontSize: 12)),
+                                                                  ),
                                                                 ],
                                                                 rows: List
                                                                     .generate(
@@ -6234,6 +6263,148 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                         DataCell(
                                                                           FlutterFlowIconButton(
                                                                             borderColor:
+                                                                            Colors.transparent,
+                                                                            borderRadius:
+                                                                            30,
+                                                                            borderWidth:
+                                                                            1,
+                                                                            buttonSize:
+                                                                            50,
+                                                                            icon:
+                                                                            Icon(
+                                                                              Icons.print,
+                                                                              color: Colors.teal,
+                                                                              size: 25,
+                                                                            ),
+                                                                            onPressed:
+                                                                                () async {
+
+                                                                              // try {
+                                                                                print(feeDetail['serviceAmount']);
+                                                                                final invoice =
+                                                                                paymentDetail(
+                                                                                  nameOfProject: projectDataById[feeDetail['project']]['projectName'],
+                                                                                  name: feeDetail['serviceName'],
+                                                                                  // selectedProjectType: projectDataById[payments[index]['projectId']]['projectType'],
+
+                                                                                  lastPaymentAmount:
+                                                                                  feeDetail['serviceAmount'],
+                                                                                  // totalAmountPaid: payments[index]['totalPaid'],
+
+                                                                                  date: DateFormat('dd - MM - yyyy').format(feeDetail['createdDate']
+                                                                                      .toDate()),
+
+                                                                                  customerName:
+                                                                                  cust['name'],
+                                                                                  customerPhoneNo:
+                                                                                  cust['mobile'],
+                                                                                  desc: feeDetail[
+                                                                                  'description'],
+                                                                                  // staff: feeDetail[
+                                                                                  // 'staffName'],
+                                                                                  receiptNo:
+                                                                                  feeDetail['invoice'],
+
+                                                                                );
+
+                                                                                final pdfFile =
+                                                                                await InvoicePrintingFunction.createPrint(invoice);
+                                                                                await PdfApi.openFile(
+                                                                                    pdfFile);
+                                                                              // } catch (e) {
+                                                                              //   print(
+                                                                              //       e);
+                                                                              // }
+                                                                            },
+                                                                          ),
+                                                                        ),
+                                                                        DataCell(
+                                                                          FlutterFlowIconButton(
+                                                                            borderColor:
+                                                                            Colors.transparent,
+                                                                            borderRadius:
+                                                                            30,
+                                                                            borderWidth:
+                                                                            1,
+                                                                            buttonSize:
+                                                                            50,
+                                                                            icon:
+                                                                            Icon(
+                                                                              Icons.download,
+                                                                              color: Colors.teal,
+                                                                              size: 25,
+                                                                            ),
+                                                                            onPressed:
+                                                                                () async {
+
+
+                                                                                  try {
+
+
+                                                                                final invoice =
+                                                                                paymentDetail(
+                                                                                  nameOfProject: projectDataById[feeDetail['project']]['projectName'],
+                                                                                  name: feeDetail['serviceName'],
+                                                                                  // selectedProjectType: projectDataById[payments[index]['projectId']]['projectType'],
+
+                                                                                  lastPaymentAmount:
+                                                                                  feeDetail['serviceAmount'],
+                                                                                  // totalAmountPaid: payments[index]['totalPaid'],
+
+                                                                                  date: DateFormat('dd - MM - yyyy').format(feeDetail['createdDate']
+                                                                                      .toDate()),
+
+                                                                                  customerName:
+                                                                                  cust['name'],
+                                                                                  customerPhoneNo:
+                                                                                  cust['mobile'],
+                                                                                  desc: feeDetail[
+                                                                                  'description'],
+                                                                                  // staff: feeDetail[
+                                                                                  // 'staffName'],
+                                                                                  receiptNo:
+                                                                                  feeDetail['invoice'],
+                                                                                );
+
+                                                                                await GenerateInvoice
+                                                                                    .downloadPdf(
+                                                                                    invoice);
+
+
+                                                                                // final pdfFile =
+                                                                                //     await PrintingFunction.createPrint(
+                                                                                //         invoice);
+                                                                                // await PdfApi
+                                                                                //     .openFile(
+                                                                                //         pdfFile);
+                                                                              } catch (e) {
+                                                                                print('[[[[[[[[e]]]]]]]]');
+                                                                                print(e);
+                                                                                // return showDialog(
+                                                                                //     context: context,
+                                                                                //     builder: (context) {
+                                                                                //       return AlertDialog(
+                                                                                //         title: Text('error'),
+                                                                                //         content: Text(e.toString()),
+                                                                                //
+                                                                                //         actions: <Widget>[
+                                                                                //           new FlatButton(
+                                                                                //             child: new Text('ok'),
+                                                                                //             onPressed: () {
+                                                                                //               Navigator.of(context).pop();
+                                                                                //             },
+                                                                                //           )
+                                                                                //         ],
+                                                                                //       );
+                                                                                //     });
+
+                                                                              }
+                                                                            },
+                                                                          ),
+                                                                        ),
+                                                                        DataCell(
+                                                                          FlutterFlowIconButton(
+                                                                            borderColor:
                                                                                 Colors.transparent,
                                                                             borderRadius:
                                                                                 30,
@@ -6254,11 +6425,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                               if (pressed) {
                                                                                 FirebaseFirestore.instance.collection('customerServices').doc(feeDetail['serviceId']).update({
                                                                                   'delete': true,
-                                                                                }).then((value) {
-                                                                                  FirebaseFirestore.instance.collection('projects').doc(feeDetail['project']).update({
-                                                                                    'totalCost': FieldValue.increment(-1 * (feeDetail['serviceAmount'])),
-                                                                                  });
                                                                                 });
+
 
                                                                                 showUploadMessage(context, 'Details Deleted...');
                                                                                 setState(() {});
@@ -6266,6 +6434,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                             },
                                                                           ),
                                                                         ),
+
+
                                                                       ],
                                                                     );
                                                                   },

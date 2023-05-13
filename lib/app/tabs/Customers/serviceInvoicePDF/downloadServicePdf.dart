@@ -6,9 +6,9 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart';
-import '../../app/app_widget.dart';
-import 'Invoice.dart';
 import 'package:universal_html/html.dart' as html;
+
+import '../../../../paymentReport/report/Invoice.dart';
 
 var image;
 var locationIcon;
@@ -17,17 +17,12 @@ var mailIcon;
 var globIcon;
 var format = NumberFormat.simpleCurrency(locale: 'en_in');
 
-class GeneratePdf {
+class GenerateInvoice {
   static Future<File> downloadPdf(paymentDetail invoice) async {
     final pdf = Document();
     image = await imageFromAssetBundle('assets/images/fl_new.png');
-
     globIcon = await imageFromAssetBundle('assets/images/globeIconPDF.png');
-    // locationIcon =
-    //     await imageFromAssetBundle('assets/recipt Items/location-01.png');
-    // phoneIcon = await imageFromAssetBundle('assets/recipt Items/phone-01.png');
-    // mailIcon = await imageFromAssetBundle('assets/recipt Items/mail-01.png');
-    // globIcon = await imageFromAssetBundle('assets/recipt Items/glob_icon.png');
+    print("start");
     pdf.addPage(
       MultiPage(
         build: (context) => [
@@ -39,7 +34,7 @@ class GeneratePdf {
               children: [
                 pw.Container(
                   height: 100,
-                  width: double.infinity,
+                  // width: double.infinity,
                   child: pw.Row(children: [
                     pw.Container(
                       height: 80,
@@ -62,12 +57,12 @@ class GeneratePdf {
                               pw.Row(
                                   mainAxisAlignment: pw.MainAxisAlignment.end,
                                   children: [
-                                    pw.Text('www.firstlogicmetalab.com'),
+                                     pw.Text('www.firstlogicmetalab.com'),
                                     pw.SizedBox(width: 3),
                                     pw.Image(
                                       globIcon,
-                                      width: 20,
-                                      height: 20,
+                                      width: 7,
+                                      height: 7,
                                       fit: pw.BoxFit.contain,
                                     ),
                                     pw.SizedBox(width: 5),
@@ -89,7 +84,7 @@ class GeneratePdf {
                 pw.SizedBox(height: 40),
                 pw.Center(
                   child: pw.Text(
-                    'RECEIPT VOUCHER',
+                    'INVOICE',
                     style: pw.TextStyle(
                       fontSize: 20,
                       wordSpacing: 1.5,
@@ -111,7 +106,7 @@ class GeneratePdf {
                               crossAxisAlignment: pw.CrossAxisAlignment.start,
                               children: [
                                 pw.Text(
-                                  'Receipt To,',
+                                  'Bill To,',
                                   style: pw.TextStyle(
                                     fontSize: 14,
                                     fontWeight: pw.FontWeight.bold,
@@ -146,32 +141,32 @@ class GeneratePdf {
                                 mainAxisAlignment: pw.MainAxisAlignment.start,
                                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                                 children: [
-                                  pw.Text(
-                                    'Received by,',
-                                    style: pw.TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: pw.FontWeight.bold,
-                                    ),
-                                  ),
-                                  pw.SizedBox(height: 5),
-                                  pw.Text(
-                                    invoice.staff,
-                                    style: pw.TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  pw.Text(
-                                    'First Logic Meta Lab Pvt. Ltd',
-                                    style: pw.TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  pw.Text(
-                                    '',
-                                    style: pw.TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
+                                  // pw.Text(
+                                  //   'Received by,',
+                                  //   style: pw.TextStyle(
+                                  //     fontSize: 14,
+                                  //     fontWeight: pw.FontWeight.bold,
+                                  //   ),
+                                  // ),
+                                  // pw.SizedBox(height: 5),
+                                  // pw.Text(
+                                  //   invoice.staff,
+                                  //   style: pw.TextStyle(
+                                  //     fontSize: 12,
+                                  //   ),
+                                  // ),
+                                  // pw.Text(
+                                  //   'First Logic Meta Lab Pvt. Ltd',
+                                  //   style: pw.TextStyle(
+                                  //     fontSize: 12,
+                                  //   ),
+                                  // ),
+                                  // pw.Text(
+                                  //   '',
+                                  //   style: pw.TextStyle(
+                                  //     fontSize: 12,
+                                  //   ),
+                                  // ),
                                 ]),
                           )
                         ]),
@@ -186,9 +181,9 @@ class GeneratePdf {
                               child: pw.Center(
                                 child: pw.Column(
                                   mainAxisAlignment:
-                                      pw.MainAxisAlignment.center,
+                                  pw.MainAxisAlignment.center,
                                   crossAxisAlignment:
-                                      pw.CrossAxisAlignment.start,
+                                  pw.CrossAxisAlignment.start,
                                   children: [
                                     pw.Text('Date'),
                                     pw.SizedBox(height: 5),
@@ -210,11 +205,11 @@ class GeneratePdf {
                                 child: pw.Center(
                                   child: pw.Column(
                                     mainAxisAlignment:
-                                        pw.MainAxisAlignment.center,
+                                    pw.MainAxisAlignment.center,
                                     crossAxisAlignment:
-                                        pw.CrossAxisAlignment.start,
+                                    pw.CrossAxisAlignment.start,
                                     children: [
-                                      pw.Text('Receipt No.'),
+                                      pw.Text('Invoice No.'),
                                       pw.SizedBox(height: 5),
                                       pw.Text(invoice.receiptNo,
                                           style: pw.TextStyle(
@@ -232,56 +227,57 @@ class GeneratePdf {
                         child: pw.Row(
                             mainAxisAlignment: pw.MainAxisAlignment.start,
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
-                            children: [
-                              pw.Expanded(
-                                child: pw.Container(
-                                  height: 50,
-                                  color: PdfColors.grey300,
-                                  child: pw.Center(
-                                    child: pw.Column(
-                                      mainAxisAlignment:
-                                          pw.MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          pw.CrossAxisAlignment.start,
-                                      children: [
-                                        pw.Text('Mode of Payment'),
-                                        pw.SizedBox(height: 5),
-                                        pw.Text(invoice.paymentMethod,
-                                            style: pw.TextStyle(
-                                              fontWeight: pw.FontWeight.bold,
-                                              fontSize: 13,
-                                            )),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              pw.SizedBox(width: 3),
-                              pw.Expanded(
-                                child: pw.Container(
-                                  height: 50,
-                                  color: PdfColors.grey300,
-                                  child: pw.Center(
-                                    child: pw.Column(
-                                      mainAxisAlignment:
-                                          pw.MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          pw.CrossAxisAlignment.start,
-                                      children: [
-                                        pw.Text('Due Amount.'),
-                                        pw.SizedBox(height: 5),
-                                        pw.Text(
-                                            ' ${invoice.totalDue.toStringAsFixed(2)}',
-                                            style: pw.TextStyle(
-                                              fontWeight: pw.FontWeight.bold,
-                                              fontSize: 13,
-                                            )),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ]),
+                            // children: [
+                            //   pw.Expanded(
+                            //     child: pw.Container(
+                            //       height: 50,
+                            //       color: PdfColors.grey300,
+                            //       child: pw.Center(
+                            //         child: pw.Column(
+                            //           mainAxisAlignment:
+                            //           pw.MainAxisAlignment.center,
+                            //           crossAxisAlignment:
+                            //           pw.CrossAxisAlignment.start,
+                            //           children: [
+                            //             pw.Text('Mode of Payment'),
+                            //             pw.SizedBox(height: 5),
+                            //             pw.Text(invoice.paymentMethod,
+                            //                 style: pw.TextStyle(
+                            //                   fontWeight: pw.FontWeight.bold,
+                            //                   fontSize: 13,
+                            //                 )),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   ),
+                            //   pw.SizedBox(width: 3),
+                            //   pw.Expanded(
+                            //     child: pw.Container(
+                            //       height: 50,
+                            //       color: PdfColors.grey300,
+                            //       child: pw.Center(
+                            //         child: pw.Column(
+                            //           mainAxisAlignment:
+                            //           pw.MainAxisAlignment.center,
+                            //           crossAxisAlignment:
+                            //           pw.CrossAxisAlignment.start,
+                            //           children: [
+                            //             pw.Text('Due Amount.'),
+                            //             pw.SizedBox(height: 5),
+                            //             pw.Text(
+                            //                 ' ${100.toStringAsFixed(2)}',
+                            //                 style: pw.TextStyle(
+                            //                   fontWeight: pw.FontWeight.bold,
+                            //                   fontSize: 13,
+                            //                 )),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   )
+                            // ],
+                        ),
                       )
                     ]),
                   ]),
@@ -298,7 +294,7 @@ class GeneratePdf {
                   ),
                   context: context,
                   headerStyle:
-                      pw.TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  pw.TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   headerDecoration: pw.BoxDecoration(color: PdfColors.grey300),
                   cellStyle: pw.TextStyle(
                     fontSize: 12,
@@ -318,11 +314,12 @@ class GeneratePdf {
                   },
                   headers: [
                     'Sl.No',
+                    'Name',
                     'Description.',
                     'Price',
                   ],
                   data: [
-                    ['1', invoice.desc, '${invoice.lastPaymentAmount}']
+                    ['1',invoice.name, invoice.desc, '${invoice.lastPaymentAmount}']
                   ],
                 ),
                 pw.SizedBox(height: 40),
@@ -338,73 +335,73 @@ class GeneratePdf {
                           child: pw.Column(
                             mainAxisAlignment: pw.MainAxisAlignment.start,
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
-                            children: [
-                              pw.Text(
-                                'Payment Terms :',
-                                style: pw.TextStyle(
-                                  fontSize: 12,
-                                  // fontWeight: pw.FontWeight.bold,
-                                ),
-                              ),
-                              pw.SizedBox(height: 15),
-                              pw.Row(
-                                  crossAxisAlignment:
-                                      pw.CrossAxisAlignment.start,
-                                  children: [
-                                    pw.Text(
-                                      '1. ',
-                                      style: pw.TextStyle(
-                                        fontSize: 11,
-                                      ),
-                                    ),
-                                    pw.Column(
-                                        crossAxisAlignment:
-                                            pw.CrossAxisAlignment.start,
-                                        children: [
-                                          pw.Text(
-                                            'This is a digitally signed document.',
-                                            style: pw.TextStyle(
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                          pw.Text(
-                                            'Signature not required.',
-                                            style: pw.TextStyle(
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                        ])
-                                  ]),
-                              pw.SizedBox(height: 2),
-                              pw.Row(
-                                  crossAxisAlignment:
-                                      pw.CrossAxisAlignment.start,
-                                  children: [
-                                    pw.Text(
-                                      '2. ',
-                                      style: pw.TextStyle(
-                                        fontSize: 11,
-                                      ),
-                                    ),
-                                    pw.Column(
-                                        crossAxisAlignment:
-                                            pw.CrossAxisAlignment.start,
-                                        children: [
-                                          pw.Text(
-                                            'Due amount should be paid within the',
-                                            style: pw.TextStyle(
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                          pw.Text(
-                                            'due date mentioned.',
-                                            style: pw.TextStyle(
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                        ])
-                                  ]),
-                            ],
+                            // children: [
+                            //   pw.Text(
+                            //     'Payment Terms :',
+                            //     style: pw.TextStyle(
+                            //       fontSize: 12,
+                            //       // fontWeight: pw.FontWeight.bold,
+                            //     ),
+                            //   ),
+                            //   pw.SizedBox(height: 15),
+                            //   pw.Row(
+                            //       crossAxisAlignment:
+                            //       pw.CrossAxisAlignment.start,
+                            //       children: [
+                            //         pw.Text(
+                            //           '1. ',
+                            //           style: pw.TextStyle(
+                            //             fontSize: 11,
+                            //           ),
+                            //         ),
+                            //         pw.Column(
+                            //             crossAxisAlignment:
+                            //             pw.CrossAxisAlignment.start,
+                            //             children: [
+                            //               pw.Text(
+                            //                 'This is a digitally signed document.',
+                            //                 style: pw.TextStyle(
+                            //                   fontSize: 11,
+                            //                 ),
+                            //               ),
+                            //               pw.Text(
+                            //                 'Signature not required.',
+                            //                 style: pw.TextStyle(
+                            //                   fontSize: 11,
+                            //                 ),
+                            //               ),
+                            //             ])
+                            //       ]),
+                            //   pw.SizedBox(height: 2),
+                            //   pw.Row(
+                            //       crossAxisAlignment:
+                            //       pw.CrossAxisAlignment.start,
+                            //       children: [
+                            //         pw.Text(
+                            //           '2. ',
+                            //           style: pw.TextStyle(
+                            //             fontSize: 11,
+                            //           ),
+                            //         ),
+                            //         pw.Column(
+                            //             crossAxisAlignment:
+                            //             pw.CrossAxisAlignment.start,
+                            //             children: [
+                            //               pw.Text(
+                            //                 'Due amount should be paid within the',
+                            //                 style: pw.TextStyle(
+                            //                   fontSize: 11,
+                            //                 ),
+                            //               ),
+                            //               pw.Text(
+                            //                 'due date mentioned.',
+                            //                 style: pw.TextStyle(
+                            //                   fontSize: 11,
+                            //                 ),
+                            //               ),
+                            //             ])
+                            //       ]),
+                            // ],
                           ),
                         ),
                         pw.SizedBox(width: 4),
@@ -415,7 +412,7 @@ class GeneratePdf {
                             children: [
                               pw.Row(
                                   crossAxisAlignment:
-                                      pw.CrossAxisAlignment.start,
+                                  pw.CrossAxisAlignment.start,
                                   mainAxisAlignment: pw.MainAxisAlignment.end,
                                   children: [
                                     pw.Text(

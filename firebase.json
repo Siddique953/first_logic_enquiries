@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "target": "first-logic-erp",
     "public": "build/web",
     "ignore": [
       "firebase.json",

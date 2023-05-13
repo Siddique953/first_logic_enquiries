@@ -95,7 +95,7 @@ flutter:
   assets:
      - assets/
      - assets/images/
-     - assets/images/Leadzicon.png
+     - assets/images/globeIconPDF.png
      - assets/images/hennaicon.jpg
      - assets/images/login.gif
      - assets/images/loading.gif
