@@ -683,10 +683,10 @@ class _SideMenuState extends State<SideMenu> {
                                         label: "Receipt Report",
                                         icon: Icons.stop_rounded,
                                         style: TextStyle(
-                                            color: subTab == 12
+                                            color: subTab == 13
                                                 ? Color(0xff0054FF)
                                                 : Colors.grey,
-                                            fontWeight: subTab == 12
+                                            fontWeight: subTab == 13
                                                 ? FontWeight.bold
                                                 : FontWeight.normal),
                                       )),
@@ -1119,6 +1119,101 @@ class _SideMenuState extends State<SideMenu> {
                               color: Colors.blueGrey.shade800,
                             ),
 
+
+                            //10,11
+                            //Customer
+                            ExpandablePanel(
+                              theme: ExpandableThemeData(
+                                iconColor: Colors.white,
+                                iconSize: 14,
+                              ),
+                              header: Container(
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  border: selectedTab == 11
+                                      ? Border(
+                                    left: BorderSide(
+                                      color: Color(0xff0054FF),
+                                      width: 3,
+                                    ),
+                                  )
+                                      : null,
+                                ),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Icon(
+                                      Icons.group,
+                                      color: Colors.white,
+                                      size: 18,
+                                    ),
+                                    SizedBox(
+                                      width: 7,
+                                    ),
+                                    Text(
+                                      "Customer",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              expanded: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
+                                child: Column(
+                                  children: [
+                                    InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            widget._tabController.animateTo((4));
+                                            selectedTab = 11;
+                                            subTab = 12;
+                                          });
+                                        },
+                                        child: ColaspeItem(
+                                          label: "Customer List",
+                                          icon: Icons.stop_rounded,
+                                          style: TextStyle(
+                                              color: subTab == 12
+                                                  ? Color(0xff0054FF)
+                                                  : Colors.grey,
+                                              fontWeight: subTab == 12
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal),
+                                        )),
+                                    InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            widget._tabController.animateTo((30));
+                                            selectedTab = 11;
+                                            subTab = 13;
+                                          });
+                                        },
+                                        child: ColaspeItem(
+                                          label: "Project List",
+                                          icon: Icons.stop_rounded,
+                                          style: TextStyle(
+                                              color: subTab == 13
+                                                  ? Color(0xff0054FF)
+                                                  : Colors.grey,
+                                              fontWeight: subTab == 13
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal),
+                                        )),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Divider(
+                              color: Colors.blueGrey.shade800,
+                            ),
+
                             //0,0
 
                             //ACCOUNTS
@@ -1210,10 +1305,10 @@ class _SideMenuState extends State<SideMenu> {
                                               label: "Deposit / Withdrawal",
                                               icon: Icons.stop_rounded,
                                               style: TextStyle(
-                                                  color: subTab == 6
+                                                  color: subTab == 2
                                                       ? Color(0xff0054FF)
                                                       : Colors.grey,
-                                                  fontWeight: subTab == 6
+                                                  fontWeight: subTab == 2
                                                       ? FontWeight.bold
                                                       : FontWeight.normal),
                                             )),
