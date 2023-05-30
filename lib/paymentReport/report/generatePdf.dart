@@ -20,9 +20,8 @@ var format = NumberFormat.simpleCurrency(locale: 'en_in');
 class GeneratePdf {
   static Future<File> downloadPdf(paymentDetail invoice) async {
     final pdf = Document();
-    image = await imageFromAssetBundle('assets/images/fl_new.png');
+    image = await imageFromAssetBundle('assets/images/fl_new.jpg');
 
-    globIcon = await imageFromAssetBundle('assets/images/globeIconPDF.png');
     // locationIcon =
     //     await imageFromAssetBundle('assets/recipt Items/location-01.png');
     // phoneIcon = await imageFromAssetBundle('assets/recipt Items/phone-01.png');
@@ -64,12 +63,12 @@ class GeneratePdf {
                                   children: [
                                     pw.Text('www.firstlogicmetalab.com'),
                                     pw.SizedBox(width: 3),
-                                    pw.Image(
-                                      globIcon,
-                                      width: 20,
-                                      height: 20,
-                                      fit: pw.BoxFit.contain,
-                                    ),
+                                    // pw.Image(
+                                    //   globIcon,
+                                    //   width: 15,
+                                    //   height: 15,
+                                    //   fit: pw.BoxFit.contain,
+                                    // ),
                                     pw.SizedBox(width: 5),
                                   ]),
                               pw.SizedBox(height: 5),

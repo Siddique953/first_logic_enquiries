@@ -179,11 +179,12 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
   List selectedServicesList = [];
   List serviceNames = [];
   List<String> customerServiceNames = [''];
-  List<String> customerServiceAndProjectNames = [''];
+  List<String> customerServiceAndProjectNames = ['All'];
   Map<String, dynamic> serviceIdByName = {};
   Map<String, dynamic> serviceDataById = {};
 
   List servicePaymentList = [];
+  List projectAndServicePaymentListSort = [];
   List projectAndServicePaymentList = [];
 
   //GET SERVICES
@@ -246,7 +247,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
           value['paymentMethode'] = item['paymentMethod'];
           value['staffName'] = item['staffName'];
           value['description'] = item['description'];
-          value['projectId'] = item['serviceId'];
+          value['projectId'] = null;
+          // value['projectId'] = item['serviceId'];
           value['paymentProof'] = item['paymentProof'] ?? [];
 
           value['billCode'] =
@@ -266,16 +268,23 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
       if (mounted) {
         // payments.addAll(servicePaymentList);
-        customerServiceAndProjectNames = [];
+        customerServiceAndProjectNames = ['All'];
         customerServiceAndProjectNames.addAll(customerServiceNames);
         customerServiceAndProjectNames.addAll(projectNames);
+        if(customerServiceAndProjectNames.isEmpty){
+          customerServiceAndProjectNames=[''];
+        }
+
 
         //ADDING PAYMENTS
-        projectAndServicePaymentList = [];
-        projectAndServicePaymentList.addAll(servicePaymentList);
-        projectAndServicePaymentList.toList();
-        projectAndServicePaymentList.addAll(payments);
-        projectAndServicePaymentList.toList();
+        projectAndServicePaymentListSort = [];
+        projectAndServicePaymentListSort.addAll(servicePaymentList);
+        projectAndServicePaymentListSort.toList();
+        projectAndServicePaymentListSort.addAll(payments);
+        projectAndServicePaymentListSort.toList();
+
+        projectAndServicePaymentListSort.sort((a, b) => a['paidDate'].compareTo(b['paidDate']));
+        projectAndServicePaymentList=projectAndServicePaymentListSort;
 
         ///
         print('Project Listen');
@@ -429,9 +438,13 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
         currentProject = projectDataById[projectIdByName[projectName.text]];
       }
       if (mounted) {
-        customerServiceAndProjectNames = [];
+        customerServiceAndProjectNames = ['All'];
         customerServiceAndProjectNames.addAll(projectNames);
         customerServiceAndProjectNames.addAll(customerServiceNames);
+
+        if(customerServiceAndProjectNames.isEmpty){
+          customerServiceAndProjectNames=[''];
+        }
 
         statementData = [];
 
@@ -567,144 +580,157 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
       }
 
       if (mounted) {
-        projectAndServicePaymentList = [];
-        projectAndServicePaymentList.addAll(servicePaymentList);
-        projectAndServicePaymentList.addAll(payments);
+        projectAndServicePaymentListSort = [];
+        projectAndServicePaymentListSort.addAll(servicePaymentList);
+        projectAndServicePaymentListSort.addAll(payments);
 
         setState(() {
-          projectAndServicePaymentList
+          projectAndServicePaymentListSort
               .sort((a, b) => b['paidDate'].compareTo(a['paidDate']));
+          projectAndServicePaymentList=projectAndServicePaymentListSort;
         });
       }
     });
   }
 
   getSortedPayments() {
+
     List data = [];
-    data.addAll(paymentsSort);
-    payments.clear();
+    data.addAll(projectAndServicePaymentList);
+    projectAndServicePaymentListSort=[];
 
     for (int i = 0; i < data.length; i++) {
       try {
-        if ((projectDataById[data[i]['projectId']]['projectName'] ==
-                projectNameSortValue.text) &&
-            data[i]['staffName'] == staffNameSortValue.text) {
-          Map value = {};
-          value = data[i];
+        print(i);
 
-          payments.add(value);
+        if(data[i]['projectId']!=null){
+          /// SORT SERVICE DATA
+
+          if ((projectDataById[data[i]['projectId']]['projectName'] ==
+              projectNameSortValue.text) &&
+              data[i]['staffName'] == staffNameSortValue.text) {
+            Map value = {};
+            value = data[i];
+
+            projectAndServicePaymentListSort.add(value);
+          }
+
+          ///
+          else if ((projectDataById[data[i]['projectId']]['projectName'] ==
+              projectNameSortValue.text) &&
+              (staffNameSortValue.text == 'All' ||
+                  staffNameSortValue.text == '')) {
+            Map value = {};
+            value = data[i];
+
+            projectAndServicePaymentListSort.add(value);
+          }
+
+          ///
+          else if (data[i]['staffName'] == staffNameSortValue.text &&
+              (projectNameSortValue.text == 'All' ||
+                  projectNameSortValue.text == '')) {
+            Map value = {};
+            value = data[i];
+
+            projectAndServicePaymentListSort.add(value);
+          }
+
+          ///
+
+          else if (projectNameSortValue.text == 'All' &&
+              staffNameSortValue.text == 'All') {
+            Map value = {};
+            value = data[i];
+
+            projectAndServicePaymentListSort.add(value);
+          }
+
+          ///
+          else if ((projectNameSortValue.text == '' &&
+              staffNameSortValue.text == 'All') ||
+              (projectNameSortValue.text == 'All' &&
+                  staffNameSortValue.text == '')) {
+            Map value = {};
+            value = data[i];
+
+            projectAndServicePaymentListSort.add(value);
+          }
+
+          ///
+          else if (projectNameSortValue.text == '' &&
+              staffNameSortValue.text == '') {
+            Map value = {};
+            value = data[i];
+
+            projectAndServicePaymentListSort.add(value);
+          }
+
+        } else {
+          if ((serviceDataById[data[i]['serviceId']]['serviceName'] ==
+              projectNameSortValue.text) &&
+              data[i]['staffName'] == staffNameSortValue.text) {
+            Map value = {};
+            value = data[i];
+
+            projectAndServicePaymentListSort.add(value);
+          }
+
+          ///
+          else if ((serviceDataById[data[i]['serviceId']]['serviceName'] ==
+              projectNameSortValue.text) &&
+              (staffNameSortValue.text == 'All' ||
+                  staffNameSortValue.text == '')) {
+            Map value = {};
+            value = data[i];
+
+            projectAndServicePaymentListSort.add(value);
+          }
+
+          ///
+          else if (data[i]['staffName'] == staffNameSortValue.text &&
+              (projectNameSortValue.text == 'All' ||
+                  projectNameSortValue.text == '')) {
+            Map value = {};
+            value = data[i];
+
+            projectAndServicePaymentListSort.add(value);
+          }
+
+          ///
+
+          else if (projectNameSortValue.text == 'All' &&
+              staffNameSortValue.text == 'All') {
+            Map value = {};
+            value = data[i];
+
+            projectAndServicePaymentListSort.add(value);
+          }
+
+          ///
+          else if ((projectNameSortValue.text == '' &&
+              staffNameSortValue.text == 'All') ||
+              (projectNameSortValue.text == 'All' &&
+                  staffNameSortValue.text == '')) {
+            Map value = {};
+            value = data[i];
+
+            projectAndServicePaymentListSort.add(value);
+          }
+
+          ///
+          else if (projectNameSortValue.text == '' &&
+              staffNameSortValue.text == '') {
+            Map value = {};
+            value = data[i];
+
+            projectAndServicePaymentListSort.add(value);
+          }
         }
 
-        ///
-        else if ((projectDataById[data[i]['projectId']]['projectName'] ==
-                projectNameSortValue.text) &&
-            (staffNameSortValue.text == 'All' ||
-                staffNameSortValue.text == '')) {
-          Map value = {};
-          value = data[i];
 
-          payments.add(value);
-        }
-
-        ///
-        else if (data[i]['staffName'] == staffNameSortValue.text &&
-            (projectNameSortValue.text == 'All' ||
-                projectNameSortValue.text == '')) {
-          Map value = {};
-          value = data[i];
-
-          payments.add(value);
-        }
-
-        ///
-
-        else if (projectNameSortValue.text == 'All' &&
-            staffNameSortValue.text == 'All') {
-          Map value = {};
-          value = data[i];
-
-          payments.add(value);
-        }
-
-        ///
-        else if ((projectNameSortValue.text == '' &&
-                staffNameSortValue.text == 'All') ||
-            (projectNameSortValue.text == 'All' &&
-                staffNameSortValue.text == '')) {
-          Map value = {};
-          value = data[i];
-
-          payments.add(value);
-        }
-
-        ///
-        else if (projectNameSortValue.text == '' &&
-            staffNameSortValue.text == '') {
-          Map value = {};
-          value = data[i];
-
-          payments.add(value);
-        }
       } catch (er) {
-        if ((serviceDataById[data[i]['serviceId']]['serviceName'] ==
-                projectNameSortValue.text) &&
-            data[i]['staffName'] == staffNameSortValue.text) {
-          Map value = {};
-          value = data[i];
-
-          payments.add(value);
-        }
-
-        ///
-        else if ((serviceDataById[data[i]['serviceId']]['serviceName'] ==
-                projectNameSortValue.text) &&
-            (staffNameSortValue.text == 'All' ||
-                staffNameSortValue.text == '')) {
-          Map value = {};
-          value = data[i];
-
-          payments.add(value);
-        }
-
-        ///
-        else if (data[i]['staffName'] == staffNameSortValue.text &&
-            (projectNameSortValue.text == 'All' ||
-                projectNameSortValue.text == '')) {
-          Map value = {};
-          value = data[i];
-
-          payments.add(value);
-        }
-
-        ///
-
-        else if (projectNameSortValue.text == 'All' &&
-            staffNameSortValue.text == 'All') {
-          Map value = {};
-          value = data[i];
-
-          payments.add(value);
-        }
-
-        ///
-        else if ((projectNameSortValue.text == '' &&
-                staffNameSortValue.text == 'All') ||
-            (projectNameSortValue.text == 'All' &&
-                staffNameSortValue.text == '')) {
-          Map value = {};
-          value = data[i];
-
-          payments.add(value);
-        }
-
-        ///
-        else if (projectNameSortValue.text == '' &&
-            staffNameSortValue.text == '') {
-          Map value = {};
-          value = data[i];
-
-          payments.add(value);
-        }
+        print(er);
       }
     }
     setState(() {
@@ -4367,11 +4393,11 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                       ),
                                                     ],
                                                     rows: List.generate(
-                                                      projectAndServicePaymentList
+                                                      projectAndServicePaymentListSort
                                                           .length,
                                                       (index) {
                                                         var feeDetail =
-                                                            projectAndServicePaymentList[
+                                                            projectAndServicePaymentListSort[
                                                                 index];
 
                                                         return DataRow(
@@ -4542,28 +4568,28 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                       print(
                                                                           feeDetail);
                                                                       try {
-                                                                        double projectCost = projectAndServicePaymentList[index]['projectId'] ==
+                                                                        double projectCost = projectAndServicePaymentListSort[index]['projectId'] ==
                                                                                 null
-                                                                            ? serviceDataById[projectAndServicePaymentList[index]['serviceId']]['serviceAmount']
-                                                                            : projectDataById[projectAndServicePaymentList[index]['projectId']]['projectCost'];
+                                                                            ? serviceDataById[projectAndServicePaymentListSort[index]['serviceId']]['serviceAmount']
+                                                                            : projectDataById[projectAndServicePaymentListSort[index]['projectId']]['projectCost'];
                                                                         final invoice =
                                                                             paymentDetail(
-                                                                          nameOfProject: projectAndServicePaymentList[index]['projectName'] == null
-                                                                              ? projectAndServicePaymentList[index]['serviceName']
-                                                                              : projectAndServicePaymentList[index]['projectName'],
+                                                                          nameOfProject: projectAndServicePaymentListSort[index]['projectName'] == null
+                                                                              ? projectAndServicePaymentListSort[index]['serviceName']
+                                                                              : projectAndServicePaymentListSort[index]['projectName'],
                                                                           name:
                                                                               nameController.text,
                                                                           // selectedProjectType: projectDataById[payments[index]['projectId']]['projectType'],
                                                                           totalProjectCost:
                                                                               projectCost,
                                                                           lastPaymentAmount:
-                                                                              projectAndServicePaymentList[index]['amount'],
+                                                                              projectAndServicePaymentListSort[index]['amount'],
                                                                           // totalAmountPaid: payments[index]['totalPaid'],
                                                                           totalDue:
-                                                                              projectCost - projectAndServicePaymentList[index]['totalPaid'],
+                                                                              projectCost - projectAndServicePaymentListSort[index]['totalPaid'],
                                                                           paymentMethod:
-                                                                              projectAndServicePaymentList[index]['paymentMethode'],
-                                                                          date: projectAndServicePaymentList[index]['paidDate']
+                                                                              projectAndServicePaymentListSort[index]['paymentMethode'],
+                                                                          date: projectAndServicePaymentListSort[index]['paidDate']
                                                                               .toDate()
                                                                               .toString()
                                                                               .substring(0, 10),
@@ -4620,34 +4646,36 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                     print(feeDetail[
                                                                         'billCode']);
                                                                     try {
-                                                                      double projectCost = projectAndServicePaymentList[index]['projectId'] ==
+                                                                      print(feeDetail);
+                                                                      double projectCost = projectAndServicePaymentListSort[index]['projectId'] ==
                                                                               null
-                                                                          ? serviceDataById[projectAndServicePaymentList[index]['serviceId']]
+                                                                          ? serviceDataById[projectAndServicePaymentListSort[index]['serviceId']]
                                                                               [
                                                                               'serviceAmount']
-                                                                          : projectDataById[projectAndServicePaymentList[index]['projectId']]
+                                                                          : projectDataById[projectAndServicePaymentListSort[index]['projectId']]
                                                                               [
                                                                               'projectCost'];
+                                                                      print(1);
                                                                       final invoice =
                                                                           paymentDetail(
-                                                                        nameOfProject: projectAndServicePaymentList[index]['projectName'] ==
+                                                                        nameOfProject: projectAndServicePaymentListSort[index]['projectName'] ==
                                                                                 null
-                                                                            ? projectAndServicePaymentList[index]['serviceName']
-                                                                            : projectAndServicePaymentList[index]['projectName'],
+                                                                            ? projectAndServicePaymentListSort[index]['serviceName']
+                                                                            : projectAndServicePaymentListSort[index]['projectName'],
                                                                         name: nameController
                                                                             .text,
                                                                         // selectedProjectType: projectDataById[payments[index]['projectId']]['projectType'],
                                                                         totalProjectCost:
                                                                             projectCost,
                                                                         lastPaymentAmount:
-                                                                            projectAndServicePaymentList[index]['amount'],
+                                                                            projectAndServicePaymentListSort[index]['amount'],
                                                                         // totalAmountPaid: payments[index]['totalPaid'],
                                                                         totalDue:
                                                                             projectCost -
-                                                                                projectAndServicePaymentList[index]['totalPaid'],
+                                                                                projectAndServicePaymentListSort[index]['totalPaid'],
                                                                         paymentMethod:
-                                                                            projectAndServicePaymentList[index]['paymentMethode'],
-                                                                        date: projectAndServicePaymentList[index]['paidDate']
+                                                                            projectAndServicePaymentListSort[index]['paymentMethode'],
+                                                                        date: projectAndServicePaymentListSort[index]['paidDate']
                                                                             .toDate()
                                                                             .toString()
                                                                             .substring(0,
@@ -4664,6 +4692,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                             feeDetail['billCode'],
                                                                       );
 
+                                                                      print(2);
                                                                       await GeneratePdf
                                                                           .downloadPdf(
                                                                               invoice);
@@ -4676,6 +4705,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                       //     .openFile(
                                                                       //         pdfFile);
                                                                     } catch (e) {
+                                                                      print(e.runtimeType);
                                                                       print(e);
                                                                       // return showDialog(
                                                                       //     context: context,
@@ -4724,15 +4754,15 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                               'Generate Excel'),
                                                           style: TextButton
                                                               .styleFrom(
-                                                            foregroundColor:
-                                                                Colors.white,
+                                                            // foregroundColor:
+                                                            //     Colors.white,
                                                             backgroundColor:
                                                                 Color(
                                                                     0xff0054FF),
-                                                            disabledForegroundColor:
-                                                                Colors.grey
-                                                                    .withOpacity(
-                                                                        0.38),
+                                                            // disabledForegroundColor:
+                                                            //     Colors.grey
+                                                            //         .withOpacity(
+                                                            //             0.38),
                                                           ),
                                                           onPressed: () {
                                                             try {
