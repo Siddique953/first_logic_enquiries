@@ -283,7 +283,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
         projectAndServicePaymentListSort.addAll(payments);
         projectAndServicePaymentListSort.toList();
 
-        projectAndServicePaymentListSort.sort((a, b) => a['paidDate'].compareTo(b['paidDate']));
+        projectAndServicePaymentListSort.sort((a, b) => b['paidDate'].compareTo(a['paidDate']));
         projectAndServicePaymentList=projectAndServicePaymentListSort;
 
         ///
