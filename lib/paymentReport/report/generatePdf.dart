@@ -547,7 +547,7 @@ class GeneratePdf {
     final anchor = html.document.createElement('a') as html.AnchorElement
       ..href = url
       ..style.display = 'none'
-      ..download = '${invoice.name}.pdf';
+      ..download = '${invoice.name} - ${invoice.desc}.pdf';
 
     html.document.body.children.add(anchor);
     anchor.click();

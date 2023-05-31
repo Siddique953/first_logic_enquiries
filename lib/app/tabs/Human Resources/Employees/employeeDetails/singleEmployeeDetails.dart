@@ -220,6 +220,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
           style: TextStyle(color: Colors.white, fontSize: width * 0.02),
         ),
         elevation: 0,
+        centerTitle: false,
         backgroundColor: Color(0xff231F20),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(20.0),
@@ -758,6 +759,11 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Container(
+                                      width: 130,
+                                      height: 100,
+                                      child: Image.network('https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=$employeeId',fit: BoxFit.cover,),
+                                    ),
                                     Text(
                                       '$mError',
                                       style: TextStyle(color: Colors.red),

@@ -16,10 +16,10 @@ import '../../../../flutter_flow/flutter_flow_util.dart';
 
 List<TableRow> rows = [];
 var image;
-var locationIcon;
-var phoneIcon;
-var mailIcon;
-var globIcon;
+// var locationIcon;
+// var phoneIcon;
+// var mailIcon;
+// var globIcon;
 double balanceNumber = 0;
 var format = NumberFormat.simpleCurrency(locale: 'en_in');
 
@@ -35,191 +35,17 @@ class StatementPDF {
     String _formatNumber(String s) =>
         NumberFormat.decimalPattern(_locale).format(int.parse(s));
 
-    ///SAVING TO A LIST
-    // for (int i = 0; i < datas.length + 2; i++) {
-    //   print(datas.length);
-    //   print(i);
-    //   if (i == 0) {
-    //     print('ifffff');
-    //     rows.add(
-    //       pw.TableRow(children: [
-    //         pw.Container(
-    //           height: 30,
-    //           width: 45,
-    //           child: pw.Padding(
-    //             padding: pw.EdgeInsets.only(left: 2, top: 10),
-    //             child: pw.Text(
-    //               'Date',
-    //               style: pw.TextStyle(
-    //                 fontWeight: pw.FontWeight.bold,
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //         pw.Container(
-    //           height: 30,
-    //           child: pw.Padding(
-    //             padding: pw.EdgeInsets.only(left: 5, top: 10),
-    //             child: pw.Text(
-    //               'Particulars',
-    //               style: pw.TextStyle(
-    //                 fontWeight: pw.FontWeight.bold,
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //         pw.Container(
-    //           height: 30,
-    //           child: pw.Padding(
-    //             padding: pw.EdgeInsets.only(left: 5, top: 10),
-    //             child: pw.Text(
-    //               'Debit',
-    //               style: pw.TextStyle(
-    //                 fontWeight: pw.FontWeight.bold,
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //         pw.Container(
-    //           height: 30,
-    //           child: pw.Padding(
-    //             padding: pw.EdgeInsets.only(left: 5, top: 10),
-    //             child: pw.Text(
-    //               'Credit',
-    //               style: pw.TextStyle(
-    //                 fontWeight: pw.FontWeight.bold,
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //         pw.Container(
-    //             height: 30,
-    //             child: pw.Padding(
-    //               padding: pw.EdgeInsets.only(left: 5, top: 10),
-    //               child: pw.Text(
-    //                 'Balance',
-    //                 style: pw.TextStyle(
-    //                   fontWeight: pw.FontWeight.bold,
-    //                 ),
-    //               ),
-    //             )),
-    //       ]),
-    //     );
-    //   } else if (i < datas.length + 1) {
-    //     print('elseeeeeeeeee ifff');
-    //
-    //     ///CALCULATING BALANCE
-    //     if (datas[i - 1]['debit'] == null) {
-    //       balanceNumber += datas[i - 1]['credit'];
-    //     } else if (datas[i - 1]['credit'] == null) {
-    //       balanceNumber -= datas[i - 1]['debit'];
-    //     }
-    //
-    //     print('addddddddddd');
-    //     rows.add(
-    //       pw.TableRow(children: [
-    //         pw.Container(
-    //             height: 30,
-    //             width: 45,
-    //             child: pw.Padding(
-    //                 padding: pw.EdgeInsets.only(left: 2, top: 10),
-    //                 child: pw.Text(dateTimeFormat(
-    //                     'd-MMM-y', datas[i - 1]['date'].toDate())))),
-    //         pw.Container(
-    //             height: 30,
-    //             child: pw.Padding(
-    //                 padding: pw.EdgeInsets.only(left: 5, top: 10),
-    //                 child: pw.Text(datas[i - 1]['particular']))),
-    //         pw.Container(
-    //             height: 30,
-    //             child: pw.Padding(
-    //                 padding: pw.EdgeInsets.only(left: 5, top: 10),
-    //                 child: pw.Text(datas[i - 1]['debit'] == null
-    //                     ? ''
-    //                     : formatNumber(datas[i - 1]['debit']
-    //                         .toString()
-    //                         .replaceAll(',', ''))))),
-    //         pw.Container(
-    //             height: 30,
-    //             child: pw.Padding(
-    //                 padding: pw.EdgeInsets.only(left: 5, top: 10),
-    //                 child: pw.Text(
-    //                   datas[i - 1]['credit'] == null
-    //                       ? ''
-    //                       : formatNumber(datas[i - 1]['credit']
-    //                           .toString()
-    //                           .replaceAll(',', '')),
-    //                 ))),
-    //         pw.Container(
-    //             height: 30,
-    //             child: pw.Padding(
-    //                 padding: pw.EdgeInsets.only(left: 5, top: 10),
-    //                 child: pw.Text(
-    //                   formatNumber(
-    //                       balanceNumber.toString().replaceAll(',', '')),
-    //                 ))),
-    //       ]),
-    //     );
-    //   } else {
-    //     print('elseeeeeeeeeeee');
-    //     rows.add(
-    //       pw.TableRow(children: [
-    //         pw.Container(
-    //             height: 30,
-    //             width: 40,
-    //             child: pw.Padding(
-    //                 padding: pw.EdgeInsets.only(left: 5, top: 10),
-    //                 child: pw.Text(''))),
-    //         pw.Container(
-    //             height: 30,
-    //             child: pw.Padding(
-    //                 padding: pw.EdgeInsets.only(left: 5, top: 10),
-    //                 child: pw.Text(''))),
-    //         pw.Container(
-    //             height: 30,
-    //             child: pw.Padding(
-    //                 padding: pw.EdgeInsets.only(left: 5, top: 10),
-    //                 child: pw.Text(
-    //                   debitTotal > creditTotal
-    //                       ? formatNumber(
-    //                           debitTotal.toString().replaceAll(',', ''))
-    //                       : formatNumber(
-    //                           creditTotal.toString().replaceAll(',', '')),
-    //                 ))),
-    //         pw.Container(
-    //             height: 30,
-    //             child: pw.Padding(
-    //                 padding: pw.EdgeInsets.only(left: 5, top: 10),
-    //                 child: pw.Text(
-    //                   debitTotal > creditTotal
-    //                       ? formatNumber(
-    //                           debitTotal.toString().replaceAll(',', ''))
-    //                       : formatNumber(
-    //                           creditTotal.toString().replaceAll(',', '')),
-    //                 ))),
-    //         pw.Container(
-    //           height: 30,
-    //           child: pw.Padding(
-    //             padding: pw.EdgeInsets.only(left: 5, top: 10),
-    //             child: pw.Text(
-    //               '',
-    //             ),
-    //           ),
-    //         ),
-    //       ]),
-    //     );
-    //   }
-    // }
+
 
     ///CREATING PDF
 
     final pdf = Document();
-    image = await imageFromAssetBundle('assets/images/fl_new.png');
-    locationIcon =
-        await imageFromAssetBundle('assets/recipt Items/location-01.png');
-    phoneIcon = await imageFromAssetBundle('assets/recipt Items/phone-01.png');
-    mailIcon = await imageFromAssetBundle('assets/recipt Items/mail-01.png');
-    globIcon = await imageFromAssetBundle('assets/recipt Items/glob_icon.png');
+    image = await imageFromAssetBundle('assets/images/fl_new.jpg');
+    // locationIcon =
+    //     await imageFromAssetBundle('assets/recipt Items/location-01.png');
+    // phoneIcon = await imageFromAssetBundle('assets/recipt Items/phone-01.png');
+    // mailIcon = await imageFromAssetBundle('assets/recipt Items/mail-01.png');
+    // globIcon = await imageFromAssetBundle('assets/recipt Items/glob_icon.png');
     pdf.addPage(
       MultiPage(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -251,13 +77,13 @@ class StatementPDF {
                               children: [
                                 Text('www.firstlogicmetalab.com'),
                                 pw.SizedBox(width: 3),
-                                Image(
-                                  globIcon,
-                                  width: 20,
-                                  height: 20,
-                                  fit: pw.BoxFit.contain,
-                                ),
-                                pw.SizedBox(width: 5),
+                                // Image(
+                                //   globIcon,
+                                //   width: 20,
+                                //   height: 20,
+                                //   fit: pw.BoxFit.contain,
+                                // ),
+                                // pw.SizedBox(width: 5),
                               ]),
                           pw.SizedBox(height: 5),
                           Container(
