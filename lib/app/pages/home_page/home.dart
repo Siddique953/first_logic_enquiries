@@ -14,6 +14,7 @@ import '../../tabs/Bank Transfer/deposite/withdraw.dart';
 import '../../tabs/Branch/AddBranch.dart';
 import '../../tabs/Customers/Projects/projectListMain.dart';
 import '../../tabs/Customers/customerList.dart';
+import '../../tabs/Customers/customer_SinglePage.dart';
 import '../../tabs/Enquiry/AddEnquiry.dart';
 import '../../tabs/Enquiry/followUp.dart';
 import '../../tabs/Expense/add_expense.dart';
@@ -21,6 +22,7 @@ import '../../tabs/Expense/add_expense_head.dart';
 import '../../tabs/Human Resources/Attendance/attendance.dart';
 import '../../tabs/Human Resources/Employees/Employee_List/employeeList.dart';
 import '../../tabs/Human Resources/Employees/addEmployee/addEmployee.dart';
+import '../../tabs/Human Resources/Employees/deletedEmployees/deletedEmployees.dart';
 import '../../tabs/Human Resources/Employees/employeeDetails/singleEmployeeDetails.dart';
 import '../../tabs/Human Resources/HRSettings/addDept.dart';
 import '../../tabs/Human Resources/Leaves/leaves.dart';
@@ -175,7 +177,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   getEmployees() {
     FirebaseFirestore.instance
         .collection("employees")
-        .where('delete', isEqualTo: false)
+        // .where('delete', isEqualTo: false)
         // .orderBy('joinedDate', descending: false)
         .snapshots()
         .listen((event) {
@@ -716,6 +718,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     // addFieldToAllDoc();
     //
     // sendMail();
+
     getEmployees();
     getCustomers();
 
@@ -728,12 +731,15 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
     getProjectData();
 
-    _tabController = TabController(vsync: this, length: 33, initialIndex: 0);
+    _tabController = TabController(vsync: this, length: 34, initialIndex: 6);
+
+
     // updateProduct();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: currentUserPermission == false
@@ -821,6 +827,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           ProjectList(), //30
                           LeadList(), //31
                           AddLeadsWidget(), //32
+                          DeletedEmployees(tabController: _tabController), //33
                           ///
                         ],
                       ),
@@ -833,74 +840,89 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   }
 
   addFieldToAllDoc() {
-    List list = [
-      {
-        'name': 'Personal Details',
-        'completed': false,
-      },
-      {
-        'name': 'Project Details',
-        'completed': false,
-      },
-      {
-        'name': 'Payment Details',
-        'completed': false,
-      },
-      {
-        'name': 'Documents',
-        'completed': false,
-      },
-      {
-        'name': 'Services',
-        'completed': false,
-      },
-      {
-        'name': 'Statement',
-        'completed': false,
-      },
-    ];
+    // List list = [
+    //   {
+    //     'name': 'Personal Details',
+    //     'completed': false,
+    //   },
+    //   {
+    //     'name': 'Project Details',
+    //     'completed': false,
+    //   },
+    //   {
+    //     'name': 'Payment Details',
+    //     'completed': false,
+    //   },
+    //   {
+    //     'name': 'Documents',
+    //     'completed': false,
+    //   },
+    //   {
+    //     'name': 'Services',
+    //     'completed': false,
+    //   },
+    //   {
+    //     'name': 'Statement',
+    //     'completed': false,
+    //   },
+    // ];
 
-    FirebaseFirestore.instance.collection('projects').get().then(
+    print('=============asd============');
+    FirebaseFirestore.instance.collection('employees').get().then(
           (value) => value.docs.forEach(
             (element) {
-              ///
-              // String str = element['careOf'];asd
-              //'agentName':
-              //        careOfNo.text ?? '',
-              // print(str);
-              // str = str.replaceAll(' ', '').toLowerCase();
-              //
-              // print(str);as
-              // List paymentDetails = [];
-              // for (var item in element['paymentDetails']) {
-              //   Map det = item;
-              //
-              //   if (det['paymentProof'][0] == '') {
-              //     det['paymentProof'].removeAt(0);
-              //     // [item['paymentProof'] ?? ''];
-              //
-              //   }
-              //   paymentDetails.add(det);
-              // }
-              // print('====================================================');
-              // print(element['projectName']);
-              // print(paymentDetails);
-              ///
+          // print('customerId');
+          // print(element['customerId']);
+          // print(element['paymentDetails'].length);
 
-              FirebaseFirestore.instance
-                  .collection('projects')
-                  .doc(element.id)
-                  .update({
-                // 'email': '',
+          ///
+          // String str = element['careOf'];asd
+          //'agentName':
+          //        careOfNo.text ?? '',
+          // print(str);
+          // str = str.replaceAll(' ', '').toLowerCase();
+          //
+          // print(str);as
+          // List paymentDetails = [];
+          // for (var item in element['paymentDetails']) {
+          //   Map det = item;
+          //
+          //   if (det['paymentProof'][0] == '') {
+          //     det['paymentProof'].removeAt(0);
+          //     // [item['paymentProof'] ?? ''];
+          //
+          //   }
+          //   paymentDetails.add(det);
+          // }
+          // print('====================================================');
+          // print(element['projectName']);
+          // print(paymentDetails);
+          ///
+          ///
 
-                'totalCost': element['projectCost'],
+          String profile='https://firebasestorage.googleapis.com/v0/b/first-logic-erp.appspot.com/o/profiles%2Femployees%2FFL101-MUHAMMED%20SHABEEB-WhatsApp%20Image%202023-04-18%20at%2010.40.55%20PM.jpeg.jpeg?alt=media&token=fdcd5e54-9f64-484c-a452-9fff8b2f5597';
+          // // List payTest=element['paymentDetailsTest'];
+          // // payTest.sort((a, b) => a['datePaid'].compareTo(b['datePaid']));
+          // if(element['totalCost']==0 || element['totalCost']<0 ) {
+          // print(element['projectName']);
+          FirebaseFirestore.instance
+              .collection('employees')
+              .doc(element.id)
+              .update({
+            // 'email': '',
 
-                // 'careOf': FieldValue.delete(),
-                // 'careOfNo':FieldValue.delete(),
-              });
-            },
-          ),
-        );
+          'profile':profile,
+
+            // FieldValue.arrayUnion(element['paymentDetails']),
+            // 'totalCost': element['projectCost'],
+
+            // 'careOf': FieldValue.delete(),
+            // 'careOfNo':FieldValue.delete(),
+          });
+          // }
+        },
+      ),
+    );
   }
 }
 
