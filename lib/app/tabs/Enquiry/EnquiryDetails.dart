@@ -2451,7 +2451,10 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
       'companyName': '',
       'companyAddress': '',
       'customerID': data['customerId'],
-      'projectId': 'P' + currentbranchShortName + projectNo.toString()
+      'projectId': 'P' + currentbranchShortName + projectNo.toString(),
+      'paymentDetailsTest': [],
+      'totalPaidTest': 0.00,
+      'totalCost': 0.00,
     });
     FirebaseFirestore.instance
         .collection('customer')
@@ -2596,6 +2599,11 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
         'customerID': 'C' + currentbranchShortName + customerId.toString(),
         'projectId': 'P' + currentbranchShortName + projectNo.toString(),
         'totalCost': 0.00,
+
+        'paymentDetailsTest': [],
+
+        'totalPaidTest': 0.00,
+
       });
     }).then((value) {
       FirebaseFirestore.instance.collection('status').add({

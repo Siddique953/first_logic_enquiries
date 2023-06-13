@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:fl_erp/app/tabs/Human%20Resources/Employees/deletedEmployees/deletedEmployees.dart';
+import 'package:universal_html/html.dart' as html;
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -228,7 +233,8 @@ class _EmployeeListState extends State<EmployeeList> {
 
     print(employeeList.length);
 
-    listOfCustomers.addAll(employeeList);
+    listOfCustomers= employeeList.where((element) => element['delete']==false).toList();
+        // .addAll(employeeList);
 
     listOfFilteredCustomers = [];
     // getCustomers();
@@ -318,8 +324,9 @@ class _EmployeeListState extends State<EmployeeList> {
               ),
               Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Container(),
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
                     child: Container(
@@ -401,6 +408,7 @@ class _EmployeeListState extends State<EmployeeList> {
                                   EdgeInsetsDirectional.fromSTEB(0, 0, 8, 0),
                               child: FFButtonWidget(
                                 onPressed: () {
+
                                   search.clear();
                                   setState(() {
                                     // listOfFilteredProjects
@@ -434,6 +442,69 @@ class _EmployeeListState extends State<EmployeeList> {
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(20, 0, 30, 0),
+                    child: InkWell(
+                      onTap: (){
+
+                        widget._tabController.animateTo(33);
+                        // Navigator.push(context, MaterialPageRoute(builder: (context)=>DeletedEmployees(
+                        //   tabController: widget._tabController,
+                        // )));
+                      },
+                      child: Container(
+                        width: 150,
+                        height: 45,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                            borderRadius: BorderRadius.all(Radius.circular(20))
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.delete,color: Colors.white,),
+                            Text('Deleted Staffs',
+                              style: FlutterFlowTheme.subtitle2.override(
+                              fontFamily: 'Poppins',
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),),
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Padding(
+                  //   padding: EdgeInsetsDirectional.fromSTEB(20, 0, 30, 0),
+                  //   child: FFButtonWidget(
+                  //     onPressed: () {
+                  //       setState(() {
+                  //         widget._tabController.animateTo(7);
+                  //       });
+                  //     },
+                  //     text: 'Deleted Staffs',
+                  //     options: FFButtonOptions(
+                  //       width: 150,
+                  //       height: 45,
+                  //       color: Colors.red,
+                  //       textStyle: FlutterFlowTheme.subtitle2.override(
+                  //         fontFamily: 'Poppins',
+                  //         color: Colors.white,
+                  //         fontSize: 12,
+                  //         fontWeight: FontWeight.bold,
+                  //       ),
+                  //       elevation: 2,
+                  //       borderSide: BorderSide(
+                  //         color: Colors.transparent,
+                  //         width: 1,
+                  //       ),
+                  //       borderRadius: 50,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
               listOfFilteredCustomers.length == 0
@@ -719,8 +790,7 @@ class _EmployeeListState extends State<EmployeeList> {
                                                 //     MaterialPageRoute(
                                                 //         builder: (context) =>
                                                 //             CustomerSinglePage(
-                                                //               id: listOfFilteredCustomers[
-                                                //               index]
+                                                //               id: listOfFilteredCustomers[index]
                                                 //               ['customerID'],
                                                 //               selectedIndex: 0,
                                                 //               tab: false,
@@ -800,7 +870,7 @@ class _EmployeeListState extends State<EmployeeList> {
                           )
                         : SizedBox(),
                     // SizedBox(width:50,),
-                    lastIndex + 1 < listOfCustomers.length
+                    (lastIndex + 1 < listOfCustomers.length && listOfFilteredCustomers.length==20)
                         ? FFButtonWidget(
                             onPressed: () {
                               setState(() {
@@ -839,5 +909,98 @@ class _EmployeeListState extends State<EmployeeList> {
         ),
       ),
     );
+  }
+
+  Future<void> importData() async {
+    var excel = Excel.createExcel();
+
+    List test=[];
+    test.addAll(listOfCustomers);
+
+    test=test.where((element) => element['gender']=='Female').toList();
+
+    test.sort((a, b) {
+                return b["dob"].compareTo(a["dob"]);
+    });
+
+    Sheet sheetObject = excel['DoB'];
+    CellStyle cellStyle = CellStyle(
+        verticalAlign: VerticalAlign.Center,
+        horizontalAlign: HorizontalAlign.Center,
+        // backgroundColorHex: "#1AFF1A",
+        fontFamily: getFontFamily(FontFamily.Calibri));
+    CellStyle totalStyle = CellStyle(
+        fontFamily: getFontFamily(FontFamily.Calibri),
+        fontSize: 16,
+        bold: true);
+
+    //HEADINGS
+
+    if (test.length > 0) {
+      var cell1 = sheetObject.cell(CellIndex.indexByString("A1"));
+      cell1.value = 'SL NO';
+      cell1.cellStyle = cellStyle;
+      var cell2 = sheetObject.cell(CellIndex.indexByString("B1"));
+      cell2.value = 'Name'; // dynamic values support provided;
+      cell2.cellStyle = cellStyle;
+      var cell3 = sheetObject.cell(CellIndex.indexByString("C1"));
+      cell3.value = 'DoB'; // dynamic values support provided;
+      cell3.cellStyle = cellStyle;
+
+    }
+
+    //CELL VALUES
+
+    for (int i = 0; i < test.length; i++) {
+
+        var cell1 = sheetObject.cell(CellIndex.indexByString("A${i + 2}"));
+        cell1.value = '${i + 1}'; // dynamic values support provided;
+        cell1.cellStyle = cellStyle;
+        var cell2 = sheetObject.cell(CellIndex.indexByString("C${i + 2}"));
+        cell2.value = dateTimeFormat(
+            'd-MMM-y',
+            test[i]['dob']
+                .toDate()); // dynamic values support provided;
+        cell2.cellStyle = cellStyle;
+        var cell3 = sheetObject.cell(CellIndex.indexByString("B${i + 2}"));
+        cell3.value = test[i]['name']; // dynamic values support provided;
+        cell3.cellStyle = cellStyle;
+        // var cell4 = sheetObject.cell(CellIndex.indexByString("D${i + 2}"));
+        // cell4.value = payments[i]['amount']; // dynamic values support provided;
+        // cell4.cellStyle = cellStyle;
+        // var cell5 = sheetObject.cell(CellIndex.indexByString("E${i + 2}"));
+        // cell5.value =
+        // payments[i]['description']; // dynamic values support provided;
+        // cell5.cellStyle = cellStyle;
+        // var cell6 = sheetObject.cell(CellIndex.indexByString("F${i + 2}"));
+        // cell6.value =
+        // payments[i]['paymentMethode']; // dynamic values support provided;
+        // cell6.cellStyle = cellStyle;
+        // var cell7 = sheetObject.cell(CellIndex.indexByString("G${i + 2}"));
+        // cell7.value =
+        // payments[i]['staffName']; // dynamic values support provided;
+        // cell7.cellStyle = cellStyle;
+
+        // var cell7 = sheetObject.cell(CellIndex.indexByString("G${i + 2}"));
+        // cell7.value = payments[i]['modeOfPayment']
+        //     .toString(); // dynamic values support provided;
+        // cell7.cellStyle = cellStyle;
+        // var cell8 = sheetObject.cell(CellIndex.indexByString("H${i + 2}"));
+        // cell8.value =
+        //     payments[i]['amount'].toString(); // dynamic values support provided;
+        // cell8.cellStyle = cellStyle;
+
+    }
+
+    excel.setDefaultSheet('DoB');
+    var fileBytes = excel.encode();
+    File file;
+
+    final content = base64Encode(fileBytes);
+    final anchor = html.AnchorElement(
+        href: "data:application/octet-stream;charset=utf-16le;base64,$content")
+      ..setAttribute(
+          "download", "${DateTime.now().toString().substring(0, 10)}.xlsx")
+      ..click();
   }
 }

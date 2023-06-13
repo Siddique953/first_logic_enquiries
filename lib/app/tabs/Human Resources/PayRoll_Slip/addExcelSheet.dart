@@ -4,7 +4,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:month_picker_dialog_2/month_picker_dialog_2.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
+// import 'package:month_picker_dialog_2/month_picker_dialog_2.dart';
 import '../../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../../flutter_flow/flutter_flow_util.dart';
@@ -442,13 +443,13 @@ class _AddAttendanceState extends State<AddAttendance> {
                                               DateTime.now().year + 100, 12),
                                           initialDate: DateTime.now(),
 
-                                          confirmText: Text(
-                                            'Choose',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black),
-                                          ),
-                                          cancelText: Text('Cancel'),
+                                          // confirmText: Text(
+                                          //   'Choose',
+                                          //   style: TextStyle(
+                                          //       fontWeight: FontWeight.bold,
+                                          //       color: Colors.black),
+                                          // ),
+                                          // cancelText: Text('Cancel'),
                                           // yearFirst: true,
                                         ).then((date) {
                                           if (date != null) {
@@ -1117,6 +1118,18 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                         .toString()
                                                     : '');
 
+                                        TextEditingController leave =
+                                        TextEditingController(
+                                            text: employeeDetails[data] !=
+                                                null &&
+                                                employeeDetails[data]
+                                                ['leave'] !=
+                                                    null
+                                                ? (employeeDetails[data]['leave'] ??
+                                                0)
+                                                .toString()
+                                                : '');
+
                                         String name =
                                             empDataById[data].name ?? '';
 
@@ -1132,15 +1145,15 @@ class _AddAttendanceState extends State<AddAttendance> {
                                         //             .toString()
                                         //         : '';
 
-                                        String leaves = employeeDetails[data] !=
-                                                    null &&
-                                                employeeDetails[data]
-                                                        ['leave'] !=
-                                                    null
-                                            ? (employeeDetails[data]['leave'] ??
-                                                    0)
-                                                .toString()
-                                            : '';
+                                        // String leaves = employeeDetails[data] !=
+                                        //             null &&
+                                        //         employeeDetails[data]
+                                        //                 ['leave'] !=
+                                        //             null
+                                        //     ? (employeeDetails[data]['leave'] ??
+                                        //             0)
+                                        //         .toString()
+                                        //     : '';
 
                                         String casualLeave =
                                             employeeDetails[data] != null &&
@@ -1232,23 +1245,31 @@ class _AddAttendanceState extends State<AddAttendance> {
 
                                                 onFieldSubmitted: (s) {
                                                   try {
-                                                    for (var id
-                                                        in employeeDetails.keys
-                                                            .toList()) {
-                                                      if (30 -
-                                                              (employeeDetails[
-                                                                          id][
-                                                                      'offDay'] ??
-                                                                  0) ==
-                                                          30) {
-                                                        employeeDetails[id]
+
+                                                    employeeDetails[data]
                                                                 ['offDay'] =
                                                             (30 -
                                                                 int.tryParse(
                                                                     workingDays
                                                                         .text));
-                                                      }
-                                                    }
+
+                                                    // for (var id
+                                                    //     in employeeDetails.keys
+                                                    //         .toList()) {
+                                                    //   if (30 -
+                                                    //           (employeeDetails[
+                                                    //                       id][
+                                                    //                   'offDay'] ??
+                                                    //               0) ==
+                                                    //       30) {
+                                                    //     employeeDetails[id]
+                                                    //             ['offDay'] =
+                                                    //         (30 -
+                                                    //             int.tryParse(
+                                                    //                 workingDays
+                                                    //                     .text));
+                                                    //   }
+                                                    // }
 
                                                     setState(() {});
                                                   } catch (err) {
@@ -1272,11 +1293,66 @@ class _AddAttendanceState extends State<AddAttendance> {
                                             ),
 
                                             DataCell(
-                                              Text('$leaves',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 12)),
+                                              TextFormField(
+                                                readOnly: closed,
+                                                controller: leave,
+                                                obscureText: false,
+
+                                                //ADD VALUE TO TAKE VALUE
+
+                                                // onTap: () {
+                                                //   if (payable.text == '0') {
+                                                //     payable.text = '';
+                                                //   }
+                                                // },
+
+                                                onFieldSubmitted: (s) {
+                                                  try {
+
+                                                    employeeDetails[data]
+                                                    ['leave'] =
+
+                                                        int.tryParse(
+                                                            leave
+                                                                .text);
+
+                                                    // for (var id
+                                                    //     in employeeDetails.keys
+                                                    //         .toList()) {
+                                                    //   if (30 -
+                                                    //           (employeeDetails[
+                                                    //                       id][
+                                                    //                   'offDay'] ??
+                                                    //               0) ==
+                                                    //       30) {
+                                                    //     employeeDetails[id]
+                                                    //             ['offDay'] =
+                                                    //         (30 -
+                                                    //             int.tryParse(
+                                                    //                 workingDays
+                                                    //                     .text));
+                                                    //   }
+                                                    // }
+
+                                                    setState(() {});
+                                                  } catch (err) {
+                                                    print(err);
+                                                    showUploadMessage(context,
+                                                        'Unexpected error occurred!!!');
+                                                  }
+                                                },
+
+                                                decoration: InputDecoration(
+                                                  border: InputBorder.none,
+                                                ),
+                                                style: FlutterFlowTheme
+                                                    .bodyText2
+                                                    .override(
+                                                  fontFamily: 'Montserrat',
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
                                             ),
 
                                             // DataCell(

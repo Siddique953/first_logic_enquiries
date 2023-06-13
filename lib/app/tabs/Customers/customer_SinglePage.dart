@@ -67,6 +67,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
   double creditTotal = 0;
   double balance = 0;
 
+  List statementDataSort = [];
   List statementData = [];
   List projectData = [];
   List serviceData = [];
@@ -179,7 +180,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
   List selectedServicesList = [];
   List serviceNames = [];
   List<String> customerServiceNames = [''];
-  List<String> customerServiceAndProjectNames = ['All'];
+  List<String> customerServiceAndProjectNames = [''];
   Map<String, dynamic> serviceIdByName = {};
   Map<String, dynamic> serviceDataById = {};
 
@@ -213,6 +214,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
     FirebaseFirestore.instance
         .collection('customerServices')
         .where('customerId', isEqualTo: widget.id)
+        .where('delete', isEqualTo: false)
         .snapshots()
         .listen((event) {
       print('HEREEEEEEEEEEEEEE');
@@ -221,7 +223,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
       selectedServicesList = [];
       customerServiceNames = [];
       servicePaymentList = [];
-      statementData = [];
+      statementDataSort = [];
       serviceData = [];
 
       for (var doc in event.docs) {
@@ -236,6 +238,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
           'date': doc['serviceStartingDate'],
           'particular': doc['serviceName'],
           'credit': doc['serviceAmount'],
+          'project': doc['project'],
         });
 
         List data = doc['paymentDetails'];
@@ -262,29 +265,30 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
             'date': item['datePaid'],
             'particular': item['description'],
             'debit': item['amount'],
+            'project': item['project'],
           });
         }
       }
 
       if (mounted) {
         // payments.addAll(servicePaymentList);
-        customerServiceAndProjectNames = ['All'];
-        customerServiceAndProjectNames.addAll(customerServiceNames);
-        customerServiceAndProjectNames.addAll(projectNames);
-        if(customerServiceAndProjectNames.isEmpty){
-          customerServiceAndProjectNames=[''];
-        }
+        // customerServiceAndProjectNames = ['All'];
+        // customerServiceAndProjectNames.addAll(customerServiceNames);
+        // customerServiceAndProjectNames.addAll(projectNames);
+        // if(customerServiceAndProjectNames.isEmpty){
+        //   customerServiceAndProjectNames=[''];
+        // }
 
 
         //ADDING PAYMENTS
-        projectAndServicePaymentListSort = [];
-        projectAndServicePaymentListSort.addAll(servicePaymentList);
-        projectAndServicePaymentListSort.toList();
-        projectAndServicePaymentListSort.addAll(payments);
-        projectAndServicePaymentListSort.toList();
-
-        projectAndServicePaymentListSort.sort((a, b) => b['paidDate'].compareTo(a['paidDate']));
-        projectAndServicePaymentList=projectAndServicePaymentListSort;
+        // projectAndServicePaymentListSort = [];
+        // projectAndServicePaymentListSort.addAll(servicePaymentList);
+        // projectAndServicePaymentListSort.toList();
+        // projectAndServicePaymentListSort.addAll(payments);
+        // projectAndServicePaymentListSort.toList();
+        //
+        // projectAndServicePaymentListSort.sort((a, b) => b['paidDate'].compareTo(a['paidDate']));
+        // projectAndServicePaymentList=projectAndServicePaymentListSort;
 
         ///
         print('Project Listen');
@@ -293,10 +297,14 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
         ///
 
-        statementData.addAll(projectData);
-        statementData.addAll(serviceData);
+        statementDataSort.addAll(projectData);
+        statementDataSort.addAll(serviceData);
 
-        statementData.sort((a, b) => a['date'].compareTo(b['date']));
+        statementDataSort.sort((a, b) => a['date'].compareTo(b['date']));
+
+        statementData=statementDataSort;
+
+        selectedServicesList.sort((a, b) => b['createdDate'].compareTo(a['createdDate']));
 
         setState(() {});
       }
@@ -414,6 +422,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
           'date': projectsList[i]['date'],
           'particular': projectsList[i]['projectName'],
           'credit': projectsList[i]['projectCost'],
+          'project': projectsList[i]['projectId'],
         });
 
         List data = projectsList[i]['paymentDetails'];
@@ -423,6 +432,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
             'date': item['datePaid'],
             'particular': item['description'],
             'debit': item['amount'],
+            'project': projectsList[i]['projectId'],
           });
         }
       }
@@ -438,15 +448,19 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
         currentProject = projectDataById[projectIdByName[projectName.text]];
       }
       if (mounted) {
-        customerServiceAndProjectNames = ['All'];
+
+        if(currentProject.isNotEmpty){
+          currentProject=projectDataById[projectIdByName[projectName.text]];
+        }
+        customerServiceAndProjectNames = [];
         customerServiceAndProjectNames.addAll(projectNames);
-        customerServiceAndProjectNames.addAll(customerServiceNames);
+        // customerServiceAndProjectNames.addAll(customerServiceNames);
 
         if(customerServiceAndProjectNames.isEmpty){
           customerServiceAndProjectNames=[''];
         }
 
-        statementData = [];
+        statementDataSort = [];
 
         ///
         print('Project Listen');
@@ -455,10 +469,12 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
         ///
 
-        statementData.addAll(projectData);
-        statementData.addAll(serviceData);
+        statementDataSort.addAll(projectData);
+        statementDataSort.addAll(serviceData);
 
-        statementData.sort((a, b) => a['date'].compareTo(b['date']));
+        statementDataSort.sort((a, b) => a['date'].compareTo(b['date']));
+
+        statementData=statementDataSort;
 
         setState(() {
           if (projectsList.length == 1) {
@@ -484,7 +500,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
       payments = [];
       paymentsSort = [];
       for (var doc in customer) {
-        List data = doc['paymentDetails'];
+        List data = doc['paymentDetailsTest'];
         for (int i = 0; i < data.length; i++) {
           Map value = {};
           value = doc.data();
@@ -581,7 +597,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
       if (mounted) {
         projectAndServicePaymentListSort = [];
-        projectAndServicePaymentListSort.addAll(servicePaymentList);
+        // projectAndServicePaymentListSort.addAll(servicePaymentList);
         projectAndServicePaymentListSort.addAll(payments);
 
         setState(() {
@@ -599,134 +615,200 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
     data.addAll(projectAndServicePaymentList);
     projectAndServicePaymentListSort=[];
 
+    print('hello');
+    print(data.length);
+
     for (int i = 0; i < data.length; i++) {
       try {
-        print(i);
+        // print(i);
+        // print(data[i]['paidDate'].toDate());
 
-        if(data[i]['projectId']!=null){
-          /// SORT SERVICE DATA
+        /// SORT SERVICE DATA
 
-          if ((projectDataById[data[i]['projectId']]['projectName'] ==
-              projectNameSortValue.text) &&
-              data[i]['staffName'] == staffNameSortValue.text) {
-            Map value = {};
-            value = data[i];
+        if ((projectDataById[data[i]['projectId']]['projectName'] ==
+            projectNameSortValue.text) &&
+            data[i]['staffName'] == staffNameSortValue.text) {
+          Map value = {};
+          value = data[i];
 
-            projectAndServicePaymentListSort.add(value);
-          }
-
-          ///
-          else if ((projectDataById[data[i]['projectId']]['projectName'] ==
-              projectNameSortValue.text) &&
-              (staffNameSortValue.text == 'All' ||
-                  staffNameSortValue.text == '')) {
-            Map value = {};
-            value = data[i];
-
-            projectAndServicePaymentListSort.add(value);
-          }
-
-          ///
-          else if (data[i]['staffName'] == staffNameSortValue.text &&
-              (projectNameSortValue.text == 'All' ||
-                  projectNameSortValue.text == '')) {
-            Map value = {};
-            value = data[i];
-
-            projectAndServicePaymentListSort.add(value);
-          }
-
-          ///
-
-          else if (projectNameSortValue.text == 'All' &&
-              staffNameSortValue.text == 'All') {
-            Map value = {};
-            value = data[i];
-
-            projectAndServicePaymentListSort.add(value);
-          }
-
-          ///
-          else if ((projectNameSortValue.text == '' &&
-              staffNameSortValue.text == 'All') ||
-              (projectNameSortValue.text == 'All' &&
-                  staffNameSortValue.text == '')) {
-            Map value = {};
-            value = data[i];
-
-            projectAndServicePaymentListSort.add(value);
-          }
-
-          ///
-          else if (projectNameSortValue.text == '' &&
-              staffNameSortValue.text == '') {
-            Map value = {};
-            value = data[i];
-
-            projectAndServicePaymentListSort.add(value);
-          }
-
-        } else {
-          if ((serviceDataById[data[i]['serviceId']]['serviceName'] ==
-              projectNameSortValue.text) &&
-              data[i]['staffName'] == staffNameSortValue.text) {
-            Map value = {};
-            value = data[i];
-
-            projectAndServicePaymentListSort.add(value);
-          }
-
-          ///
-          else if ((serviceDataById[data[i]['serviceId']]['serviceName'] ==
-              projectNameSortValue.text) &&
-              (staffNameSortValue.text == 'All' ||
-                  staffNameSortValue.text == '')) {
-            Map value = {};
-            value = data[i];
-
-            projectAndServicePaymentListSort.add(value);
-          }
-
-          ///
-          else if (data[i]['staffName'] == staffNameSortValue.text &&
-              (projectNameSortValue.text == 'All' ||
-                  projectNameSortValue.text == '')) {
-            Map value = {};
-            value = data[i];
-
-            projectAndServicePaymentListSort.add(value);
-          }
-
-          ///
-
-          else if (projectNameSortValue.text == 'All' &&
-              staffNameSortValue.text == 'All') {
-            Map value = {};
-            value = data[i];
-
-            projectAndServicePaymentListSort.add(value);
-          }
-
-          ///
-          else if ((projectNameSortValue.text == '' &&
-              staffNameSortValue.text == 'All') ||
-              (projectNameSortValue.text == 'All' &&
-                  staffNameSortValue.text == '')) {
-            Map value = {};
-            value = data[i];
-
-            projectAndServicePaymentListSort.add(value);
-          }
-
-          ///
-          else if (projectNameSortValue.text == '' &&
-              staffNameSortValue.text == '') {
-            Map value = {};
-            value = data[i];
-
-            projectAndServicePaymentListSort.add(value);
-          }
+          projectAndServicePaymentListSort.add(value);
         }
+
+        ///
+        else if ((projectDataById[data[i]['projectId']]['projectName'] ==
+            projectNameSortValue.text) &&
+            (staffNameSortValue.text == 'All' ||
+                staffNameSortValue.text == '')) {
+          Map value = {};
+          value = data[i];
+
+          projectAndServicePaymentListSort.add(value);
+        }
+
+        ///
+        else if (data[i]['staffName'] == staffNameSortValue.text &&
+            (projectNameSortValue.text == 'All' ||
+                projectNameSortValue.text == '')) {
+          Map value = {};
+          value = data[i];
+
+          projectAndServicePaymentListSort.add(value);
+        }
+
+        ///
+
+        else if (projectNameSortValue.text == 'All' &&
+            staffNameSortValue.text == 'All') {
+          Map value = {};
+          value = data[i];
+
+          projectAndServicePaymentListSort.add(value);
+        }
+
+        ///
+        else if ((projectNameSortValue.text == '' &&
+            staffNameSortValue.text == 'All') ||
+            (projectNameSortValue.text == 'All' &&
+                staffNameSortValue.text == '')) {
+          Map value = {};
+          value = data[i];
+
+          projectAndServicePaymentListSort.add(value);
+        }
+
+        ///
+        else if (projectNameSortValue.text == '' &&
+            staffNameSortValue.text == '') {
+          Map value = {};
+          value = data[i];
+
+          projectAndServicePaymentListSort.add(value);
+        }
+
+        // if(data[i]['projectId']!=null){
+        //   /// SORT SERVICE DATA
+        //
+        //   if ((projectDataById[data[i]['projectId']]['projectName'] ==
+        //       projectNameSortValue.text) &&
+        //       data[i]['staffName'] == staffNameSortValue.text) {
+        //     Map value = {};
+        //     value = data[i];
+        //
+        //     projectAndServicePaymentListSort.add(value);
+        //   }
+        //
+        //   ///
+        //   else if ((projectDataById[data[i]['projectId']]['projectName'] ==
+        //       projectNameSortValue.text) &&
+        //       (staffNameSortValue.text == 'All' ||
+        //           staffNameSortValue.text == '')) {
+        //     Map value = {};
+        //     value = data[i];
+        //
+        //     projectAndServicePaymentListSort.add(value);
+        //   }
+        //
+        //   ///
+        //   else if (data[i]['staffName'] == staffNameSortValue.text &&
+        //       (projectNameSortValue.text == 'All' ||
+        //           projectNameSortValue.text == '')) {
+        //     Map value = {};
+        //     value = data[i];
+        //
+        //     projectAndServicePaymentListSort.add(value);
+        //   }
+        //
+        //   ///
+        //
+        //   else if (projectNameSortValue.text == 'All' &&
+        //       staffNameSortValue.text == 'All') {
+        //     Map value = {};
+        //     value = data[i];
+        //
+        //     projectAndServicePaymentListSort.add(value);
+        //   }
+        //
+        //   ///
+        //   else if ((projectNameSortValue.text == '' &&
+        //       staffNameSortValue.text == 'All') ||
+        //       (projectNameSortValue.text == 'All' &&
+        //           staffNameSortValue.text == '')) {
+        //     Map value = {};
+        //     value = data[i];
+        //
+        //     projectAndServicePaymentListSort.add(value);
+        //   }
+        //
+        //   ///
+        //   else if (projectNameSortValue.text == '' &&
+        //       staffNameSortValue.text == '') {
+        //     Map value = {};
+        //     value = data[i];
+        //
+        //     projectAndServicePaymentListSort.add(value);
+        //   }
+        //
+        // } else {
+        //   if ((serviceDataById[data[i]['serviceId']]['serviceName'] ==
+        //       projectNameSortValue.text) &&
+        //       data[i]['staffName'] == staffNameSortValue.text) {
+        //     Map value = {};
+        //     value = data[i];
+        //
+        //     projectAndServicePaymentListSort.add(value);
+        //   }
+        //
+        //   ///
+        //   else if ((serviceDataById[data[i]['serviceId']]['serviceName'] ==
+        //       projectNameSortValue.text) &&
+        //       (staffNameSortValue.text == 'All' ||
+        //           staffNameSortValue.text == '')) {
+        //     Map value = {};
+        //     value = data[i];
+        //
+        //     projectAndServicePaymentListSort.add(value);
+        //   }
+        //
+        //   ///
+        //   else if (data[i]['staffName'] == staffNameSortValue.text &&
+        //       (projectNameSortValue.text == 'All' ||
+        //           projectNameSortValue.text == '')) {
+        //     Map value = {};
+        //     value = data[i];
+        //
+        //     projectAndServicePaymentListSort.add(value);
+        //   }
+        //
+        //   ///
+        //
+        //   else if (projectNameSortValue.text == 'All' &&
+        //       staffNameSortValue.text == 'All') {
+        //     Map value = {};
+        //     value = data[i];
+        //
+        //     projectAndServicePaymentListSort.add(value);
+        //   }
+        //
+        //   ///
+        //   else if ((projectNameSortValue.text == '' &&
+        //       staffNameSortValue.text == 'All') ||
+        //       (projectNameSortValue.text == 'All' &&
+        //           staffNameSortValue.text == '')) {
+        //     Map value = {};
+        //     value = data[i];
+        //
+        //     projectAndServicePaymentListSort.add(value);
+        //   }
+        //
+        //   ///
+        //   else if (projectNameSortValue.text == '' &&
+        //       staffNameSortValue.text == '') {
+        //     Map value = {};
+        //     value = data[i];
+        //
+        //     projectAndServicePaymentListSort.add(value);
+        //   }
+        // }
 
 
       } catch (er) {
@@ -735,6 +817,224 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
     }
     setState(() {
       payments.sort((a, b) => b['paidDate'].compareTo(a['paidDate']));
+    });
+  }
+
+  sortStatement(String type) {
+
+    print('''''type''''');
+    print(type);
+    List data = [];
+    data.addAll(statementData);
+    statementDataSort=[];
+
+    print('hello');
+    print(data.length);
+
+    for (int i = 0; i < data.length; i++) {
+      try {
+        // print(i);
+        // print(data[i]['paidDate'].toDate());
+
+        /// SORT SERVICE DATA
+        if(projectDataById[data[i]['project']]['projectName'] ==
+                type) {
+          statementDataSort.add(data[i]);
+        }
+        ///
+
+        // if ((projectDataById[data[i]['projectId']]['projectName'] ==
+        //     type) &&
+        //     data[i]['staffName'] == staffNameSortValue.text) {
+        //   Map value = {};
+        //   value = data[i];
+        //
+        //   projectAndServicePaymentListSort.add(value);
+        // }
+        //
+        // ///
+        // else if ((projectDataById[data[i]['projectId']]['projectName'] ==
+        //     type) &&
+        //     (staffNameSortValue.text == 'All' ||
+        //         staffNameSortValue.text == '')) {
+        //   Map value = {};
+        //   value = data[i];
+        //
+        //   projectAndServicePaymentListSort.add(value);
+        // }
+        //
+        // ///
+        // else if (data[i]['staffName'] == staffNameSortValue.text &&
+        //     (projectNameSortValue.text == 'All' ||
+        //         projectNameSortValue.text == '')) {
+        //   Map value = {};
+        //   value = data[i];
+        //
+        //   projectAndServicePaymentListSort.add(value);
+        // }
+        //
+        // ///
+        //
+        // else if (projectNameSortValue.text == 'All' &&
+        //     staffNameSortValue.text == 'All') {
+        //   Map value = {};
+        //   value = data[i];
+        //
+        //   projectAndServicePaymentListSort.add(value);
+        // }
+        //
+        // ///
+        // else if ((projectNameSortValue.text == '' &&
+        //     staffNameSortValue.text == 'All') ||
+        //     (projectNameSortValue.text == 'All' &&
+        //         staffNameSortValue.text == '')) {
+        //   Map value = {};
+        //   value = data[i];
+        //
+        //   projectAndServicePaymentListSort.add(value);
+        // }
+        //
+        // ///
+        // else if (projectNameSortValue.text == '' &&
+        //     staffNameSortValue.text == '') {
+        //   Map value = {};
+        //   value = data[i];
+        //
+        //   projectAndServicePaymentListSort.add(value);
+        // }
+        //
+        // // if(data[i]['projectId']!=null){
+        // //   /// SORT SERVICE DATA
+        // //
+        // //   if ((projectDataById[data[i]['projectId']]['projectName'] ==
+        // //       projectNameSortValue.text) &&
+        // //       data[i]['staffName'] == staffNameSortValue.text) {
+        // //     Map value = {};
+        // //     value = data[i];
+        // //
+        // //     projectAndServicePaymentListSort.add(value);
+        // //   }
+        // //
+        // //   ///
+        // //   else if ((projectDataById[data[i]['projectId']]['projectName'] ==
+        // //       projectNameSortValue.text) &&
+        // //       (staffNameSortValue.text == 'All' ||
+        // //           staffNameSortValue.text == '')) {
+        // //     Map value = {};
+        // //     value = data[i];
+        // //
+        // //     projectAndServicePaymentListSort.add(value);
+        // //   }
+        // //
+        // //   ///
+        // //   else if (data[i]['staffName'] == staffNameSortValue.text &&
+        // //       (projectNameSortValue.text == 'All' ||
+        // //           projectNameSortValue.text == '')) {
+        // //     Map value = {};
+        // //     value = data[i];
+        // //
+        // //     projectAndServicePaymentListSort.add(value);
+        // //   }
+        // //
+        // //   ///
+        // //
+        // //   else if (projectNameSortValue.text == 'All' &&
+        // //       staffNameSortValue.text == 'All') {
+        // //     Map value = {};
+        // //     value = data[i];
+        // //
+        // //     projectAndServicePaymentListSort.add(value);
+        // //   }
+        // //
+        // //   ///
+        // //   else if ((projectNameSortValue.text == '' &&
+        // //       staffNameSortValue.text == 'All') ||
+        // //       (projectNameSortValue.text == 'All' &&
+        // //           staffNameSortValue.text == '')) {
+        // //     Map value = {};
+        // //     value = data[i];
+        // //
+        // //     projectAndServicePaymentListSort.add(value);
+        // //   }
+        // //
+        // //   ///
+        // //   else if (projectNameSortValue.text == '' &&
+        // //       staffNameSortValue.text == '') {
+        // //     Map value = {};
+        // //     value = data[i];
+        // //
+        // //     projectAndServicePaymentListSort.add(value);
+        // //   }
+        // //
+        // // } else {
+        // //   if ((serviceDataById[data[i]['serviceId']]['serviceName'] ==
+        // //       projectNameSortValue.text) &&
+        // //       data[i]['staffName'] == staffNameSortValue.text) {
+        // //     Map value = {};
+        // //     value = data[i];
+        // //
+        // //     projectAndServicePaymentListSort.add(value);
+        // //   }
+        // //
+        // //   ///
+        // //   else if ((serviceDataById[data[i]['serviceId']]['serviceName'] ==
+        // //       projectNameSortValue.text) &&
+        // //       (staffNameSortValue.text == 'All' ||
+        // //           staffNameSortValue.text == '')) {
+        // //     Map value = {};
+        // //     value = data[i];
+        // //
+        // //     projectAndServicePaymentListSort.add(value);
+        // //   }
+        // //
+        // //   ///
+        // //   else if (data[i]['staffName'] == staffNameSortValue.text &&
+        // //       (projectNameSortValue.text == 'All' ||
+        // //           projectNameSortValue.text == '')) {
+        // //     Map value = {};
+        // //     value = data[i];
+        // //
+        // //     projectAndServicePaymentListSort.add(value);
+        // //   }
+        // //
+        // //   ///
+        // //
+        // //   else if (projectNameSortValue.text == 'All' &&
+        // //       staffNameSortValue.text == 'All') {
+        // //     Map value = {};
+        // //     value = data[i];
+        // //
+        // //     projectAndServicePaymentListSort.add(value);
+        // //   }
+        // //
+        // //   ///
+        // //   else if ((projectNameSortValue.text == '' &&
+        // //       staffNameSortValue.text == 'All') ||
+        // //       (projectNameSortValue.text == 'All' &&
+        // //           staffNameSortValue.text == '')) {
+        // //     Map value = {};
+        // //     value = data[i];
+        // //
+        // //     projectAndServicePaymentListSort.add(value);
+        // //   }
+        // //
+        // //   ///
+        // //   else if (projectNameSortValue.text == '' &&
+        // //       staffNameSortValue.text == '') {
+        // //     Map value = {};
+        // //     value = data[i];
+        // //
+        // //     projectAndServicePaymentListSort.add(value);
+        // //   }
+        // // }
+
+
+      } catch (er) {
+        print(er);
+      }
+    }
+    setState(() {
+      // statementDataSort.sort((a, b) => a['date'].compareTo(a['date']));
     });
   }
 
@@ -845,7 +1145,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
 
     customerServiceAndProjectNames = [''];
@@ -917,6 +1217,13 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
     //get payments
     getPaymentDetails();
+  }
+
+
+  @override
+  void dispose() {
+
+    super.dispose();
   }
 
   @override
@@ -2371,7 +2678,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                         ?
 
                         /// Project LIST TABLE
-                        Padding(
+                        Padding (
                             padding: const EdgeInsets.only(top: 20, bottom: 20),
                             child: SingleChildScrollView(
                               physics: BouncingScrollPhysics(),
@@ -2644,7 +2951,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                 .width *
                                                             0.025),
                                                 Text(
-                                                  'Projects & Services : ',
+                                                  'Projects : ',
                                                   style:
                                                       TextStyle(fontSize: 16),
                                                 ),
@@ -2665,38 +2972,43 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                   ),
                                                   child: CustomDropdown.search(
                                                     hintText:
-                                                        'Select Project or Services',
+                                                        'Select Project',
                                                     items:
                                                         customerServiceAndProjectNames,
                                                     controller: projectName,
                                                     // excludeSelected: false,
 
                                                     onChanged: (text) {
-                                                      if (projectIdByName[
-                                                              projectName
-                                                                  .text] !=
-                                                          null) {
+                                                      // if (projectIdByName[
+                                                      //         projectName
+                                                      //             .text] !=
+                                                      //     null) {
                                                         service = false;
                                                         currentProject =
                                                             projectDataById[
                                                                 projectIdByName[
                                                                     projectName
                                                                         .text]];
-                                                      } else {
-                                                        service = true;
-                                                        currentProject = {
-                                                          'projectCost': serviceDataById[
-                                                                  serviceIdByName[
-                                                                      projectName
-                                                                          .text]]
-                                                              ['serviceAmount'],
-                                                          'totalPaid': serviceDataById[
-                                                                  serviceIdByName[
-                                                                      projectName
-                                                                          .text]]
-                                                              ['totalPaid'],
-                                                        };
-                                                      }
+
+                                                        print(projectName.text);
+                                                        print('""currentProject""');
+                                                        print(currentProject);
+                                                        getSortedPayments();
+                                                      // } else {
+                                                      //   service = true;
+                                                      //   currentProject = {
+                                                      //     'projectCost': serviceDataById[
+                                                      //             serviceIdByName[
+                                                      //                 projectName
+                                                      //                     .text]]
+                                                      //         ['serviceAmount'],
+                                                      //     'totalPaid': serviceDataById[
+                                                      //             serviceIdByName[
+                                                      //                 projectName
+                                                      //                     .text]]
+                                                      //         ['totalPaid'],
+                                                      //   };
+                                                      // }
                                                       setState(() {
                                                         print(currentProject);
                                                       });
@@ -2739,18 +3051,35 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                 const EdgeInsets
                                                                         .only(
                                                                     left: 10),
-                                                            child: currentProject[
-                                                                        'projectCost'] !=
+                                                            child:
+                                                            currentProject[
+                                                                        'totalCost'] !=
                                                                     null
                                                                 ? currentProject[
-                                                                            'projectCost'] !=
+                                                                            'totalCost'] !=
                                                                         0
                                                                     ? Text(_formatNumber(currentProject[
-                                                                            'projectCost']
+                                                                            'totalCost']
                                                                         .toString()
                                                                         .replaceAll(
                                                                             ',',
                                                                             '')))
+
+                                                            // currentProject[
+                                                            //             'projectCost'] !=
+                                                            //         null
+                                                            //     ? currentProject[
+                                                            //                 'projectCost'] !=
+                                                            //             0
+                                                            //         ? Text(_formatNumber(currentProject[
+                                                            //                 'projectCost']
+                                                            //             .toString()
+                                                            //             .replaceAll(
+                                                            //                 ',',
+                                                            //                 '')))
+                                                            //
+                                                            //
+                                                            ///
                                                                     // currentProject[
                                                                     //             'projectCost']
                                                                     //         .toString())
@@ -2798,12 +3127,12 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                       left: 10),
                                                               child: Text(
                                                                 currentProject[
-                                                                            'projectCost'] ==
+                                                                            'totalCost'] ==
                                                                         null
                                                                     ? ''
-                                                                    : currentProject['projectCost'] !=
+                                                                    : currentProject['totalCost'] !=
                                                                             0
-                                                                        ? _formatNumber(currentProject['totalPaid'].toString().replaceAll(
+                                                                        ? _formatNumber(currentProject['totalPaidTest'].toString().replaceAll(
                                                                             ',',
                                                                             ''))
                                                                         // (currentProject['totalPaid']
@@ -2850,15 +3179,15 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                         .only(
                                                                     left: 10),
                                                             child: currentProject[
-                                                                        'projectCost'] ==
+                                                                        'totalCost'] ==
                                                                     null
-                                                                ? Text('')
+                                                                ? Text('') ///totalCost /// projectCost
                                                                 : currentProject[
-                                                                            'projectCost'] !=
+                                                                            'totalCost'] !=
                                                                         0
-                                                                    ? Text(_formatNumber((currentProject['projectCost'] -
+                                                                    ? Text(_formatNumber((currentProject['totalCost'] -
                                                                             currentProject[
-                                                                                'totalPaid'])
+                                                                                'totalPaidTest'])
                                                                         .toString()
                                                                         .replaceAll(
                                                                             ',',
@@ -3061,11 +3390,10 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                           print(str);
                                                         },
                                                         validator: (v) {
-                                                          if (currentProject ==
-                                                                  null ||
+                                                          if (
                                                               currentProject ==
                                                                   {}) {
-                                                            return null;
+                                                            return 'Must Choose a Project';
                                                           } else {
                                                             return currentProject
                                                                         .length !=
@@ -3073,8 +3401,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                 ? double.tryParse(payingAmount.text.replaceAll(
                                                                             ',',
                                                                             '')) >
-                                                                        (currentProject['projectCost'] -
-                                                                            currentProject['totalPaid'])
+                                                                        (currentProject['totalCost'] -
+                                                                            currentProject['totalPaidTest'])
                                                                     ? 'Amount must be less than total due amount'
                                                                     : null
                                                                 : null;
@@ -3371,740 +3699,1104 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                 0, 0, 8, 0),
                                                     child: FFButtonWidget(
                                                       onPressed: () async {
-                                                        print(
-                                                            '=======================================================');
-                                                        print(paymentMethode);
+
                                                         final FormState form =
                                                             formKey
                                                                 .currentState;
-                                                        if (form.validate()) {
-                                                          if (currentProject !=
-                                                                  null ||
-                                                              currentProject !=
-                                                                  {}) {
-                                                            if (service) {
-                                                              if (paymentMethode ==
-                                                                  'Cash') {
-                                                                if (payingAmount
-                                                                            .text !=
-                                                                        '' &&
-                                                                    paymentMethode !=
-                                                                        '' &&
-                                                                    staffName
-                                                                            .text !=
-                                                                        '' &&
-                                                                    description
-                                                                            .text !=
-                                                                        '') {
-                                                                  DocumentSnapshot
-                                                                      doc =
-                                                                      await FirebaseFirestore
-                                                                          .instance
-                                                                          .collection(
-                                                                              'settings')
-                                                                          .doc(
-                                                                              currentBranchId)
-                                                                          .get();
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'settings')
-                                                                      .doc(
-                                                                          currentBranchId)
-                                                                      .update({
-                                                                    'billNumber':
-                                                                        FieldValue
-                                                                            .increment(1),
-                                                                  });
 
-                                                                  //incrementing firebase value of totalPaid
+                                                        if(form.validate()){
 
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'customerServices')
-                                                                      .doc(serviceIdByName[
-                                                                          projectName
-                                                                              .text])
-                                                                      .update({
-                                                                    'totalPaid': FieldValue.increment(int.tryParse(payingAmount
-                                                                        .text
-                                                                        .replaceAll(
-                                                                            ',',
-                                                                            ''))),
-                                                                  });
+                                                          if(
+                                                              currentProject.isNotEmpty ){
 
-                                                                  int billNumber =
-                                                                      doc['billNumber'];
-                                                                  print(doc[
-                                                                      'billNumber']);
-                                                                  billNumber++;
-                                                                  String ref =
-                                                                      '${branchShortNameMap[currentBranchId]}R';
-                                                                  String
-                                                                      billCode =
-                                                                      '$ref$billNumber';
-                                                                  print(
-                                                                      billCode);
-
-                                                                  print(
-                                                                      '{{{{{{{{{}}}}}}}}}}');
-                                                                  double
-                                                                      amountValue =
-                                                                      double.tryParse(payingAmount
-                                                                          .text
-                                                                          .replaceAll(
-                                                                              ',',
-                                                                              ''));
-                                                                  print(
-                                                                      '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
-                                                                  print(
-                                                                      amountValue);
-                                                                  List feePaid =
-                                                                      [];
-                                                                  feePaid.add({
-                                                                    'amount': double.tryParse(payingAmount
-                                                                        .text
-                                                                        .replaceAll(
-                                                                            ',',
-                                                                            '')),
-                                                                    'billCode':
-                                                                        billCode,
-                                                                    'totalPaid': currentProject[
-                                                                            'totalPaid'] +
-                                                                        double.tryParse(payingAmount.text.replaceAll(
-                                                                            ',',
-                                                                            '')),
-                                                                    'staffName':
-                                                                        staffName
-                                                                            .text,
-                                                                    'description':
-                                                                        description
-                                                                            .text,
-                                                                    'datePaid':
-                                                                        selectedDate,
-                                                                    'paymentMethod':
-                                                                        paymentMethode,
-                                                                    'serviceId':
-                                                                        serviceIdByName[
-                                                                            projectName.text],
-                                                                  });
-
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'customerServices')
-                                                                      .doc(serviceIdByName[
-                                                                          projectName
-                                                                              .text])
-                                                                      .update({
-                                                                    'paymentDetails':
-                                                                        FieldValue.arrayUnion(
-                                                                            feePaid),
-                                                                  }).then((value) {
-                                                                    FirebaseFirestore
-                                                                        .instance
-                                                                        .collection(
-                                                                            'settings')
-                                                                        .doc(
-                                                                            currentBranchId)
-                                                                        .update({
-                                                                      'cashInHand':
-                                                                          FieldValue.increment(
-                                                                              amountValue)
-                                                                    });
-                                                                  });
-
-                                                                  loaded =
-                                                                      false;
-
-                                                                  showUploadMessage(
-                                                                      context,
-                                                                      'Fee details added successfully');
-
-                                                                  payingAmount
-                                                                      .text = '';
+                                                            if (paymentMethode ==
+                                                                'Cash') {
+                                                              if (payingAmount
+                                                                  .text !=
+                                                                  '' &&
+                                                                  paymentMethode !=
+                                                                      '' &&
                                                                   staffName
-                                                                      .text = '';
+                                                                      .text !=
+                                                                      '' &&
                                                                   description
-                                                                      .text = '';
-                                                                  projectName
-                                                                      .text = '';
-                                                                  selectedDate =
-                                                                      DateTime
-                                                                          .now();
-                                                                  currentProject =
-                                                                      {};
-                                                                  paymentMethode =
-                                                                      '';
-                                                                  // paymentType = false;
+                                                                      .text !=
+                                                                      '') {
+                                                                DocumentSnapshot
+                                                                doc =
+                                                                await FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                    'settings')
+                                                                    .doc(
+                                                                    currentBranchId)
+                                                                    .get();
+                                                                // FirebaseFirestore
+                                                                //     .instance
+                                                                //     .collection(
+                                                                //     'settings')
+                                                                //     .doc(
+                                                                //     currentBranchId)
+                                                                   doc.reference .update({
+                                                                  'billNumber':
+                                                                  FieldValue
+                                                                      .increment(1),
+                                                                });
 
-                                                                  setState(
-                                                                      () {});
-                                                                } else {
-                                                                  staffName.text ==
-                                                                          ''
-                                                                      ? showUploadMessage(
-                                                                          context,
-                                                                          'Please Enter Staff Name')
-                                                                      : payingAmount.text ==
-                                                                              ''
-                                                                          ? showUploadMessage(
-                                                                              context,
-                                                                              'Please Enter Amount')
-                                                                          : description.text == ''
-                                                                              ? showUploadMessage(context, 'Please Enter Description')
-                                                                              : showUploadMessage(context, 'Please Choose The Payment Method');
-                                                                }
-                                                              } else if (paymentMethode ==
-                                                                  'Bank') {
-                                                                if (payingAmount.text != '' &&
-                                                                        paymentMethode !=
-                                                                            '' &&
-                                                                        staffName.text !=
-                                                                            '' &&
-                                                                        description.text !=
-                                                                            ''
-                                                                    // &&
-                                                                    // (urlDownload !=
-                                                                    //         null &&
-                                                                    //     urlDownload !=
-                                                                    //         '')
-                                                                    ) {
-                                                                  DocumentSnapshot
-                                                                      doc =
-                                                                      await FirebaseFirestore
-                                                                          .instance
-                                                                          .collection(
-                                                                              'settings')
-                                                                          .doc(
-                                                                              currentBranchId)
-                                                                          .get();
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'settings')
-                                                                      .doc(
-                                                                          currentBranchId)
-                                                                      .update({
-                                                                    'billNumber':
-                                                                        FieldValue
-                                                                            .increment(1),
-                                                                  });
+                                                                //incrementing firebase value of totalPaid
 
-                                                                  //incrementing firebase value of totalPaid
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                    'projects')
+                                                                    .doc(projectIdByName[
+                                                                projectName
+                                                                    .text])
+                                                                    .update({
+                                                                  'totalPaid': FieldValue.increment(int.tryParse(payingAmount.text.replaceAll(',', ''))),
+                                                                  'totalPaidTest': FieldValue.increment(int.tryParse(payingAmount.text.replaceAll(',', ''))),
+                                                                });
 
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'customerServices')
-                                                                      .doc(serviceIdByName[
-                                                                          projectName
-                                                                              .text])
-                                                                      .update({
-                                                                    'totalPaid': FieldValue.increment(int.tryParse(payingAmount
-                                                                        .text
-                                                                        .replaceAll(
-                                                                            ',',
-                                                                            ''))),
-                                                                  });
+                                                                int billNumber =
+                                                                doc['billNumber'];
 
-                                                                  int billNumber =
-                                                                      doc['billNumber'];
-                                                                  print(doc[
-                                                                      'billNumber']);
-                                                                  billNumber++;
-                                                                  String ref =
-                                                                      '${branchShortNameMap[currentBranchId]}R';
-                                                                  String
-                                                                      billCode =
-                                                                      '$ref$billNumber';
-                                                                  print(
-                                                                      billCode);
+                                                                billNumber++;
+                                                                String ref =
+                                                                    '${branchShortNameMap[currentBranchId]}R';
+                                                                String
+                                                                billCode =
+                                                                    '$ref$billNumber';
 
-                                                                  print(
-                                                                      '{{{{{{{{{}}}}}}}}}}');
-                                                                  double
-                                                                      amountValue =
-                                                                      double.tryParse(payingAmount
-                                                                          .text
-                                                                          .replaceAll(
-                                                                              ',',
-                                                                              ''));
-                                                                  print(
-                                                                      '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
-                                                                  print(
-                                                                      amountValue);
-                                                                  List feePaid =
-                                                                      [];
-                                                                  feePaid.add({
-                                                                    'amount': double.tryParse(payingAmount
-                                                                        .text
-                                                                        .replaceAll(
-                                                                            ',',
-                                                                            '')),
-                                                                    'billCode':
-                                                                        billCode,
-                                                                    'totalPaid': currentProject[
-                                                                            'totalPaid'] +
-                                                                        int.tryParse(payingAmount.text.replaceAll(
-                                                                            ',',
-                                                                            '')),
-                                                                    'paymentProof':
-                                                                        urlDownload,
-                                                                    'staffName':
-                                                                        staffName
-                                                                            .text,
-                                                                    'description':
-                                                                        description
-                                                                            .text,
-                                                                    'datePaid':
-                                                                        selectedDate,
-                                                                    'paymentMethod':
-                                                                        paymentMethode,
-                                                                    'serviceId':
-                                                                        serviceIdByName[
-                                                                            projectName.text],
-                                                                  });
-                                                                  print(feePaid
-                                                                      .toString());
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'customerServices')
-                                                                      .doc(serviceIdByName[
-                                                                          projectName
-                                                                              .text])
-                                                                      .update({
-                                                                    'paymentDetails':
-                                                                        FieldValue.arrayUnion(
-                                                                            feePaid),
-                                                                  }).then((value) {
-                                                                    FirebaseFirestore
-                                                                        .instance
-                                                                        .collection(
-                                                                            'settings')
-                                                                        .doc(
-                                                                            currentBranchId)
-                                                                        .update({
-                                                                      'cashAtBank':
-                                                                          FieldValue.increment(
-                                                                              amountValue)
-                                                                    });
-                                                                  });
+                                                                double
+                                                                amountValue =
+                                                                double.tryParse(payingAmount
+                                                                    .text
+                                                                    .replaceAll(
+                                                                    ',',
+                                                                    ''));
 
-                                                                  loaded =
-                                                                      false;
-
-                                                                  showUploadMessage(
-                                                                      context,
-                                                                      'Fee details added successfully');
-
-                                                                  payingAmount
-                                                                      .text = '';
+                                                                List feePaid =
+                                                                [];
+                                                                feePaid.add({
+                                                                  'amount': double.tryParse(payingAmount
+                                                                      .text
+                                                                      .replaceAll(
+                                                                      ',',
+                                                                      '')),
+                                                                  'billCode':
+                                                                  billCode,
+                                                                  'totalPaid': currentProject[
+                                                                  'totalPaid'] +
+                                                                      double.tryParse(payingAmount.text.replaceAll(
+                                                                          ',',
+                                                                          '')),
+                                                                  'staffName':
                                                                   staffName
-                                                                      .text = '';
+                                                                      .text,
+                                                                  'description':
                                                                   description
-                                                                      .text = '';
-                                                                  projectName
-                                                                      .text = '';
-                                                                  selectedDate =
-                                                                      DateTime
-                                                                          .now();
-                                                                  currentProject =
-                                                                      {};
-                                                                  urlDownload =
-                                                                      '';
-                                                                  // bank = false;
-                                                                  // paymentType = false;
-                                                                  paymentMethode =
-                                                                      '';
+                                                                      .text,
+                                                                  'datePaid':
+                                                                  selectedDate,
+                                                                  'paymentMethod':
+                                                                  paymentMethode,
+                                                                  'projectId':
+                                                                  projectIdByName[
+                                                                  projectName.text],
+                                                                });
 
-                                                                  setState(
-                                                                      () {});
-                                                                } else {
-                                                                  staffName.text ==
-                                                                          ''
-                                                                      ? showUploadMessage(
-                                                                          context,
-                                                                          'Please Enter Staff Name')
-                                                                      : payingAmount.text ==
-                                                                              ''
-                                                                          ? showUploadMessage(
-                                                                              context,
-                                                                              'Please Enter Amount')
-                                                                          : description.text == ''
-                                                                              ? showUploadMessage(context, 'Please Enter Description')
-                                                                              : urlDownload == null || urlDownload == ''
-                                                                                  ? showUploadMessage(context, 'Please upload a document first!!')
-                                                                                  : showUploadMessage(context, 'Please Choose The Payment Method');
-                                                                }
-                                                              }
-                                                            } else {
-                                                              if (paymentMethode ==
-                                                                  'Cash') {
-                                                                if (payingAmount
-                                                                            .text !=
-                                                                        '' &&
-                                                                    paymentMethode !=
-                                                                        '' &&
-                                                                    staffName
-                                                                            .text !=
-                                                                        '' &&
-                                                                    description
-                                                                            .text !=
-                                                                        '') {
-                                                                  DocumentSnapshot
-                                                                      doc =
-                                                                      await FirebaseFirestore
-                                                                          .instance
-                                                                          .collection(
-                                                                              'settings')
-                                                                          .doc(
-                                                                              currentBranchId)
-                                                                          .get();
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                    'projects')
+                                                                    .doc(projectIdByName[
+                                                                projectName
+                                                                    .text])
+                                                                    .update({
+                                                                  'paymentDetails': FieldValue.arrayUnion(feePaid),
+                                                                  'paymentDetailsTest': FieldValue.arrayUnion(feePaid),
+                                                                }).then((value) {
                                                                   FirebaseFirestore
                                                                       .instance
                                                                       .collection(
-                                                                          'settings')
+                                                                      'settings')
                                                                       .doc(
-                                                                          currentBranchId)
+                                                                      currentBranchId)
                                                                       .update({
-                                                                    'billNumber':
-                                                                        FieldValue
-                                                                            .increment(1),
+                                                                    'cashInHand':
+                                                                    FieldValue.increment(
+                                                                        amountValue)
                                                                   });
+                                                                });
 
-                                                                  //incrementing firebase value of totalPaid
+                                                                loaded =
+                                                                false;
 
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'projects')
-                                                                      .doc(projectIdByName[
-                                                                          projectName
-                                                                              .text])
-                                                                      .update({
-                                                                    'totalPaid': FieldValue.increment(int.tryParse(payingAmount
-                                                                        .text
-                                                                        .replaceAll(
-                                                                            ',',
-                                                                            ''))),
-                                                                  });
+                                                                showUploadMessage(
+                                                                    context,
+                                                                    'Fee details added successfully');
 
-                                                                  int billNumber =
-                                                                      doc['billNumber'];
-                                                                  print(doc[
-                                                                      'billNumber']);
-                                                                  billNumber++;
-                                                                  String ref =
-                                                                      '${branchShortNameMap[currentBranchId]}R';
-                                                                  String
-                                                                      billCode =
-                                                                      '$ref$billNumber';
-                                                                  print(
-                                                                      billCode);
+                                                                payingAmount
+                                                                    .text = '';
+                                                                staffName
+                                                                    .text = '';
+                                                                description
+                                                                    .text = '';
+                                                                projectName
+                                                                    .text = '';
+                                                                selectedDate =
+                                                                    DateTime
+                                                                        .now();
+                                                                currentProject =
+                                                                {};
+                                                                paymentMethode =
+                                                                '';
+                                                                // paymentType = false;
 
-                                                                  print(
-                                                                      '{{{{{{{{{}}}}}}}}}}');
-                                                                  double
-                                                                      amountValue =
-                                                                      double.tryParse(payingAmount
-                                                                          .text
-                                                                          .replaceAll(
-                                                                              ',',
-                                                                              ''));
-                                                                  print(
-                                                                      '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
-                                                                  print(
-                                                                      amountValue);
-                                                                  List feePaid =
-                                                                      [];
-                                                                  feePaid.add({
-                                                                    'amount': double.tryParse(payingAmount
-                                                                        .text
-                                                                        .replaceAll(
-                                                                            ',',
-                                                                            '')),
-                                                                    'billCode':
-                                                                        billCode,
-                                                                    'totalPaid': currentProject[
-                                                                            'totalPaid'] +
-                                                                        double.tryParse(payingAmount.text.replaceAll(
-                                                                            ',',
-                                                                            '')),
-                                                                    'staffName':
-                                                                        staffName
-                                                                            .text,
-                                                                    'description':
-                                                                        description
-                                                                            .text,
-                                                                    'datePaid':
-                                                                        selectedDate,
-                                                                    'paymentMethod':
-                                                                        paymentMethode,
-                                                                    'projectId':
-                                                                        projectIdByName[
-                                                                            projectName.text],
-                                                                  });
-
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'projects')
-                                                                      .doc(projectIdByName[
-                                                                          projectName
-                                                                              .text])
-                                                                      .update({
-                                                                    'paymentDetails':
-                                                                        FieldValue.arrayUnion(
-                                                                            feePaid),
-                                                                  }).then((value) {
-                                                                    FirebaseFirestore
-                                                                        .instance
-                                                                        .collection(
-                                                                            'settings')
-                                                                        .doc(
-                                                                            currentBranchId)
-                                                                        .update({
-                                                                      'cashInHand':
-                                                                          FieldValue.increment(
-                                                                              amountValue)
-                                                                    });
-                                                                  });
-
-                                                                  loaded =
-                                                                      false;
-
-                                                                  showUploadMessage(
-                                                                      context,
-                                                                      'Fee details added successfully');
-
-                                                                  payingAmount
-                                                                      .text = '';
-                                                                  staffName
-                                                                      .text = '';
-                                                                  description
-                                                                      .text = '';
-                                                                  projectName
-                                                                      .text = '';
-                                                                  selectedDate =
-                                                                      DateTime
-                                                                          .now();
-                                                                  currentProject =
-                                                                      {};
-                                                                  paymentMethode =
-                                                                      '';
-                                                                  // paymentType = false;
-
-                                                                  setState(
-                                                                      () {});
-                                                                } else {
-                                                                  staffName.text ==
-                                                                          ''
-                                                                      ? showUploadMessage(
-                                                                          context,
-                                                                          'Please Enter Staff Name')
-                                                                      : payingAmount.text ==
-                                                                              ''
-                                                                          ? showUploadMessage(
-                                                                              context,
-                                                                              'Please Enter Amount')
-                                                                          : description.text == ''
-                                                                              ? showUploadMessage(context, 'Please Enter Description')
-                                                                              : showUploadMessage(context, 'Please Choose The Payment Method');
-                                                                }
-                                                              } else if (paymentMethode ==
-                                                                  'Bank') {
-                                                                if (payingAmount.text != '' &&
-                                                                        paymentMethode !=
-                                                                            '' &&
-                                                                        staffName.text !=
-                                                                            '' &&
-                                                                        description.text !=
-                                                                            ''
-                                                                    // &&
-                                                                    // (urlDownload !=
-                                                                    //         null &&
-                                                                    //     urlDownload !=
-                                                                    //         '')
-                                                                    ) {
-                                                                  DocumentSnapshot
-                                                                      doc =
-                                                                      await FirebaseFirestore
-                                                                          .instance
-                                                                          .collection(
-                                                                              'settings')
-                                                                          .doc(
-                                                                              currentBranchId)
-                                                                          .get();
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'settings')
-                                                                      .doc(
-                                                                          currentBranchId)
-                                                                      .update({
-                                                                    'billNumber':
-                                                                        FieldValue
-                                                                            .increment(1),
-                                                                  });
-
-                                                                  //incrementing firebase value of totalPaid
-
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'projects')
-                                                                      .doc(projectIdByName[
-                                                                          projectName
-                                                                              .text])
-                                                                      .update({
-                                                                    'totalPaid': FieldValue.increment(int.tryParse(payingAmount
-                                                                        .text
-                                                                        .replaceAll(
-                                                                            ',',
-                                                                            ''))),
-                                                                  });
-
-                                                                  int billNumber =
-                                                                      doc['billNumber'];
-                                                                  print(doc[
-                                                                      'billNumber']);
-                                                                  billNumber++;
-                                                                  String ref =
-                                                                      '${branchShortNameMap[currentBranchId]}R';
-                                                                  String
-                                                                      billCode =
-                                                                      '$ref$billNumber';
-                                                                  print(
-                                                                      billCode);
-
-                                                                  print(
-                                                                      '{{{{{{{{{}}}}}}}}}}');
-                                                                  double
-                                                                      amountValue =
-                                                                      double.tryParse(payingAmount
-                                                                          .text
-                                                                          .replaceAll(
-                                                                              ',',
-                                                                              ''));
-                                                                  print(
-                                                                      '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
-                                                                  print(
-                                                                      amountValue);
-                                                                  List feePaid =
-                                                                      [];
-                                                                  feePaid.add({
-                                                                    'amount': double.tryParse(payingAmount
-                                                                        .text
-                                                                        .replaceAll(
-                                                                            ',',
-                                                                            '')),
-                                                                    'billCode':
-                                                                        billCode,
-                                                                    'totalPaid': currentProject[
-                                                                            'totalPaid'] +
-                                                                        int.tryParse(payingAmount.text.replaceAll(
-                                                                            ',',
-                                                                            '')),
-                                                                    'paymentProof':
-                                                                        urlDownload,
-                                                                    'staffName':
-                                                                        staffName
-                                                                            .text,
-                                                                    'description':
-                                                                        description
-                                                                            .text,
-                                                                    'datePaid':
-                                                                        selectedDate,
-                                                                    'paymentMethod':
-                                                                        paymentMethode,
-                                                                    'projectId':
-                                                                        projectIdByName[
-                                                                            projectName.text],
-                                                                  });
-                                                                  print(feePaid
-                                                                      .toString());
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          'projects')
-                                                                      .doc(projectIdByName[
-                                                                          projectName
-                                                                              .text])
-                                                                      .update({
-                                                                    'paymentDetails':
-                                                                        FieldValue.arrayUnion(
-                                                                            feePaid),
-                                                                  }).then((value) {
-                                                                    FirebaseFirestore
-                                                                        .instance
-                                                                        .collection(
-                                                                            'settings')
-                                                                        .doc(
-                                                                            currentBranchId)
-                                                                        .update({
-                                                                      'cashAtBank':
-                                                                          FieldValue.increment(
-                                                                              amountValue)
-                                                                    });
-                                                                  });
-
-                                                                  loaded =
-                                                                      false;
-
-                                                                  showUploadMessage(
-                                                                      context,
-                                                                      'Fee details added successfully');
-
-                                                                  payingAmount
-                                                                      .text = '';
-                                                                  staffName
-                                                                      .text = '';
-                                                                  description
-                                                                      .text = '';
-                                                                  projectName
-                                                                      .text = '';
-                                                                  selectedDate =
-                                                                      DateTime
-                                                                          .now();
-                                                                  currentProject =
-                                                                      {};
-                                                                  urlDownload =
-                                                                      '';
-                                                                  // bank = false;
-                                                                  // paymentType = false;
-                                                                  paymentMethode =
-                                                                      '';
-
-                                                                  setState(
-                                                                      () {});
-                                                                } else {
-                                                                  staffName.text ==
-                                                                          ''
-                                                                      ? showUploadMessage(
-                                                                          context,
-                                                                          'Please Enter Staff Name')
-                                                                      : payingAmount.text ==
-                                                                              ''
-                                                                          ? showUploadMessage(
-                                                                              context,
-                                                                              'Please Enter Amount')
-                                                                          : description.text == ''
-                                                                              ? showUploadMessage(context, 'Please Enter Description')
-                                                                              : urlDownload == null || urlDownload == ''
-                                                                                  ? showUploadMessage(context, 'Please upload a document first!!')
-                                                                                  : showUploadMessage(context, 'Please Choose The Payment Method');
-                                                                }
+                                                                setState(
+                                                                        () {});
+                                                              } else {
+                                                                staffName.text ==
+                                                                    ''
+                                                                    ? showUploadMessage(
+                                                                    context,
+                                                                    'Please Enter Staff Name')
+                                                                    : payingAmount.text ==
+                                                                    ''
+                                                                    ? showUploadMessage(
+                                                                    context,
+                                                                    'Please Enter Amount')
+                                                                    : description.text == ''
+                                                                    ? showUploadMessage(context, 'Please Enter Description')
+                                                                    : showUploadMessage(context, 'Please Choose The Payment Method');
                                                               }
                                                             }
+                                                            ///
+                                                            else if (paymentMethode ==
+                                                                'Bank') {
+                                                              if (payingAmount.text != '' &&
+                                                                  paymentMethode !=
+                                                                      '' &&
+                                                                  staffName.text !=
+                                                                      '' &&
+                                                                  description.text !=
+                                                                      ''
+                                                              // &&
+                                                              // (urlDownload !=
+                                                              //         null &&
+                                                              //     urlDownload !=
+                                                              //         '')
+                                                              ) {
+                                                                DocumentSnapshot
+                                                                doc =
+                                                                await FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                    'settings')
+                                                                    .doc(
+                                                                    currentBranchId)
+                                                                    .get();
+                                                                // FirebaseFirestore
+                                                                //     .instance
+                                                                //     .collection(
+                                                                //     'settings')
+                                                                //     .doc(
+                                                                //     currentBranchId)
+                                                                   doc.reference .update({
+                                                                  'billNumber':
+                                                                  FieldValue
+                                                                      .increment(1),
+                                                                });
+
+                                                                //incrementing firebase value of totalPaid
+
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                    'projects')
+                                                                    .doc(projectIdByName[
+                                                                projectName
+                                                                    .text])
+                                                                    .update({
+                                                                  'totalPaid': FieldValue.increment(int.tryParse(payingAmount.text.replaceAll(',', ''))),
+                                                                  'totalPaidTest': FieldValue.increment(int.tryParse(payingAmount.text.replaceAll(',', ''))),
+                                                                });
+
+                                                                int billNumber =
+                                                                doc['billNumber'];
+
+                                                                billNumber++;
+                                                                String ref =
+                                                                    '${branchShortNameMap[currentBranchId]}R';
+                                                                String
+                                                                billCode =
+                                                                    '$ref$billNumber';
+
+                                                                double
+                                                                amountValue =
+                                                                double.tryParse(payingAmount
+                                                                    .text
+                                                                    .replaceAll(
+                                                                    ',',
+                                                                    ''));
+
+                                                                List feePaid =
+                                                                [];
+                                                                feePaid.add({
+                                                                  'amount': double.tryParse(payingAmount
+                                                                      .text
+                                                                      .replaceAll(
+                                                                      ',',
+                                                                      '')),
+                                                                  'billCode':
+                                                                  billCode,
+                                                                  'totalPaid': currentProject[
+                                                                  'totalPaid'] +
+                                                                      int.tryParse(payingAmount.text.replaceAll(
+                                                                          ',',
+                                                                          '')),
+                                                                  'paymentProof':
+                                                                  urlDownload,
+                                                                  'staffName':
+                                                                  staffName
+                                                                      .text,
+                                                                  'description':
+                                                                  description
+                                                                      .text,
+                                                                  'datePaid':
+                                                                  selectedDate,
+                                                                  'paymentMethod':
+                                                                  paymentMethode,
+                                                                  'projectId':
+                                                                  projectIdByName[
+                                                                  projectName.text],
+                                                                });
+
+
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                    'projects')
+                                                                    .doc(projectIdByName[
+                                                                projectName
+                                                                    .text])
+                                                                    .update({
+                                                                  'paymentDetails': FieldValue.arrayUnion(feePaid),
+                                                                  'paymentDetailsTest': FieldValue.arrayUnion(feePaid),
+                                                                }).then((value) {
+                                                                  FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                      'settings')
+                                                                      .doc(
+                                                                      currentBranchId)
+                                                                      .update({
+                                                                    'cashAtBank':
+                                                                    FieldValue.increment(
+                                                                        amountValue)
+                                                                  });
+                                                                });
+
+                                                                loaded =
+                                                                false;
+
+                                                                showUploadMessage(
+                                                                    context,
+                                                                    'Fee details added successfully');
+
+                                                                payingAmount
+                                                                    .text = '';
+                                                                staffName
+                                                                    .text = '';
+                                                                description
+                                                                    .text = '';
+                                                                projectName
+                                                                    .text = '';
+                                                                selectedDate =
+                                                                    DateTime
+                                                                        .now();
+                                                                currentProject =
+                                                                {};
+                                                                urlDownload =
+                                                                '';
+                                                                // bank = false;
+                                                                // paymentType = false;
+                                                                paymentMethode =
+                                                                '';
+
+                                                                setState(
+                                                                        () {});
+                                                              } else {
+                                                                staffName.text ==
+                                                                    ''
+                                                                    ? showUploadMessage(
+                                                                    context,
+                                                                    'Please Enter Staff Name')
+                                                                    : payingAmount.text ==
+                                                                    ''
+                                                                    ? showUploadMessage(
+                                                                    context,
+                                                                    'Please Enter Amount')
+                                                                    : description.text == ''
+                                                                    ? showUploadMessage(context, 'Please Enter Description')
+                                                                    : urlDownload == null || urlDownload == ''
+                                                                    ? showUploadMessage(context, 'Please upload a document first!!')
+                                                                    : showUploadMessage(context, 'Please Choose The Payment Method');
+                                                              }
+                                                            }
+
+                                                            /// NO PAYMENT METHODE IS SELECTED
+
+                                                            else {
+                                                              showUploadMessage(context, 'Please Choose any payment methode');
+                                                            }
+
+                                                            /// PROJECT IS NOT SELECTED
                                                           } else {
-                                                            showUploadMessage(
-                                                                context,
-                                                                'Please Select A Project');
+                                                            showUploadMessage(context, 'Please choose a project');
                                                           }
                                                         }
+
+                                                        // if (form.validate()) {
+                                                        //   if (currentProject !=
+                                                        //           null ||
+                                                        //       currentProject !=
+                                                        //           {}) {
+                                                        //     /// PAYMENT ADDING TO SERVICES
+                                                        //     if (service) {
+                                                        //       if (paymentMethode ==
+                                                        //           'Cash') {
+                                                        //         if (payingAmount
+                                                        //                     .text !=
+                                                        //                 '' &&
+                                                        //             paymentMethode !=
+                                                        //                 '' &&
+                                                        //             staffName
+                                                        //                     .text !=
+                                                        //                 '' &&
+                                                        //             description
+                                                        //                     .text !=
+                                                        //                 '') {
+                                                        //           DocumentSnapshot
+                                                        //               doc =
+                                                        //               await FirebaseFirestore
+                                                        //                   .instance
+                                                        //                   .collection(
+                                                        //                       'settings')
+                                                        //                   .doc(
+                                                        //                       currentBranchId)
+                                                        //                   .get();
+                                                        //           FirebaseFirestore
+                                                        //               .instance
+                                                        //               .collection(
+                                                        //                   'settings')
+                                                        //               .doc(
+                                                        //                   currentBranchId)
+                                                        //               .update({
+                                                        //             'billNumber':
+                                                        //                 FieldValue
+                                                        //                     .increment(1),
+                                                        //           });
+                                                        //
+                                                        //           //incrementing firebase value of totalPaid
+                                                        //
+                                                        //           FirebaseFirestore
+                                                        //               .instance
+                                                        //               .collection(
+                                                        //                   'customerServices')
+                                                        //               .doc(serviceIdByName[
+                                                        //                   projectName
+                                                        //                       .text])
+                                                        //               .update({
+                                                        //             'totalPaid': FieldValue.increment(int.tryParse(payingAmount
+                                                        //                 .text
+                                                        //                 .replaceAll(
+                                                        //                     ',',
+                                                        //                     ''))),
+                                                        //           });
+                                                        //
+                                                        //           int billNumber =
+                                                        //               doc['billNumber'];
+                                                        //           print(doc[
+                                                        //               'billNumber']);
+                                                        //           billNumber++;
+                                                        //           String ref =
+                                                        //               '${branchShortNameMap[currentBranchId]}R';
+                                                        //           String
+                                                        //               billCode =
+                                                        //               '$ref$billNumber';
+                                                        //           print(
+                                                        //               billCode);
+                                                        //
+                                                        //           print(
+                                                        //               '{{{{{{{{{}}}}}}}}}}');
+                                                        //           double
+                                                        //               amountValue =
+                                                        //               double.tryParse(payingAmount
+                                                        //                   .text
+                                                        //                   .replaceAll(
+                                                        //                       ',',
+                                                        //                       ''));
+                                                        //           print(
+                                                        //               '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
+                                                        //           print(
+                                                        //               amountValue);
+                                                        //           List feePaid =
+                                                        //               [];
+                                                        //           feePaid.add({
+                                                        //             'amount': double.tryParse(payingAmount
+                                                        //                 .text
+                                                        //                 .replaceAll(
+                                                        //                     ',',
+                                                        //                     '')),
+                                                        //             'billCode':
+                                                        //                 billCode,
+                                                        //             'totalPaid': currentProject[
+                                                        //                     'totalPaid'] +
+                                                        //                 double.tryParse(payingAmount.text.replaceAll(
+                                                        //                     ',',
+                                                        //                     '')),
+                                                        //             'staffName':
+                                                        //                 staffName
+                                                        //                     .text,
+                                                        //             'description':
+                                                        //                 description
+                                                        //                     .text,
+                                                        //             'datePaid':
+                                                        //                 selectedDate,
+                                                        //             'paymentMethod':
+                                                        //                 paymentMethode,
+                                                        //             'serviceId':
+                                                        //                 serviceIdByName[
+                                                        //                     projectName.text],
+                                                        //           });
+                                                        //
+                                                        //           FirebaseFirestore
+                                                        //               .instance
+                                                        //               .collection(
+                                                        //                   'customerServices')
+                                                        //               .doc(serviceIdByName[
+                                                        //                   projectName
+                                                        //                       .text])
+                                                        //               .update({
+                                                        //             'paymentDetails':
+                                                        //                 FieldValue.arrayUnion(
+                                                        //                     feePaid),
+                                                        //           }).then((value) {
+                                                        //             FirebaseFirestore
+                                                        //                 .instance
+                                                        //                 .collection(
+                                                        //                     'settings')
+                                                        //                 .doc(
+                                                        //                     currentBranchId)
+                                                        //                 .update({
+                                                        //               'cashInHand':
+                                                        //                   FieldValue.increment(
+                                                        //                       amountValue)
+                                                        //             });
+                                                        //           });
+                                                        //
+                                                        //           loaded =
+                                                        //               false;
+                                                        //
+                                                        //           showUploadMessage(
+                                                        //               context,
+                                                        //               'Fee details added successfully');
+                                                        //
+                                                        //           payingAmount
+                                                        //               .text = '';
+                                                        //           staffName
+                                                        //               .text = '';
+                                                        //           description
+                                                        //               .text = '';
+                                                        //           projectName
+                                                        //               .text = '';
+                                                        //           selectedDate =
+                                                        //               DateTime
+                                                        //                   .now();
+                                                        //           currentProject =
+                                                        //               {};
+                                                        //           paymentMethode =
+                                                        //               '';
+                                                        //           // paymentType = false;
+                                                        //
+                                                        //           setState(
+                                                        //               () {});
+                                                        //         }
+                                                        //         ///
+                                                        //         else {
+                                                        //           staffName.text ==
+                                                        //                   ''
+                                                        //               ? showUploadMessage(
+                                                        //                   context,
+                                                        //                   'Please Enter Staff Name')
+                                                        //               : payingAmount.text ==
+                                                        //                       ''
+                                                        //                   ? showUploadMessage(
+                                                        //                       context,
+                                                        //                       'Please Enter Amount')
+                                                        //                   : description.text == ''
+                                                        //                       ? showUploadMessage(context, 'Please Enter Description')
+                                                        //                       : showUploadMessage(context, 'Please Choose The Payment Method');
+                                                        //         }
+                                                        //       }
+                                                        //       ///
+                                                        //       else if (paymentMethode ==
+                                                        //           'Bank') {
+                                                        //         if (payingAmount.text != '' &&
+                                                        //                 paymentMethode !=
+                                                        //                     '' &&
+                                                        //                 staffName.text !=
+                                                        //                     '' &&
+                                                        //                 description.text !=
+                                                        //                     ''
+                                                        //             // &&
+                                                        //             // (urlDownload !=
+                                                        //             //         null &&
+                                                        //             //     urlDownload !=
+                                                        //             //         '')
+                                                        //             ) {
+                                                        //           DocumentSnapshot
+                                                        //               doc =
+                                                        //               await FirebaseFirestore
+                                                        //                   .instance
+                                                        //                   .collection(
+                                                        //                       'settings')
+                                                        //                   .doc(
+                                                        //                       currentBranchId)
+                                                        //                   .get();
+                                                        //           FirebaseFirestore
+                                                        //               .instance
+                                                        //               .collection(
+                                                        //                   'settings')
+                                                        //               .doc(
+                                                        //                   currentBranchId)
+                                                        //               .update({
+                                                        //             'billNumber':
+                                                        //                 FieldValue
+                                                        //                     .increment(1),
+                                                        //           });
+                                                        //
+                                                        //           //incrementing firebase value of totalPaid
+                                                        //
+                                                        //           FirebaseFirestore
+                                                        //               .instance
+                                                        //               .collection(
+                                                        //                   'customerServices')
+                                                        //               .doc(serviceIdByName[
+                                                        //                   projectName
+                                                        //                       .text])
+                                                        //               .update({
+                                                        //             'totalPaid': FieldValue.increment(int.tryParse(payingAmount
+                                                        //                 .text
+                                                        //                 .replaceAll(
+                                                        //                     ',',
+                                                        //                     ''))),
+                                                        //           });
+                                                        //
+                                                        //           int billNumber =
+                                                        //               doc['billNumber'];
+                                                        //           print(doc[
+                                                        //               'billNumber']);
+                                                        //           billNumber++;
+                                                        //           String ref =
+                                                        //               '${branchShortNameMap[currentBranchId]}R';
+                                                        //           String
+                                                        //               billCode =
+                                                        //               '$ref$billNumber';
+                                                        //           print(
+                                                        //               billCode);
+                                                        //
+                                                        //           print(
+                                                        //               '{{{{{{{{{}}}}}}}}}}');
+                                                        //           double
+                                                        //               amountValue =
+                                                        //               double.tryParse(payingAmount
+                                                        //                   .text
+                                                        //                   .replaceAll(
+                                                        //                       ',',
+                                                        //                       ''));
+                                                        //           print(
+                                                        //               '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
+                                                        //           print(
+                                                        //               amountValue);
+                                                        //           List feePaid =
+                                                        //               [];
+                                                        //           feePaid.add({
+                                                        //             'amount': double.tryParse(payingAmount
+                                                        //                 .text
+                                                        //                 .replaceAll(
+                                                        //                     ',',
+                                                        //                     '')),
+                                                        //             'billCode':
+                                                        //                 billCode,
+                                                        //             'totalPaid': currentProject[
+                                                        //                     'totalPaid'] +
+                                                        //                 int.tryParse(payingAmount.text.replaceAll(
+                                                        //                     ',',
+                                                        //                     '')),
+                                                        //             'paymentProof':
+                                                        //                 urlDownload,
+                                                        //             'staffName':
+                                                        //                 staffName
+                                                        //                     .text,
+                                                        //             'description':
+                                                        //                 description
+                                                        //                     .text,
+                                                        //             'datePaid':
+                                                        //                 selectedDate,
+                                                        //             'paymentMethod':
+                                                        //                 paymentMethode,
+                                                        //             'serviceId':
+                                                        //                 serviceIdByName[
+                                                        //                     projectName.text],
+                                                        //           });
+                                                        //           print(feePaid
+                                                        //               .toString());
+                                                        //           FirebaseFirestore
+                                                        //               .instance
+                                                        //               .collection(
+                                                        //                   'customerServices')
+                                                        //               .doc(serviceIdByName[
+                                                        //                   projectName
+                                                        //                       .text])
+                                                        //               .update({
+                                                        //             'paymentDetails':
+                                                        //                 FieldValue.arrayUnion(
+                                                        //                     feePaid),
+                                                        //           }).then((value) {
+                                                        //             FirebaseFirestore
+                                                        //                 .instance
+                                                        //                 .collection(
+                                                        //                     'settings')
+                                                        //                 .doc(
+                                                        //                     currentBranchId)
+                                                        //                 .update({
+                                                        //               'cashAtBank':
+                                                        //                   FieldValue.increment(
+                                                        //                       amountValue)
+                                                        //             });
+                                                        //           });
+                                                        //
+                                                        //           loaded =
+                                                        //               false;
+                                                        //
+                                                        //           showUploadMessage(
+                                                        //               context,
+                                                        //               'Fee details added successfully');
+                                                        //
+                                                        //           payingAmount
+                                                        //               .text = '';
+                                                        //           staffName
+                                                        //               .text = '';
+                                                        //           description
+                                                        //               .text = '';
+                                                        //           projectName
+                                                        //               .text = '';
+                                                        //           selectedDate =
+                                                        //               DateTime
+                                                        //                   .now();
+                                                        //           currentProject =
+                                                        //               {};
+                                                        //           urlDownload =
+                                                        //               '';
+                                                        //           // bank = false;
+                                                        //           // paymentType = false;
+                                                        //           paymentMethode =
+                                                        //               '';
+                                                        //
+                                                        //           setState(
+                                                        //               () {});
+                                                        //         } else {
+                                                        //           staffName.text ==
+                                                        //                   ''
+                                                        //               ? showUploadMessage(
+                                                        //                   context,
+                                                        //                   'Please Enter Staff Name')
+                                                        //               : payingAmount.text ==
+                                                        //                       ''
+                                                        //                   ? showUploadMessage(
+                                                        //                       context,
+                                                        //                       'Please Enter Amount')
+                                                        //                   : description.text == ''
+                                                        //                       ? showUploadMessage(context, 'Please Enter Description')
+                                                        //                       : urlDownload == null || urlDownload == ''
+                                                        //                           ? showUploadMessage(context, 'Please upload a document first!!')
+                                                        //                           : showUploadMessage(context, 'Please Choose The Payment Method');
+                                                        //         }
+                                                        //       }
+                                                        //     }
+                                                        //
+                                                        //     /// PAYMENT ADDING TO PROJECT
+                                                        //     else {
+                                                        //       if (paymentMethode ==
+                                                        //           'Cash') {
+                                                        //         if (payingAmount
+                                                        //                     .text !=
+                                                        //                 '' &&
+                                                        //             paymentMethode !=
+                                                        //                 '' &&
+                                                        //             staffName
+                                                        //                     .text !=
+                                                        //                 '' &&
+                                                        //             description
+                                                        //                     .text !=
+                                                        //                 '') {
+                                                        //           DocumentSnapshot
+                                                        //               doc =
+                                                        //               await FirebaseFirestore
+                                                        //                   .instance
+                                                        //                   .collection(
+                                                        //                       'settings')
+                                                        //                   .doc(
+                                                        //                       currentBranchId)
+                                                        //                   .get();
+                                                        //           FirebaseFirestore
+                                                        //               .instance
+                                                        //               .collection(
+                                                        //                   'settings')
+                                                        //               .doc(
+                                                        //                   currentBranchId)
+                                                        //               .update({
+                                                        //             'billNumber':
+                                                        //                 FieldValue
+                                                        //                     .increment(1),
+                                                        //           });
+                                                        //
+                                                        //           //incrementing firebase value of totalPaid
+                                                        //
+                                                        //           FirebaseFirestore
+                                                        //               .instance
+                                                        //               .collection(
+                                                        //                   'projects')
+                                                        //               .doc(projectIdByName[
+                                                        //                   projectName
+                                                        //                       .text])
+                                                        //               .update({
+                                                        //             'totalPaid': FieldValue.increment(int.tryParse(payingAmount
+                                                        //                 .text
+                                                        //                 .replaceAll(
+                                                        //                     ',',
+                                                        //                     ''))),
+                                                        //           });
+                                                        //
+                                                        //           int billNumber =
+                                                        //               doc['billNumber'];
+                                                        //           print(doc[
+                                                        //               'billNumber']);
+                                                        //           billNumber++;
+                                                        //           String ref =
+                                                        //               '${branchShortNameMap[currentBranchId]}R';
+                                                        //           String
+                                                        //               billCode =
+                                                        //               '$ref$billNumber';
+                                                        //           print(
+                                                        //               billCode);
+                                                        //
+                                                        //           print(
+                                                        //               '{{{{{{{{{}}}}}}}}}}');
+                                                        //           double
+                                                        //               amountValue =
+                                                        //               double.tryParse(payingAmount
+                                                        //                   .text
+                                                        //                   .replaceAll(
+                                                        //                       ',',
+                                                        //                       ''));
+                                                        //           print(
+                                                        //               '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
+                                                        //           print(
+                                                        //               amountValue);
+                                                        //           List feePaid =
+                                                        //               [];
+                                                        //           feePaid.add({
+                                                        //             'amount': double.tryParse(payingAmount
+                                                        //                 .text
+                                                        //                 .replaceAll(
+                                                        //                     ',',
+                                                        //                     '')),
+                                                        //             'billCode':
+                                                        //                 billCode,
+                                                        //             'totalPaid': currentProject[
+                                                        //                     'totalPaid'] +
+                                                        //                 double.tryParse(payingAmount.text.replaceAll(
+                                                        //                     ',',
+                                                        //                     '')),
+                                                        //             'staffName':
+                                                        //                 staffName
+                                                        //                     .text,
+                                                        //             'description':
+                                                        //                 description
+                                                        //                     .text,
+                                                        //             'datePaid':
+                                                        //                 selectedDate,
+                                                        //             'paymentMethod':
+                                                        //                 paymentMethode,
+                                                        //             'projectId':
+                                                        //                 projectIdByName[
+                                                        //                     projectName.text],
+                                                        //           });
+                                                        //
+                                                        //           FirebaseFirestore
+                                                        //               .instance
+                                                        //               .collection(
+                                                        //                   'projects')
+                                                        //               .doc(projectIdByName[
+                                                        //                   projectName
+                                                        //                       .text])
+                                                        //               .update({
+                                                        //             'paymentDetails':
+                                                        //                 FieldValue.arrayUnion(
+                                                        //                     feePaid),
+                                                        //           }).then((value) {
+                                                        //             FirebaseFirestore
+                                                        //                 .instance
+                                                        //                 .collection(
+                                                        //                     'settings')
+                                                        //                 .doc(
+                                                        //                     currentBranchId)
+                                                        //                 .update({
+                                                        //               'cashInHand':
+                                                        //                   FieldValue.increment(
+                                                        //                       amountValue)
+                                                        //             });
+                                                        //           });
+                                                        //
+                                                        //           loaded =
+                                                        //               false;
+                                                        //
+                                                        //           showUploadMessage(
+                                                        //               context,
+                                                        //               'Fee details added successfully');
+                                                        //
+                                                        //           payingAmount
+                                                        //               .text = '';
+                                                        //           staffName
+                                                        //               .text = '';
+                                                        //           description
+                                                        //               .text = '';
+                                                        //           projectName
+                                                        //               .text = '';
+                                                        //           selectedDate =
+                                                        //               DateTime
+                                                        //                   .now();
+                                                        //           currentProject =
+                                                        //               {};
+                                                        //           paymentMethode =
+                                                        //               '';
+                                                        //           // paymentType = false;
+                                                        //
+                                                        //           setState(
+                                                        //               () {});
+                                                        //         } else {
+                                                        //           staffName.text ==
+                                                        //                   ''
+                                                        //               ? showUploadMessage(
+                                                        //                   context,
+                                                        //                   'Please Enter Staff Name')
+                                                        //               : payingAmount.text ==
+                                                        //                       ''
+                                                        //                   ? showUploadMessage(
+                                                        //                       context,
+                                                        //                       'Please Enter Amount')
+                                                        //                   : description.text == ''
+                                                        //                       ? showUploadMessage(context, 'Please Enter Description')
+                                                        //                       : showUploadMessage(context, 'Please Choose The Payment Method');
+                                                        //         }
+                                                        //       }
+                                                        //       ///
+                                                        //       else if (paymentMethode ==
+                                                        //           'Bank') {
+                                                        //         if (payingAmount.text != '' &&
+                                                        //                 paymentMethode !=
+                                                        //                     '' &&
+                                                        //                 staffName.text !=
+                                                        //                     '' &&
+                                                        //                 description.text !=
+                                                        //                     ''
+                                                        //             // &&
+                                                        //             // (urlDownload !=
+                                                        //             //         null &&
+                                                        //             //     urlDownload !=
+                                                        //             //         '')
+                                                        //             ) {
+                                                        //           DocumentSnapshot
+                                                        //               doc =
+                                                        //               await FirebaseFirestore
+                                                        //                   .instance
+                                                        //                   .collection(
+                                                        //                       'settings')
+                                                        //                   .doc(
+                                                        //                       currentBranchId)
+                                                        //                   .get();
+                                                        //           FirebaseFirestore
+                                                        //               .instance
+                                                        //               .collection(
+                                                        //                   'settings')
+                                                        //               .doc(
+                                                        //                   currentBranchId)
+                                                        //               .update({
+                                                        //             'billNumber':
+                                                        //                 FieldValue
+                                                        //                     .increment(1),
+                                                        //           });
+                                                        //
+                                                        //           //incrementing firebase value of totalPaid
+                                                        //
+                                                        //           FirebaseFirestore
+                                                        //               .instance
+                                                        //               .collection(
+                                                        //                   'projects')
+                                                        //               .doc(projectIdByName[
+                                                        //                   projectName
+                                                        //                       .text])
+                                                        //               .update({
+                                                        //             'totalPaid': FieldValue.increment(int.tryParse(payingAmount
+                                                        //                 .text
+                                                        //                 .replaceAll(
+                                                        //                     ',',
+                                                        //                     ''))),
+                                                        //           });
+                                                        //
+                                                        //           int billNumber =
+                                                        //               doc['billNumber'];
+                                                        //           print(doc[
+                                                        //               'billNumber']);
+                                                        //           billNumber++;
+                                                        //           String ref =
+                                                        //               '${branchShortNameMap[currentBranchId]}R';
+                                                        //           String
+                                                        //               billCode =
+                                                        //               '$ref$billNumber';
+                                                        //           print(
+                                                        //               billCode);
+                                                        //
+                                                        //           print(
+                                                        //               '{{{{{{{{{}}}}}}}}}}');
+                                                        //           double
+                                                        //               amountValue =
+                                                        //               double.tryParse(payingAmount
+                                                        //                   .text
+                                                        //                   .replaceAll(
+                                                        //                       ',',
+                                                        //                       ''));
+                                                        //           print(
+                                                        //               '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
+                                                        //           print(
+                                                        //               amountValue);
+                                                        //           List feePaid =
+                                                        //               [];
+                                                        //           feePaid.add({
+                                                        //             'amount': double.tryParse(payingAmount
+                                                        //                 .text
+                                                        //                 .replaceAll(
+                                                        //                     ',',
+                                                        //                     '')),
+                                                        //             'billCode':
+                                                        //                 billCode,
+                                                        //             'totalPaid': currentProject[
+                                                        //                     'totalPaid'] +
+                                                        //                 int.tryParse(payingAmount.text.replaceAll(
+                                                        //                     ',',
+                                                        //                     '')),
+                                                        //             'paymentProof':
+                                                        //                 urlDownload,
+                                                        //             'staffName':
+                                                        //                 staffName
+                                                        //                     .text,
+                                                        //             'description':
+                                                        //                 description
+                                                        //                     .text,
+                                                        //             'datePaid':
+                                                        //                 selectedDate,
+                                                        //             'paymentMethod':
+                                                        //                 paymentMethode,
+                                                        //             'projectId':
+                                                        //                 projectIdByName[
+                                                        //                     projectName.text],
+                                                        //           });
+                                                        //           print(feePaid
+                                                        //               .toString());
+                                                        //           FirebaseFirestore
+                                                        //               .instance
+                                                        //               .collection(
+                                                        //                   'projects')
+                                                        //               .doc(projectIdByName[
+                                                        //                   projectName
+                                                        //                       .text])
+                                                        //               .update({
+                                                        //             'paymentDetails':
+                                                        //                 FieldValue.arrayUnion(
+                                                        //                     feePaid),
+                                                        //           }).then((value) {
+                                                        //             FirebaseFirestore
+                                                        //                 .instance
+                                                        //                 .collection(
+                                                        //                     'settings')
+                                                        //                 .doc(
+                                                        //                     currentBranchId)
+                                                        //                 .update({
+                                                        //               'cashAtBank':
+                                                        //                   FieldValue.increment(
+                                                        //                       amountValue)
+                                                        //             });
+                                                        //           });
+                                                        //
+                                                        //           loaded =
+                                                        //               false;
+                                                        //
+                                                        //           showUploadMessage(
+                                                        //               context,
+                                                        //               'Fee details added successfully');
+                                                        //
+                                                        //           payingAmount
+                                                        //               .text = '';
+                                                        //           staffName
+                                                        //               .text = '';
+                                                        //           description
+                                                        //               .text = '';
+                                                        //           projectName
+                                                        //               .text = '';
+                                                        //           selectedDate =
+                                                        //               DateTime
+                                                        //                   .now();
+                                                        //           currentProject =
+                                                        //               {};
+                                                        //           urlDownload =
+                                                        //               '';
+                                                        //           // bank = false;
+                                                        //           // paymentType = false;
+                                                        //           paymentMethode =
+                                                        //               '';
+                                                        //
+                                                        //           setState(
+                                                        //               () {});
+                                                        //         } else {
+                                                        //           staffName.text ==
+                                                        //                   ''
+                                                        //               ? showUploadMessage(
+                                                        //                   context,
+                                                        //                   'Please Enter Staff Name')
+                                                        //               : payingAmount.text ==
+                                                        //                       ''
+                                                        //                   ? showUploadMessage(
+                                                        //                       context,
+                                                        //                       'Please Enter Amount')
+                                                        //                   : description.text == ''
+                                                        //                       ? showUploadMessage(context, 'Please Enter Description')
+                                                        //                       : urlDownload == null || urlDownload == ''
+                                                        //                           ? showUploadMessage(context, 'Please upload a document first!!')
+                                                        //                           : showUploadMessage(context, 'Please Choose The Payment Method');
+                                                        //         }
+                                                        //       }
+                                                        //     }
+                                                        //   } else {
+                                                        //     showUploadMessage(
+                                                        //         context,
+                                                        //         'Please Select A Project');
+                                                        //   }
+                                                        // }
+
+
                                                       },
                                                       text: 'Add',
                                                       options: FFButtonOptions(
@@ -4134,7 +4826,9 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                     ),
                                                   )
                                                 ]),
-                                          )),
+                                          ),
+                                          ),
+
                                           SizedBox(
                                             width: 30,
                                           ),
@@ -4178,7 +4872,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                               ),
                                                             )),
                                                       ),
-                                                    ]))
+                                                    ]),
+                                          )
                                               : SizedBox(
                                                   width: 30,
                                                 ),
@@ -4282,7 +4977,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                       ),
                                                     ),
                                                   ),
-                                                ])),
+                                                ]),
+                                            ),
                                           ),
                                           SizedBox(
                                             width: 50,
@@ -4424,7 +5120,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                         FontWeight
                                                                             .bold,
                                                                     fontSize:
-                                                                        12))),
+                                                                        12)),),
                                                             DataCell(Text(
                                                                 (feeDetail['projectName'] ??
                                                                         feeDetail[
@@ -4435,7 +5131,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                         FontWeight
                                                                             .bold,
                                                                     fontSize:
-                                                                        12))),
+                                                                        12)),),
                                                             DataCell(Text(
                                                                 feeDetail[
                                                                         'amount']
@@ -4445,7 +5141,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                         FontWeight
                                                                             .bold,
                                                                     fontSize:
-                                                                        12))),
+                                                                        12)),),
                                                             DataCell(Text(
                                                                 feeDetail[
                                                                         'description']
@@ -4455,7 +5151,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                         FontWeight
                                                                             .bold,
                                                                     fontSize:
-                                                                        12))),
+                                                                        12)),),
                                                             DataCell(
                                                               Text(
                                                                 feeDetail[
@@ -4650,12 +5346,10 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                       double projectCost = projectAndServicePaymentListSort[index]['projectId'] ==
                                                                               null
                                                                           ? serviceDataById[projectAndServicePaymentListSort[index]['serviceId']]
-                                                                              [
-                                                                              'serviceAmount']
+                                                                              ['serviceAmount']
                                                                           : projectDataById[projectAndServicePaymentListSort[index]['projectId']]
-                                                                              [
-                                                                              'projectCost'];
-                                                                      print(1);
+                                                                              ['projectCost'];
+
                                                                       final invoice =
                                                                           paymentDetail(
                                                                         nameOfProject: projectAndServicePaymentListSort[index]['projectName'] ==
@@ -4729,7 +5423,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                   },
                                                                 ),
                                                               ],
-                                                            ))
+                                                            ),
+                                                            )
                                                           ],
                                                         );
                                                       },
@@ -5200,10 +5895,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                             10),
                                                                     child: TextButton(
                                                                         onPressed: () {
-                                                                          if (documentName.text !=
-                                                                              '') {
-                                                                            selectFileToUpload(documentName.text,
-                                                                                context);
+                                                                          if (documentName.text != '') {
+                                                                            selectFileToUpload(documentName.text, context);
                                                                           } else {
                                                                             showUploadMessage(context,
                                                                                 'Please Enter Document Name');
@@ -6009,9 +6702,9 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                         'serviceId': value.id,
                                                                                       });
 
-                                                                                      // FirebaseFirestore.instance.collection('projects').doc(projectIdByName[projectNameInServices.text]).update({
-                                                                                      //   'totalCost': FieldValue.increment(double.tryParse(serviceAmount.text.replaceAll(',', ''))),
-                                                                                      // });
+                                                                                      FirebaseFirestore.instance.collection('projects').doc(projectIdByName[projectNameInServices.text]).update({
+                                                                                        'totalCost': FieldValue.increment(double.tryParse(serviceAmount.text.replaceAll(',', ''))),
+                                                                                      });
 
                                                                                       showUploadMessage(context, 'services added successfully');
 
@@ -6455,6 +7148,12 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                               if (pressed) {
                                                                                 FirebaseFirestore.instance.collection('customerServices').doc(feeDetail['serviceId']).update({
                                                                                   'delete': true,
+                                                                                }).then((value) {
+                                                                                  print('hereee thennnnn');
+                                                                                  print(feeDetail['project']);
+                                                                                  FirebaseFirestore.instance.collection('projects').doc(feeDetail['project']).update({
+                                                                                    'totalCost': FieldValue.increment(-1*(feeDetail['serviceAmount'])),
+                                                                                  });
                                                                                 });
 
 
@@ -6497,198 +7196,224 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                       mainAxisSize:
                                                           MainAxisSize.max,
                                                       mainAxisAlignment:
-                                                          MainAxisAlignment.end,
+                                                          MainAxisAlignment.spaceBetween,
                                                       children: [
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(0,
-                                                                      0, 8, 0),
-                                                          child: FFButtonWidget(
-                                                            onPressed:
-                                                                () async {
-                                                              try {
-                                                                print(
-                                                                    '11111111');
-
-                                                                final data =
-                                                                    StatementModel(
-                                                                  address:
-                                                                      address
-                                                                          .text,
-                                                                  customerName:
-                                                                      nameController
-                                                                          .text,
-                                                                  customerPhoneNo:
-                                                                      mobile
-                                                                          .text,
-                                                                );
-                                                                print(
-                                                                    '2222222');
-
-                                                                ///
-                                                                // generateDocument(
-                                                                //     PdfPageFormat
-                                                                //         .a4,
-                                                                //     data,
-                                                                //     statementData,
-                                                                //     creditTotal,
-                                                                //     debitTotal);
-
-                                                                /// EXCEL
-
-                                                                createStatement(
-                                                                    nameController
-                                                                        .text);
-                                                              } catch (e) {
-                                                                print(e);
-                                                                return showDialog(
-                                                                    context:
-                                                                        context,
-                                                                    builder:
-                                                                        (context) {
-                                                                      return AlertDialog(
-                                                                        title: Text(
-                                                                            'error'),
-                                                                        content:
-                                                                            Text(e.toString()),
-                                                                        actions: <
-                                                                            Widget>[
-                                                                          ElevatedButton(
-                                                                            child:
-                                                                                new Text('ok'),
-                                                                            onPressed:
-                                                                                () {
-                                                                              Navigator.of(context).pop();
-                                                                            },
-                                                                          ),
-                                                                        ],
-                                                                      );
-                                                                    });
-                                                              }
-                                                            },
-                                                            text:
-                                                                'Generate Excel',
-                                                            options:
-                                                                FFButtonOptions(
-                                                              width: 150,
-                                                              height: 45,
-                                                              color: Color(
-                                                                  0xff0054FF),
-                                                              textStyle:
-                                                                  FlutterFlowTheme
-                                                                      .subtitle2
-                                                                      .override(
-                                                                fontFamily:
-                                                                    'Poppins',
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                              elevation: 2,
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                color: Colors
-                                                                    .transparent,
-                                                                width: 1,
-                                                              ),
-                                                              borderRadius: 50,
+                                                        Container(
+                                                          width: MediaQuery.of(context).size.width * 0.2,
+                                                          height: 65,
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius: BorderRadius.circular(8),
+                                                            border: Border.all(
+                                                              color: Colors.black,
                                                             ),
                                                           ),
+                                                          child: CustomDropdown.search(
+                                                            hintText: 'Select Project',
+                                                            items: projectNames,
+                                                            controller: projectNameInServices,
+                                                            // excludeSelected: false,
+                                                            onChanged: (text) {
+                                                              sortStatement(text);
+
+                                                            },
+                                                          ),
                                                         ),
-                                                        Padding(
-                                                          padding:
+                                                        Row(
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(0,
+                                                                          0, 8, 0),
+                                                              child: FFButtonWidget(
+                                                                onPressed:
+                                                                    () async {
+                                                                  try {
+                                                                    print(
+                                                                        '11111111');
+
+                                                                    final data =
+                                                                        StatementModel(
+                                                                      address:
+                                                                          address
+                                                                              .text,
+                                                                      customerName:
+                                                                          nameController
+                                                                              .text,
+                                                                      customerPhoneNo:
+                                                                          mobile
+                                                                              .text,
+                                                                    );
+                                                                    print(
+                                                                        '2222222');
+
+                                                                    ///
+                                                                    // generateDocument(
+                                                                    //     PdfPageFormat
+                                                                    //         .a4,
+                                                                    //     data,
+                                                                    //     statementData,
+                                                                    //     creditTotal,
+                                                                    //     debitTotal);
+
+                                                                    /// EXCEL
+
+                                                                    createStatement(
+                                                                        nameController
+                                                                            .text);
+                                                                  } catch (e) {
+                                                                    print(e);
+                                                                    return showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (context) {
+                                                                          return AlertDialog(
+                                                                            title: Text(
+                                                                                'error'),
+                                                                            content:
+                                                                                Text(e.toString()),
+                                                                            actions: <
+                                                                                Widget>[
+                                                                              ElevatedButton(
+                                                                                child:
+                                                                                    new Text('ok'),
+                                                                                onPressed:
+                                                                                    () {
+                                                                                  Navigator.of(context).pop();
+                                                                                },
+                                                                              ),
+                                                                            ],
+                                                                          );
+                                                                        });
+                                                                  }
+                                                                },
+                                                                text:
+                                                                    'Generate Excel',
+                                                                options:
+                                                                    FFButtonOptions(
+                                                                  width: 150,
+                                                                  height: 45,
+                                                                  color: Color(
+                                                                      0xff0054FF),
+                                                                  textStyle:
+                                                                      FlutterFlowTheme
+                                                                          .subtitle2
+                                                                          .override(
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize: 15,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                  elevation: 2,
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1,
+                                                                  ),
+                                                                  borderRadius: 50,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
                                                               EdgeInsetsDirectional
                                                                   .fromSTEB(0,
-                                                                      0, 8, 0),
-                                                          child: FFButtonWidget(
-                                                            onPressed:
-                                                                () async {
-                                                              try {
-                                                                print(
-                                                                    '11111111');
+                                                                  0, 8, 0),
+                                                              child: FFButtonWidget(
+                                                                onPressed:
+                                                                    () async {
+                                                                  try {
+                                                                    print(
+                                                                        '11111111');
 
-                                                                final data =
+                                                                    final data =
                                                                     StatementModel(
-                                                                  address:
+                                                                      address:
                                                                       address
                                                                           .text,
-                                                                  customerName:
+                                                                      customerName:
                                                                       nameController
                                                                           .text,
-                                                                  customerPhoneNo:
+                                                                      customerPhoneNo:
                                                                       mobile
                                                                           .text,
-                                                                );
+                                                                    );
 
-                                                                ///PDF
-                                                                StatementPDF.downloadPdf(
-                                                                    data,
-                                                                    statementData,
-                                                                    creditTotal,
-                                                                    debitTotal);
-                                                              } catch (e) {
-                                                                print(e);
-                                                                return showDialog(
-                                                                    context:
+                                                                    ///PDF
+                                                                    StatementPDF.downloadPdf(
+                                                                        data,
+                                                                        statementDataSort,
+                                                                        creditTotal,
+                                                                        debitTotal);
+                                                                  } catch (e) {
+                                                                    print(e);
+                                                                    return showDialog(
+                                                                        context:
                                                                         context,
-                                                                    builder:
-                                                                        (context) {
-                                                                      return AlertDialog(
-                                                                        title: Text(
-                                                                            'error'),
-                                                                        content:
+                                                                        builder:
+                                                                            (context) {
+                                                                          return AlertDialog(
+                                                                            title: Text(
+                                                                                'error'),
+                                                                            content:
                                                                             Text(e.toString()),
-                                                                        actions: <
-                                                                            Widget>[
-                                                                          ElevatedButton(
-                                                                            child:
+                                                                            actions: <
+                                                                                Widget>[
+                                                                              ElevatedButton(
+                                                                                child:
                                                                                 new Text('ok'),
-                                                                            onPressed:
-                                                                                () {
-                                                                              Navigator.of(context).pop();
-                                                                            },
-                                                                          ),
-                                                                        ],
-                                                                      );
-                                                                    });
-                                                              }
-                                                            },
-                                                            text:
+                                                                                onPressed:
+                                                                                    () {
+                                                                                  Navigator.of(context).pop();
+                                                                                },
+                                                                              ),
+                                                                            ],
+                                                                          );
+                                                                        });
+                                                                  }
+                                                                },
+                                                                text:
                                                                 'Download PDF',
-                                                            options:
+                                                                options:
                                                                 FFButtonOptions(
-                                                              width: 150,
-                                                              height: 45,
-                                                              color:
+                                                                  width: 150,
+                                                                  height: 45,
+                                                                  color:
                                                                   Colors.teal,
-                                                              textStyle:
+                                                                  textStyle:
                                                                   FlutterFlowTheme
                                                                       .subtitle2
                                                                       .override(
-                                                                fontFamily:
+                                                                    fontFamily:
                                                                     'Poppins',
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 15,
-                                                                fontWeight:
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize: 15,
+                                                                    fontWeight:
                                                                     FontWeight
                                                                         .bold,
-                                                              ),
-                                                              elevation: 2,
-                                                              borderSide:
+                                                                  ),
+                                                                  elevation: 2,
+                                                                  borderSide:
                                                                   BorderSide(
-                                                                color: Colors
-                                                                    .transparent,
-                                                                width: 1,
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1,
+                                                                  ),
+                                                                  borderRadius: 50,
+                                                                ),
                                                               ),
-                                                              borderRadius: 50,
                                                             ),
-                                                          ),
+                                                          ],
                                                         ),
+
                                                       ],
                                                     ),
                                                   ),
@@ -6703,7 +7428,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                         CrossAxisAlignment
                                                             .center,
                                                     children: [
-                                                      statementData.isEmpty
+                                                      statementDataSort.isEmpty
                                                           ? SizedBox(
                                                               child: Center(
                                                                 child: Image.asset(
@@ -6786,49 +7511,49 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                    DataColumn(
-                                                                      label:
-                                                                          Center(
-                                                                        child:
-                                                                            Text(
-                                                                          "Balance",
-                                                                        ),
-                                                                      ),
-                                                                    ),
+                                                                    // DataColumn(
+                                                                    //   label:
+                                                                    //       Center(
+                                                                    //     child:
+                                                                    //         Text(
+                                                                    //       "Balance",
+                                                                    //     ),
+                                                                    //   ),
+                                                                    // ),
                                                                   ],
                                                                   rows: List
                                                                       .generate(
-                                                                    statementData
+                                                                    statementDataSort
                                                                             .length +
                                                                         2,
                                                                     (index) {
                                                                       if (index <
-                                                                          statementData
+                                                                          statementDataSort
                                                                               .length) {
                                                                         debitTotal +=
-                                                                            statementData[index]['debit'] ??
+                                                                            statementDataSort[index]['debit'] ??
                                                                                 0;
 
                                                                         creditTotal +=
-                                                                            statementData[index]['credit'] ??
+                                                                            statementDataSort[index]['credit'] ??
                                                                                 0;
 
-                                                                        if (statementData[index]['debit'] ==
+                                                                        if (statementDataSort[index]['debit'] ==
                                                                             null) {
                                                                           balance +=
-                                                                              statementData[index]['credit'];
+                                                                              statementDataSort[index]['credit'] ?? 0;
                                                                         } else {
                                                                           balance -=
-                                                                              statementData[index]['debit'];
+                                                                              statementDataSort[index]['debit'] ?? 0;
                                                                         }
                                                                       }
 
                                                                       print(
                                                                           '[[[[[[[[[[[statementData.length]]]]]]]]]]]');
-                                                                      print(statementData
+                                                                      print(statementDataSort
                                                                           .length);
                                                                       return index ==
-                                                                              statementData.length
+                                                                              statementDataSort.length
                                                                           ?
 
                                                                           /// Index+1 Row
@@ -6851,8 +7576,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                 DataCell(
                                                                                   Center(
                                                                                     child: Text(
-                                                                                      '',
-                                                                                      // debitTotal > creditTotal ? 'Payable (-)' : 'Payable',
+                                                                                      // '',
+                                                                                       'Balance',
                                                                                       style: FlutterFlowTheme.bodyText2.override(
                                                                                         fontFamily: 'Lexend Deca',
                                                                                         color: Colors.black,
@@ -6865,8 +7590,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                 DataCell(
                                                                                   Center(
                                                                                     child: SelectableText(
-                                                                                      '',
-                                                                                      // debitTotal > creditTotal ? '' : _formatNumber((creditTotal - debitTotal).toString().replaceAll(',', '')),
+                                                                                      // '',
+                                                                                      debitTotal > creditTotal ? '' : _formatNumber((creditTotal - debitTotal).toString().replaceAll(',', '')),
                                                                                       // .toStringAsFixed(2),
                                                                                       style: FlutterFlowTheme.bodyText2.override(
                                                                                         fontFamily: 'Lexend Deca',
@@ -6879,8 +7604,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                 ),
                                                                                 DataCell(
                                                                                   SelectableText(
-                                                                                    '',
-                                                                                    // debitTotal > creditTotal ? _formatNumber((debitTotal - creditTotal).toString().replaceAll(',', '')) : '',
+                                                                                    // '',
+                                                                                    debitTotal > creditTotal ? _formatNumber((debitTotal - creditTotal).toString().replaceAll(',', '')) : '',
 
                                                                                     // .toStringAsFixed(2),
                                                                                     style: FlutterFlowTheme.bodyText2.override(
@@ -6891,23 +7616,23 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                     ),
                                                                                   ),
                                                                                 ),
-                                                                                DataCell(
-                                                                                  SelectableText(
-                                                                                    '',
-                                                                                    // _formatNumber(balance.toString().replaceAll(',', '')),
-
-                                                                                    // .toStringAsFixed(2),
-                                                                                    style: FlutterFlowTheme.bodyText2.override(
-                                                                                      fontFamily: 'Lexend Deca',
-                                                                                      color: Colors.black,
-                                                                                      fontSize: 15,
-                                                                                      fontWeight: FontWeight.bold,
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
+                                                                                // DataCell(
+                                                                                //   SelectableText(
+                                                                                //     '',
+                                                                                //     // _formatNumber(balance.toString().replaceAll(',', '')),
+                                                                                //
+                                                                                //     // .toStringAsFixed(2),
+                                                                                //     style: FlutterFlowTheme.bodyText2.override(
+                                                                                //       fontFamily: 'Lexend Deca',
+                                                                                //       color: Colors.black,
+                                                                                //       fontSize: 15,
+                                                                                //       fontWeight: FontWeight.bold,
+                                                                                //     ),
+                                                                                //   ),
+                                                                                // ),
                                                                               ],
                                                                             )
-                                                                          : index == statementData.length + 1
+                                                                          : index == statementDataSort.length + 1
                                                                               ?
 
                                                                               /// Index+2 Row
@@ -6962,18 +7687,18 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                         ),
                                                                                       ),
                                                                                     ),
-                                                                                    DataCell(
-                                                                                      SelectableText(
-                                                                                        '',
-                                                                                        // .toStringAsFixed(2),
-                                                                                        style: FlutterFlowTheme.bodyText2.override(
-                                                                                          fontFamily: 'Lexend Deca',
-                                                                                          color: Colors.black,
-                                                                                          fontSize: 15,
-                                                                                          fontWeight: FontWeight.bold,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
+                                                                                    // DataCell(
+                                                                                    //   SelectableText(
+                                                                                    //     '',
+                                                                                    //     // .toStringAsFixed(2),
+                                                                                    //     style: FlutterFlowTheme.bodyText2.override(
+                                                                                    //       fontFamily: 'Lexend Deca',
+                                                                                    //       color: Colors.black,
+                                                                                    //       fontSize: 15,
+                                                                                    //       fontWeight: FontWeight.bold,
+                                                                                    //     ),
+                                                                                    //   ),
+                                                                                    // ),
                                                                                   ],
                                                                                 )
 
@@ -6984,7 +7709,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                     DataCell(
                                                                                       Center(
                                                                                         child: SelectableText(
-                                                                                          dateTimeFormat('d-MMM-y', statementData[index]['date'].toDate()),
+                                                                                          dateTimeFormat('d-MMM-y', statementDataSort[index]['date'].toDate()),
                                                                                           style: FlutterFlowTheme.bodyText2.override(
                                                                                             fontFamily: 'Lexend Deca',
                                                                                             color: Colors.black,
@@ -6999,7 +7724,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                         width: MediaQuery.of(context).size.width * 0.15,
                                                                                         child: Center(
                                                                                           child: Text(
-                                                                                            statementData[index]['particular'],
+                                                                                            statementDataSort[index]['particular'],
                                                                                             style: FlutterFlowTheme.bodyText2.override(
                                                                                               fontFamily: 'Lexend Deca',
                                                                                               color: Colors.black,
@@ -7013,7 +7738,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                     DataCell(
                                                                                       Center(
                                                                                         child: SelectableText(
-                                                                                          statementData[index]['debit'] == null ? '' : _formatNumber(statementData[index]['debit'].toString().replaceAll(',', '')),
+                                                                                          statementDataSort[index]['debit'] == null ? '' : _formatNumber(statementDataSort[index]['debit'].toString().replaceAll(',', '')),
                                                                                           style: FlutterFlowTheme.bodyText2.override(
                                                                                             fontFamily: 'Lexend Deca',
                                                                                             color: Colors.black,
@@ -7026,7 +7751,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                     DataCell(
                                                                                       Center(
                                                                                         child: SelectableText(
-                                                                                          statementData[index]['credit'] == null ? '' : _formatNumber(statementData[index]['credit'].toString().replaceAll(',', '')),
+                                                                                          statementDataSort[index]['credit'] == null ? '' : _formatNumber(statementDataSort[index]['credit'].toString().replaceAll(',', '')),
                                                                                           style: FlutterFlowTheme.bodyText2.override(
                                                                                             fontFamily: 'Lexend Deca',
                                                                                             color: Colors.black,
@@ -7036,19 +7761,19 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                         ),
                                                                                       ),
                                                                                     ),
-                                                                                    DataCell(
-                                                                                      Center(
-                                                                                        child: SelectableText(
-                                                                                          _formatNumber(balance.toString().replaceAll(',', '')),
-                                                                                          style: FlutterFlowTheme.bodyText2.override(
-                                                                                            fontFamily: 'Lexend Deca',
-                                                                                            color: Colors.black,
-                                                                                            fontSize: 15,
-                                                                                            fontWeight: FontWeight.bold,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
+                                                                                    // DataCell(
+                                                                                    //   Center(
+                                                                                    //     child: SelectableText(
+                                                                                    //       _formatNumber(balance.toString().replaceAll(',', '')),
+                                                                                    //       style: FlutterFlowTheme.bodyText2.override(
+                                                                                    //         fontFamily: 'Lexend Deca',
+                                                                                    //         color: Colors.black,
+                                                                                    //         fontSize: 15,
+                                                                                    //         fontWeight: FontWeight.bold,
+                                                                                    //       ),
+                                                                                    //     ),
+                                                                                    //   ),
+                                                                                    // ),
                                                                                   ],
                                                                                 );
                                                                     },
@@ -7113,7 +7838,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
     topic.text = work['description'];
     projectStatus.text = work['status'].toString();
     projectCost.text =
-        _formatNumber(work['projectCost'].toString().replaceAll(',', ''));
+        _formatNumber(work['totalCost'].toString().replaceAll(',', ''));
     return Padding(
       padding: const EdgeInsets.only(top: 20, bottom: 20),
       child: SingleChildScrollView(
@@ -7972,7 +8697,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
     //HEADINGS
 
-    if (statementData.length > 0) {
+    if (statementDataSort.length > 0) {
       var cell1 = sheetObject.cell(CellIndex.indexByString("A1"));
       cell1.value = 'DATE';
       cell1.cellStyle = cellStyle;
@@ -7990,37 +8715,37 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
       cell5.cellStyle = cellStyle;
     }
 
-    print(statementData.length);
+    print(statementDataSort.length);
 
     //CELL VALUES
 
     double balanceAmt = 0;
 
-    for (int i = 0; i < statementData.length + 1; i++) {
-      if (i < statementData.length) {
-        if (statementData[i]['debit'] == null) {
-          balanceAmt += statementData[i]['credit'];
+    for (int i = 0; i < statementDataSort.length + 1; i++) {
+      if (i < statementDataSort.length) {
+        if (statementDataSort[i]['debit'] == null) {
+          balanceAmt += statementDataSort[i]['credit'];
         } else {
-          balanceAmt -= statementData[i]['debit'];
+          balanceAmt -= statementDataSort[i]['debit'];
         }
 
         var cell1 = sheetObject.cell(CellIndex.indexByString("A${i + 2}"));
         cell1.value = dateTimeFormat(
             'dd MMM, yyyy',
-            statementData[i]['date']
+            statementDataSort[i]['date']
                 .toDate()); // dynamic values support provided;
         cell1.cellStyle = cellStyle;
         var cell2 = sheetObject.cell(CellIndex.indexByString("B${i + 2}"));
-        cell2.value = statementData[i]['particular']
+        cell2.value = statementDataSort[i]['particular']
             .toString(); // dynamic values support provided;
         cell2.cellStyle = cellStyle;
         var cell3 = sheetObject.cell(CellIndex.indexByString("C${i + 2}"));
         cell3.value =
-            statementData[i]['debit']; // dynamic values support provided;
+            statementDataSort[i]['debit']; // dynamic values support provided;
         cell3.cellStyle = cellStyle;
         var cell4 = sheetObject.cell(CellIndex.indexByString("D${i + 2}"));
         cell4.value =
-            statementData[i]['credit']; // dynamic values support provided;
+            statementDataSort[i]['credit']; // dynamic values support provided;
         cell4.cellStyle = cellStyle;
         var cell5 = sheetObject.cell(CellIndex.indexByString("E${i + 2}"));
         cell5.value = balanceAmt;

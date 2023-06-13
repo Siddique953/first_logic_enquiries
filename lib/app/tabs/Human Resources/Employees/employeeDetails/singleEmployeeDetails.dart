@@ -1,11 +1,14 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:searchfield/searchfield.dart';
 
 import '../../../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../../../flutter_flow/flutter_flow_util.dart';
+import '../../../../../flutter_flow/upload_media.dart';
 import '../../../../app_widget.dart';
 import '../../../../models/Employee/EmployeeModel.dart';
 import '../../../../pages/home_page/home.dart';
@@ -26,6 +29,11 @@ class SingleEmployeeDetails extends StatefulWidget {
 class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
   RegExp phnValidation = RegExp(r'^[0-9]{10}$');
   RegExp numberValidation = RegExp(r'^[0-9]+$');
+
+  var urlDownload;
+  PlatformFile pickFile;
+  UploadTask uploadTask;
+  String profile='';
 
   //MANDATORY INFORMATION
   TextEditingController name = TextEditingController();
@@ -97,6 +105,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
       createdDate = employeeDetails.createdDate;
       gender = employeeDetails.gender;
       dept.text = employeeDetails.dept;
+      profile=employeeDetails.profile;
 
       if (dept.text == 'Human Resource (HR)') {
         subDepartments = [
@@ -341,7 +350,9 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: employeeDetails==null?
+          Center(child: CircularProgressIndicator())
+      :SingleChildScrollView(
         child: Column(
           children: [
             Center(
@@ -629,7 +640,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                       width: 10,
                                     ),
                                     preRegistered
-                                        ? Expanded(
+                                        ? Expanded (
                                             child: Container(
                                               height: 50,
                                               child: Padding(
@@ -771,16 +782,38 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                     Row(
                                       children: [
                                         GestureDetector(
-                                          onTap: () {
-                                            FirebaseFirestore.instance
-                                                .collection('employees')
-                                                .doc(employeeId)
-                                                .update({
-                                              'delete': true,
-                                            }).whenComplete(() {
-                                              widget._tabController
-                                                  .animateTo(6);
-                                            });
+                                          onTap: () async {
+
+                                            if(employeeDetails.delete){
+                                              bool pressed=await alert(context, 'Do you want to Add this Employee');
+
+                                              if(pressed){
+                                                FirebaseFirestore.instance
+                                                    .collection('employees')
+                                                    .doc(employeeId)
+                                                    .update({
+                                                  'delete': false,
+                                                });
+                                                widget._tabController
+                                                    .animateTo(6);
+                                              }
+
+                                            } else {
+                                              bool pressed=await alert(context, 'Do you want to Delete this Employee');
+
+                                              if(pressed){
+                                                FirebaseFirestore.instance
+                                                    .collection('employees')
+                                                    .doc(employeeId)
+                                                    .update({
+                                                  'delete': true,
+                                                });
+                                                widget._tabController
+                                                    .animateTo(6);
+                                              }
+                                            }
+
+
                                           },
                                           child: MouseRegion(
                                             cursor: SystemMouseCursors.click,
@@ -804,7 +837,11 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
                                                             .center,
-                                                    children: [
+                                                    children: employeeDetails.delete?
+                                                    [
+                                                      Text('+ Add'),
+                                                    ]
+                                                        :[
                                                       Icon(
                                                         Icons
                                                             .delete_outline_sharp,
@@ -1228,9 +1265,20 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                     SizedBox(
                                       width: 100,
                                     ),
-                                    CircleAvatar(
-                                      radius: 25,
-                                      backgroundColor: Colors.blueGrey,
+                                    InkWell(
+                                      onTap: (){
+                                        selectFileToUpload( context);
+                                      },
+                                      child: profile==''?
+                                      CircleAvatar(
+                                        radius: 25,
+                                        backgroundColor: Colors.blueGrey,
+                                      ):
+                                      CircleAvatar(
+                                        radius: 25,
+                                        backgroundImage: NetworkImage(profile),
+                                        backgroundColor: Colors.blueGrey,
+                                      ),
                                     )
                                   ],
                                 ),
@@ -2747,7 +2795,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                       reportingManager.text],
                                                   teamLead: empIdByName[
                                                       teamLead.text],
-                                                  profile: '',
+                                                  profile: profile,
                                                   subDept: subDept.text,
                                                   delete: false,
                                                   empId: employeeId,
@@ -2877,5 +2925,37 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
         ),
       ),
     );
+  }
+
+  //PICK FILE
+  Future selectFileToUpload( BuildContext context) async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result == null) return;
+
+    pickFile = result.files.first;
+    String name=pickFile.name;
+
+    String ext = pickFile.name.split('.').last;
+    final fileBytes = result.files.first.bytes;
+
+    showUploadMessage(context, 'Uploading...', showLoading: true);
+
+    uploadFileToFireBase(name, fileBytes, ext, context);
+
+    setState(() {});
+  }
+
+  //UPDATE DOCUMENT DATE
+  Future uploadFileToFireBase(String name, fileBytes, String ext, BuildContext context) async {
+    uploadTask = FirebaseStorage.instance
+        .ref('profiles/employees/${employeeDetails.empId}-${employeeDetails.name}-$name.$ext')
+        .putData(fileBytes);
+    final snapshot = await uploadTask.whenComplete(() {});
+    urlDownload = await snapshot.ref.getDownloadURL();
+
+    showUploadMessage(context, '$name Uploaded Successfully...');
+    setState(() {
+      profile=urlDownload;
+    });
   }
 }

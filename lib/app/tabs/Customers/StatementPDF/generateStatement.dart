@@ -310,15 +310,23 @@ class StatementPDF {
 
           pw.Table.fromTextArray(
             cellAlignment: Alignment.center,
+            border: pw.TableBorder(
+              left: pw.BorderSide(),
+              right: pw.BorderSide(),
+              bottom: pw.BorderSide(),
+              top: pw.BorderSide(),
+              horizontalInside: pw.BorderSide.none,
+              verticalInside: pw.BorderSide(),
+            ),
             context: context,
             headers: [
               'Date',
               'Particulars',
               'Debit',
               'Credit',
-              'Balance',
+              // 'Balance',
             ],
-            data: List.generate(datas.length + 1, (index) {
+            data: List.generate(datas.length + 2, (index) {
               // final summary = datas[index];
 
               if (index < datas.length) {
@@ -335,6 +343,22 @@ class StatementPDF {
               return index == datas.length
                   ? [
                       '',
+                      'Balance',
+                debitTotal > creditTotal ? '' : _formatNumber((creditTotal - debitTotal).toString().replaceAll(',', '')),
+                      // debitTotal > creditTotal
+                      //     ? _formatNumber(
+                      //         debitTotal.toString().replaceAll(',', ''))
+                      //     : _formatNumber(
+                      //         creditTotal.toString().replaceAll(',', '')),
+                      // debitTotal > creditTotal
+                      //     ? _formatNumber(
+                      //         debitTotal.toString().replaceAll(',', ''))
+                      //     : _formatNumber(
+                      //         creditTotal.toString().replaceAll(',', '')),
+                debitTotal > creditTotal ? _formatNumber((debitTotal - creditTotal).toString().replaceAll(',', '')) : '',
+                    ]
+                    :index==datas.length+1?[
+                      '',
                       '',
                       debitTotal > creditTotal
                           ? _formatNumber(
@@ -346,7 +370,7 @@ class StatementPDF {
                               debitTotal.toString().replaceAll(',', ''))
                           : _formatNumber(
                               creditTotal.toString().replaceAll(',', '')),
-                      '',
+
                     ]
                   : [
                       dateTimeFormat('d-MMM-y', datas[index]['date'].toDate()),
@@ -361,8 +385,8 @@ class StatementPDF {
                           : _formatNumber(datas[index]['credit']
                               .toString()
                               .replaceAll(',', '')),
-                      _formatNumber(balance.toString().replaceAll(',', ''))
-                    ];
+                      // _formatNumber(balance.toString().replaceAll(',', ''))
+                    ]; 
             }),
           ),
         ],
