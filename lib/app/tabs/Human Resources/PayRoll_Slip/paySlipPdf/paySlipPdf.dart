@@ -9,10 +9,13 @@ import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
+import 'package:printing/printing.dart';
 import '../../../../../flutter_flow/flutter_flow_util.dart';
 import '../../../../pages/home_page/home.dart';
 
 var format = NumberFormat.simpleCurrency(locale: 'en_in');
+var image;
+
 
 class PaySlip {
   static downloadPdf(PaySlipModel invoice, Map employeeDetails,
@@ -22,11 +25,63 @@ class PaySlip {
         NumberFormat.decimalPattern(_locale).format(int.parse(s));
 
     final pdf = Document();
+    image = await imageFromAssetBundle('assets/images/fl_new.jpg');
 
     pdf.addPage(
-      pw.Page(
+      MultiPage(
+        margin: EdgeInsets.all(25),
+        header: (context) => Padding(
+            padding: EdgeInsets.only(bottom: 50),
+            child: Container(
+              height: 100,
+              width: double.infinity,
+              child: Row(children: [
+                Container(
+                  height: 80,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Image(image,
+                            width: 150, height: 150, fit: pw.BoxFit.contain),
+                      ]),
+                ),
+                pw.SizedBox(width: 15),
+                Expanded(
+                  child: Container(
+                    child: Column(
+                        mainAxisAlignment: pw.MainAxisAlignment.end,
+                        crossAxisAlignment: pw.CrossAxisAlignment.end,
+                        children: [
+                          Row(
+                              mainAxisAlignment: pw.MainAxisAlignment.end,
+                              children: [
+                                Text('www.firstlogicmetalab.com'),
+                                pw.SizedBox(width: 3),
+                                // Image(
+                                //   globIcon,
+                                //   width: 20,
+                                //   height: 20,
+                                //   fit: pw.BoxFit.contain,
+                                // ),
+                                // pw.SizedBox(width: 5),
+                              ]),
+                          pw.SizedBox(height: 5),
+                          Container(
+                            height: 10,
+                            color: PdfColors.blue,
+                          ),
+                          Container(
+                            height: 7,
+                            color: PdfColors.grey,
+                          ),
+                        ]),
+                  ),
+                ),
+              ]),
+            )),
         build: (context) {
-          return Container(
+          return [
+            Container(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1773,7 +1828,7 @@ class PaySlip {
                 ///
               ],
             ),
-          );
+          )];
         },
       ),
     );

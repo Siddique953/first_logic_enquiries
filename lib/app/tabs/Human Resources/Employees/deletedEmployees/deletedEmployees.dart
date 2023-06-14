@@ -276,7 +276,7 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
                     ),
                     Expanded(
                       child: Text(
-                        'Employee Lists',
+                        'Deleted Employee Lists',
                         style: FlutterFlowTheme.bodyText1.override(
                             fontFamily: 'Poppins',
                             fontSize: 25,

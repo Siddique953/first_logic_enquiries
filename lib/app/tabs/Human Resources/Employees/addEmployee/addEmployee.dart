@@ -96,7 +96,7 @@ class _AddEmployeeState extends State<AddEmployee> {
   UploadTask uploadTask;
   String profileUrl = '';
 
-  Future selectFile(String name) async {
+  Future selectFile() async {
     final result = await FilePicker.platform.pickFiles();
     if (result == null) return;
 
@@ -107,19 +107,19 @@ class _AddEmployeeState extends State<AddEmployee> {
 
     showUploadMessage(context, 'Uploading...', showLoading: true);
 
-    uploadFileToFireBase(name, fileBytes, ext);
+    uploadFileToFireBase( fileBytes, ext);
 
     setState(() {});
   }
 
-  Future uploadFileToFireBase(String name, fileBytes, String ext) async {
+  Future uploadFileToFireBase( fileBytes, String ext) async {
     // final path='file/${pickFile.name}';
     // final file=File(pickFile.path);
 
     // final ref=FirebaseStorage.instance.ref().child(path);
     // uploadTask = ref.putFile(file);
     uploadTask = FirebaseStorage.instance
-        .ref('Employees/Profiles/$name.$ext')
+        .ref('profiles/employees/ $name.$ext')
         .putData(fileBytes);
     final snapshot = await uploadTask.whenComplete(() {});
     final urlDownlod = await snapshot.ref.getDownloadURL();
@@ -1147,14 +1147,20 @@ class _AddEmployeeState extends State<AddEmployee> {
                                       width: 100,
                                     ),
                                     InkWell(
-                                      onTap: () {
-                                        selectFile(name.text);
+                                      onTap: (){
+                                        selectFile();
                                       },
-                                      child: CircleAvatar(
+                                      child: profileUrl==''?
+                                      CircleAvatar(
                                         radius: 25,
                                         backgroundColor: Colors.blueGrey,
+                                      ):
+                                      CircleAvatar(
+                                        radius: 25,
+                                        backgroundImage: NetworkImage(profileUrl),
+                                        backgroundColor: Colors.blueGrey,
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
                                 SizedBox(
