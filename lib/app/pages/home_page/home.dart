@@ -15,6 +15,7 @@ import '../../tabs/Branch/AddBranch.dart';
 import '../../tabs/Customers/Projects/projectListMain.dart';
 import '../../tabs/Customers/customerList.dart';
 import '../../tabs/Customers/customer_SinglePage.dart';
+import '../../tabs/DeveloperPage/developerUpdates.dart';
 import '../../tabs/Enquiry/AddEnquiry.dart';
 import '../../tabs/Enquiry/followUp.dart';
 import '../../tabs/Expense/add_expense.dart';
@@ -731,7 +732,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
     getProjectData();
 
-    _tabController = TabController(vsync: this, length: 34, initialIndex: 6);
+    _tabController = TabController(vsync: this, length: 35, initialIndex: 0);
 
 
     // updateProduct();
@@ -828,6 +829,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           LeadList(), //31
                           AddLeadsWidget(), //32
                           DeletedEmployees(tabController: _tabController), //33
+
+                          UpdatesPage()//34
                           ///
                         ],
                       ),
