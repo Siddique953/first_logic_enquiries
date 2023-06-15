@@ -32,6 +32,9 @@ class _HrDashBoardState extends State<HrDashBoard> {
     {
       'name': 'Pay Slip',
       'image': 'assets/HR Dashboard/paySlip.png',
+    },{
+      'name': 'Send Mail',
+      'image': 'assets/HR Dashboard/mail.png',
     },
     {
       'name': 'Settings',
@@ -82,6 +85,11 @@ class _HrDashBoardState extends State<HrDashBoard> {
                       // widget._tabController.animateTo((21));
                       // });
                     } else if (index == 4) {
+                      // setState(() {
+
+                      widget._tabController.animateTo((35));
+                      // });
+                    }else if (index == 5) {
                       // setState(() {
 
                       widget._tabController.animateTo((11));

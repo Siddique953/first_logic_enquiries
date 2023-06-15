@@ -30,6 +30,8 @@ import '../../tabs/Human Resources/Leaves/leaves.dart';
 import '../../tabs/Human Resources/PayRoll_Slip/BankSlip/bankSlip.dart';
 import '../../tabs/Human Resources/PayRoll_Slip/addExcelSheet.dart';
 import '../../tabs/Human Resources/PayRoll_Slip/paySlipPdf/demoPage.dart';
+import '../../tabs/Human Resources/SendMail/sendMail.dart';
+import '../../tabs/Human Resources/SendMail/sendToList.dart';
 import '../../tabs/Human Resources/hrHomePage.dart';
 import '../../tabs/Reports/contra Report.dart';
 import '../../tabs/Reports/customer Statement/customerListPage.dart';
@@ -538,11 +540,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       'status': 'Salary Information',
       'emailList': [
         'siddiquec321@gmail.com',
-        // 'akkuashkar158@gmail.com',
-        // 'firstlogicil@gmail.com',
-        'mmsharjas@gmail.com',
-        'snehamp984@gmail.com',
+        'akkuashkar158@gmail.com',
+        // 'mmsharjas@gmail.com',
+        // 'snehamp984@gmail.com',
       ],
+      'att':'https://firebasestorage.googleapis.com/v0/b/first-logic-erp.appspot.com/o/profiles%2Femployees%2FFL101-MUHAMMED%20SHABEEB-WhatsApp%20Image%202023-04-18%20at%2010.40.55%20PM.jpeg.jpeg?alt=media&token=fdcd5e54-9f64-484c-a452-9fff8b2f5597',
       // 'message': {
       //   'subject': 'Pay Slip',
       //   'text': 'Monthly Salary Details',
@@ -731,8 +733,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     getBranches();
 
     getProjectData();
+    employeeId='FL119';
 
-    _tabController = TabController(vsync: this, length: 35, initialIndex: 0);
+    _tabController = TabController(vsync: this, length: 37, initialIndex: 36);
 
 
     // updateProduct();
@@ -830,7 +833,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           AddLeadsWidget(), //32
                           DeletedEmployees(tabController: _tabController), //33
 
-                          UpdatesPage()//34
+                          UpdatesPage(), //34
+
+                          SendMailToEmployees(tabController: _tabController), //35
+                          SendToMailList(tabController: _tabController), //36
                           ///
                         ],
                       ),
