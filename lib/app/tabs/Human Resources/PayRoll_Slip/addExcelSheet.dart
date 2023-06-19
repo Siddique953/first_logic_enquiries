@@ -20,6 +20,10 @@ import 'dart:typed_data';
 
 import 'BankSlip/bankSlip.dart';
 
+DataTableSource _dataSemi;
+var employeeDetails = {};
+var employeeAttendance = {};
+
 class AddAttendance extends StatefulWidget {
   const AddAttendance({
     Key key,
@@ -35,8 +39,8 @@ class _AddAttendanceState extends State<AddAttendance> {
   String filename = '';
 
   /*Map<String, Map<String, dynamic>>*/
-  var employeeDetails = {};
-  var employeeAttendance = {};
+  // var employeeDetails = {};
+  // var employeeAttendance = {};
   bool closed = false;
 
   void pickFile() async {
@@ -169,7 +173,7 @@ class _AddAttendanceState extends State<AddAttendance> {
             'outTime': outTime,
             'totalWorkingHour': totalWorkHour,
             'leave': fullDayLeave,
-            // 'casualLeave': casualLeaves[empCode] ?? 0,
+             'casualLeave':0,/* casualLeaves[empCode] ?? 0,*/
             'halfDay': half,
             'offDay': off,
           };
@@ -204,23 +208,19 @@ class _AddAttendanceState extends State<AddAttendance> {
 
         //CALCULATE SALARY
 
-        print(
-            '[[[[[[[[[[[[[[[[[[[[[[[[[[[totalWork]]]]]]]]]]]]]]]]]]]]]]]]]]]');
 
         if ((leave + ((halfDay + lateCut) * 0.5)) > 5) {
           payable = (basicSalary / 30) * (totalWork - (0.5 * lateCut));
-          print('hereeeeeeeeeeee');
         } else {
           payable =
               (basicSalary / 30) * (30 - (leave - ((halfDay + lateCut) * 0.5)));
-          print('elseeeeeeeeeeeee');
         }
 
         employeeDetails[empCode]['workDay'] = totalWork - (0.5 * lateCut);
         employeeDetails[empCode]['offDay'] = cf;
         employeeDetails[empCode]['lateCut'] = lateCut;
         employeeDetails[empCode]['halfDay'] = halfDay;
-        // employeeDetails[empCode]['casualLeave'] = casualLeaves[empCode] ?? 0;
+         employeeDetails[empCode]['casualLeave'] = 0/*casualLeaves[empCode] ?? 0*/;
         employeeDetails[empCode]['leave'] = leave + ((halfDay + lateCut) * 0.5);
         employeeDetails[empCode]['payable'] = payable.round();
         employeeDetails[empCode]['incentive'] = incentive;
@@ -331,7 +331,7 @@ class _AddAttendanceState extends State<AddAttendance> {
   //         try {
   //           casualLeaves[doc['empId']] = casualLeaves[doc['empId']] + 1;
   //         } catch (er) {
-  //           print(er);
+  //           a(er);
   //           casualLeaves[doc['empId']] = 1;
   //         }
   //       }
@@ -340,11 +340,24 @@ class _AddAttendanceState extends State<AddAttendance> {
   //   });
   // }
 
+  /// PAGINATED DATA TABLE
+  final paginateKey = new GlobalKey<PaginatedDataTableState>();
+  ScrollController scrollController = ScrollController();
+  int _rowPerPage = 10;
+
+  /// EMPLOYEE LIST SORTED
+  List employeeListFull=employeeList.where((element) => element['delete']==false).toList();
+  List sortedEmployeeList=[];
+  TextEditingController search = TextEditingController();
+
   @override
   void initState() {
     DateTime now = DateTime.now();
     lastMonthStart = DateTime(now.year, now.month - 1, 1);
     lastMonthEnd = DateTime(now.year, now.month, 0);
+
+    employeeListFull=employeeList.where((element) => element['delete']==false).toList();
+    sortedEmployeeList=employeeList.where((element) => element['delete']==false).toList();
 
     // getLeaves();
     super.initState();
@@ -355,8 +368,18 @@ class _AddAttendanceState extends State<AddAttendance> {
     super.dispose();
   }
 
+  refresh() {
+    setState(() {
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    _dataSemi = MyData(context,refresh,closed,sortedEmployeeList);
+
+
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
@@ -469,7 +492,6 @@ class _AddAttendanceState extends State<AddAttendance> {
                                                     'Details Successfully Updated...');
                                                 setState(() {});
                                               }).onError((error, stackTrace) {
-                                                print(error);
                                                 showUploadMessage(context,
                                                     'No Data Found...');
                                               });
@@ -913,14 +935,128 @@ class _AddAttendanceState extends State<AddAttendance> {
               padding: EdgeInsetsDirectional.fromSTEB(20, 20, 0, 10),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: Text(
-                      'Salary Details',
-                      style: FlutterFlowTheme.bodyText1.override(
-                          fontFamily: 'Poppins',
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600),
+                  Text(
+                    'Salary Details',
+                    style: FlutterFlowTheme.bodyText1.override(
+                        fontFamily: 'Poppins',
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  Container(
+                    width: 350,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                      BorderRadius.circular(
+                          8),
+                      border: Border.all(
+                        color:
+                        Colors.black,
+                      ),
+                    ),
+                    child: Padding(
+                      padding:
+                      EdgeInsets.fromLTRB(
+                          16, 0, 0, 0),
+                      child: TextFormField(
+                        controller: search,
+                        obscureText: false,
+                        onChanged: (text) {
+                          // setState(() {
+                            sortedEmployeeList.clear();
+                            if (search.text == '') {
+                              // listOfFilteredProjects
+                              //     .addAll(listOfActiveProjects);
+                              sortedEmployeeList.addAll(employeeListFull);
+                              setState(() {
+
+                              });
+                              } else {
+                              getSearchedProjects(text.toLowerCase());
+                            }
+                          // });
+                        },
+                        decoration:
+                        InputDecoration(
+                          labelText: 'Search',
+                          labelStyle: FlutterFlowTheme
+                              .bodyText2
+                              .override(
+                              fontFamily:
+                              'Montserrat',
+                              color: Colors
+                                  .black,
+                              fontWeight:
+                              FontWeight
+                                  .w500,
+                              fontSize: 12),
+                          hintText:
+                          'Search for Employees',
+                          hintStyle: FlutterFlowTheme
+                              .bodyText2
+                              .override(
+                              fontFamily:
+                              'Montserrat',
+                              color: Colors
+                                  .black,
+                              fontWeight:
+                              FontWeight
+                                  .w500,
+                              fontSize: 12),
+                          enabledBorder:
+                          UnderlineInputBorder(
+                            borderSide:
+                            BorderSide(
+                              color: Colors
+                                  .transparent,
+                              width: 1,
+                            ),
+                            borderRadius:
+                            const BorderRadius
+                                .only(
+                              topLeft: Radius
+                                  .circular(
+                                  4.0),
+                              topRight: Radius
+                                  .circular(
+                                  4.0),
+                            ),
+                          ),
+                          focusedBorder:
+                          UnderlineInputBorder(
+                            borderSide:
+                            BorderSide(
+                              color: Colors
+                                  .transparent,
+                              width: 1,
+                            ),
+                            borderRadius:
+                            const BorderRadius
+                                .only(
+                              topLeft: Radius
+                                  .circular(
+                                  4.0),
+                              topRight: Radius
+                                  .circular(
+                                  4.0),
+                            ),
+                          ),
+                        ),
+                        style: FlutterFlowTheme
+                            .bodyText2
+                            .override(
+                            fontFamily:
+                            'Montserrat',
+                            color: Color(
+                                0xFF8B97A2),
+                            fontWeight:
+                            FontWeight
+                                .w500,
+                            fontSize: 13),
+                      ),
                     ),
                   ),
                 ],
@@ -942,878 +1078,143 @@ class _AddAttendanceState extends State<AddAttendance> {
                             ),
                           )
                         : Row(
-                            children: [
-                              Expanded(
-                                child: FittedBox(
-                                  child: DataTable(
-                                    horizontalMargin: 12,
-                                    columns: [
-                                      DataColumn(
-                                        label: Text(
-                                          "Sl No",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12),
-                                        ),
-                                      ),
-                                      DataColumn(
-                                        label: Text("Emp ID",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 12)),
-                                      ),
-                                      DataColumn(
-                                        label: Text("Emp Name",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 12)),
-                                      ),
-                                      DataColumn(
-                                        label: Flexible(
-                                          child: Text("Total Working Days",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12)),
-                                        ),
-                                      ),
-                                      DataColumn(
-                                        label: Flexible(
-                                          child: Text("Number Of Leave",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12)),
-                                        ),
-                                      ),
-                                      // DataColumn(
-                                      //   label: Flexible(
-                                      //     child: Text("Casual Leaves",
-                                      //         style: TextStyle(
-                                      //             fontWeight: FontWeight.bold,
-                                      //             fontSize: 12)),
-                                      //   ),
-                                      // ),
-                                      DataColumn(
-                                        label: Flexible(
-                                          child: Text("Basic Salary",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12)),
-                                        ),
-                                      ),
-                                      DataColumn(
-                                        label: Flexible(
-                                          child: Text("Payable Salary",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12)),
-                                        ),
-                                      ),
-                                      DataColumn(
-                                        label: Flexible(
-                                          child: Text("Incentive",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12)),
-                                        ),
-                                      ),
-                                      DataColumn(
-                                        label: Flexible(
-                                          child: Text("Over Time",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12)),
-                                        ),
-                                      ),
-                                      DataColumn(
-                                        label: Flexible(
-                                          child: Text("Advance",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12)),
-                                        ),
-                                      ),
-                                      DataColumn(
-                                        label: Flexible(
-                                          child: Text("Take Home",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12)),
-                                        ),
-                                      ),
-                                    ],
-                                    rows: List.generate(
-                                      employeeList.length,
-                                      (index) {
-                                        final data =
-                                            employeeList[index]['empId'];
-
-                                        if (employeeDetails.keys
-                                            .toList()
-                                            .isNotEmpty) {
-                                          if (employeeDetails[data] == null) {
-                                            employeeDetails[data] = {
-                                              "workDay": 0,
-                                              "offDay": 0,
-                                              "lateCut": 0,
-                                              "halfDay": 0,
-                                              "leave": 0,
-                                              'casualLeave': 0,
-                                              "payable": 0,
-                                              "incentive": 0,
-                                              "ot": 0,
-                                              "deduction": 0,
-                                              "takeHome": 0,
-                                            };
-                                          }
-                                        }
-
-                                        TextEditingController workingDays =
-                                            TextEditingController(
-                                                text: employeeDetails[data] !=
-                                                            null &&
-                                                        employeeDetails[data]
-                                                                ['offDay'] !=
-                                                            null
-                                                    ? (30 -
-                                                            (employeeDetails[
-                                                                        data][
-                                                                    'offDay'] ??
-                                                                0))
-                                                        .toString()
-                                                    : '');
-
-                                        TextEditingController incentive =
-                                            TextEditingController(
-                                                text: employeeDetails[data] !=
-                                                        null
-                                                    ? employeeDetails[data]
-                                                            ['incentive']
-                                                        .toString()
-                                                    : '');
-
-                                        TextEditingController deduction =
-                                            TextEditingController(
-                                                text: employeeDetails[data] !=
-                                                        null
-                                                    ? employeeDetails[data]
-                                                            ['deduction']
-                                                        .toString()
-                                                    : '');
-
-                                        TextEditingController ot =
-                                            TextEditingController(
-                                                text: employeeDetails[data] !=
-                                                        null
-                                                    ? employeeDetails[data]
-                                                            ['ot']
-                                                        .toString()
-                                                    : '');
-
-                                        TextEditingController payable =
-                                            TextEditingController(
-                                                text: employeeDetails[data] !=
-                                                        null
-                                                    ? employeeDetails[data]
-                                                            ['payable']
-                                                        .toString()
-                                                    : '');
-
-                                        TextEditingController leave =
-                                        TextEditingController(
-                                            text: employeeDetails[data] !=
-                                                null &&
-                                                employeeDetails[data]
-                                                ['leave'] !=
-                                                    null
-                                                ? (employeeDetails[data]['leave'] ??
-                                                0)
-                                                .toString()
-                                                : '');
-
-                                        String name =
-                                            empDataById[data].name ?? '';
-
-                                        // String totalDays =
-                                        //     employeeDetails[data] != null &&
-                                        //             employeeDetails[data]
-                                        //                     ['offDay'] !=
-                                        //                 null
-                                        //         ? (30 -
-                                        //                 (employeeDetails[data]
-                                        //                         ['offDay'] ??
-                                        //                     0))
-                                        //             .toString()
-                                        //         : '';
-
-                                        // String leaves = employeeDetails[data] !=
-                                        //             null &&
-                                        //         employeeDetails[data]
-                                        //                 ['leave'] !=
-                                        //             null
-                                        //     ? (employeeDetails[data]['leave'] ??
-                                        //             0)
-                                        //         .toString()
-                                        //     : '';
-
-                                        String casualLeave =
-                                            employeeDetails[data] != null &&
-                                                    employeeDetails[data]
-                                                            ['casualLeave'] !=
-                                                        null
-                                                ? (employeeDetails[data]
-                                                            ['casualLeave'] ??
-                                                        0)
-                                                    .toString()
-                                                : '';
-
-                                        double basicSalary = double.tryParse(
-                                            empDataById[data].ctc.toString());
-
-                                        // int halfDays = employeeDetails[data]['halfDay'];
-                                        //
-                                        // int lateCut = employeeDetails[data]['lateCut'];
-                                        //
-                                        // double presentDays =
-                                        //     employeeDetails[data]['workDay'];
-
-                                        // String payable = employeeDetails[data] !=
-                                        //             null &&
-                                        //         employeeDetails[data]['payable'] !=
-                                        //             null
-                                        //     ? (employeeDetails[data]['payable'] ?? 0)
-                                        //         .toStringAsFixed(2)
-                                        //     : '';
-
-                                        String takeHome =
-                                            employeeDetails[data] != null &&
-                                                    employeeDetails[data]
-                                                            ['takeHome'] !=
-                                                        null
-                                                ? (employeeDetails[data]
-                                                            ['takeHome'] ??
-                                                        0)
-                                                    .toString()
-                                                : '';
-
-                                        return DataRow(
-                                          color: index.isOdd
-                                              ? MaterialStateProperty.all(Colors
-                                                  .blueGrey.shade50
-                                                  .withOpacity(0.7))
-                                              : MaterialStateProperty.all(
-                                                  Colors.blueGrey.shade50),
-                                          cells: [
-                                            DataCell(
-                                              Text((index + 1).toString(),
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 12)),
-                                            ),
-
-                                            DataCell(
-                                              Text(data,
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 12)),
-                                            ),
-
-                                            DataCell(
-                                              Text(name.toString() ?? '',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 12)),
-                                            ),
-
-                                            //EDIT TOTAL WORKING DAYS TO CHANGE ALL 30
-
-                                            DataCell(
-                                              TextFormField(
-                                                readOnly: closed,
-                                                controller: workingDays,
-                                                obscureText: false,
-
-                                                //ADD VALUE TO TAKE VALUE
-
-                                                // onTap: () {
-                                                //   if (payable.text == '0') {
-                                                //     payable.text = '';
-                                                //   }
-                                                // },
-
-                                                onFieldSubmitted: (s) {
-                                                  try {
-
-                                                    employeeDetails[data]
-                                                                ['offDay'] =
-                                                            (30 -
-                                                                int.tryParse(
-                                                                    workingDays
-                                                                        .text));
-
-                                                    // for (var id
-                                                    //     in employeeDetails.keys
-                                                    //         .toList()) {
-                                                    //   if (30 -
-                                                    //           (employeeDetails[
-                                                    //                       id][
-                                                    //                   'offDay'] ??
-                                                    //               0) ==
-                                                    //       30) {
-                                                    //     employeeDetails[id]
-                                                    //             ['offDay'] =
-                                                    //         (30 -
-                                                    //             int.tryParse(
-                                                    //                 workingDays
-                                                    //                     .text));
-                                                    //   }
-                                                    // }
-
-                                                    setState(() {});
-                                                  } catch (err) {
-                                                    print(err);
-                                                    showUploadMessage(context,
-                                                        'Unexpected error occurred!!!');
-                                                  }
-                                                },
-
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                ),
-                                                style: FlutterFlowTheme
-                                                    .bodyText2
-                                                    .override(
-                                                  fontFamily: 'Montserrat',
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-
-                                            DataCell(
-                                              TextFormField(
-                                                readOnly: closed,
-                                                controller: leave,
-                                                obscureText: false,
-
-                                                //ADD VALUE TO TAKE VALUE
-
-                                                // onTap: () {
-                                                //   if (payable.text == '0') {
-                                                //     payable.text = '';
-                                                //   }
-                                                // },
-
-                                                onFieldSubmitted: (s) {
-                                                  try {
-
-                                                    employeeDetails[data]
-                                                    ['leave'] =
-
-                                                        int.tryParse(
-                                                            leave
-                                                                .text);
-
-                                                    // for (var id
-                                                    //     in employeeDetails.keys
-                                                    //         .toList()) {
-                                                    //   if (30 -
-                                                    //           (employeeDetails[
-                                                    //                       id][
-                                                    //                   'offDay'] ??
-                                                    //               0) ==
-                                                    //       30) {
-                                                    //     employeeDetails[id]
-                                                    //             ['offDay'] =
-                                                    //         (30 -
-                                                    //             int.tryParse(
-                                                    //                 workingDays
-                                                    //                     .text));
-                                                    //   }
-                                                    // }
-
-                                                    setState(() {});
-                                                  } catch (err) {
-                                                    print(err);
-                                                    showUploadMessage(context,
-                                                        'Unexpected error occurred!!!');
-                                                  }
-                                                },
-
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                ),
-                                                style: FlutterFlowTheme
-                                                    .bodyText2
-                                                    .override(
-                                                  fontFamily: 'Montserrat',
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-
-                                            // DataCell(
-                                            //   Text('$casualLeave',
-                                            //       style: TextStyle(
-                                            //           fontWeight:
-                                            //               FontWeight.bold,
-                                            //           fontSize: 12)),
-                                            // ),
-
-                                            DataCell(
-                                              Text(basicSalary.toString(),
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 12)),
-                                            ),
-
-                                            //TEXT FORM FIELD TO INSERT Payable
-
-                                            DataCell(
-                                              TextFormField(
-                                                readOnly: closed,
-                                                controller: payable,
-                                                obscureText: false,
-
-                                                //ADD VALUE TO TAKE VALUE
-
-                                                onTap: () {
-                                                  if (payable.text == '0') {
-                                                    payable.text = '';
-                                                  }
-                                                },
-
-                                                onFieldSubmitted: (s) {
-                                                  try {
-                                                    if (payable.text != '') {
-                                                      double salary =
-                                                          double.tryParse(
-                                                              payable.text);
-
-                                                      double incentiv =
-                                                          double.tryParse(
-                                                              incentive.text ==
-                                                                      ''
-                                                                  ? '0'
-                                                                  : incentive
-                                                                      .text);
-
-                                                      double otAmt =
-                                                          double.tryParse(
-                                                              ot.text == ''
-                                                                  ? '0'
-                                                                  : ot.text);
-
-                                                      double ded =
-                                                          double.tryParse(
-                                                              deduction.text ==
-                                                                      ''
-                                                                  ? '0'
-                                                                  : deduction
-                                                                      .text);
-
-                                                      employeeDetails[data]
-                                                              ['takeHome'] =
-                                                          salary +
-                                                              (incentiv +
-                                                                  otAmt) -
-                                                              ded;
-
-                                                      employeeDetails[data]
-                                                          ['payable'] = salary;
-
-                                                      setState(() {});
-                                                    } else {
-                                                      double salary =
-                                                          double.tryParse(
-                                                              payable.text);
-
-                                                      double incentiv =
-                                                          double.tryParse(
-                                                              incentive.text ==
-                                                                      ''
-                                                                  ? '0'
-                                                                  : payable
-                                                                      .text);
-
-                                                      double otAmt =
-                                                          double.tryParse(
-                                                              ot.text == ''
-                                                                  ? '0'
-                                                                  : payable
-                                                                      .text);
-
-                                                      double ded =
-                                                          double.tryParse(
-                                                              deduction.text ==
-                                                                      ''
-                                                                  ? '0'
-                                                                  : payable
-                                                                      .text);
-
-                                                      employeeDetails[data]
-                                                              ['takeHome'] =
-                                                          salary +
-                                                              (incentiv +
-                                                                  otAmt) -
-                                                              ded;
-
-                                                      employeeDetails[data]
-                                                          ['payable'] = salary;
-
-                                                      setState(() {});
-                                                    }
-                                                  } catch (err) {
-                                                    print(err);
-                                                    showUploadMessage(context,
-                                                        'Provide Only Digit');
-                                                  }
-                                                },
-
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                ),
-                                                style: FlutterFlowTheme
-                                                    .bodyText2
-                                                    .override(
-                                                  fontFamily: 'Montserrat',
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-
-                                            //TEXT FORM FIELD TO INSERT INCENTIVE
-
-                                            DataCell(
-                                              TextFormField(
-                                                readOnly: closed,
-                                                controller: incentive,
-                                                obscureText: false,
-
-                                                //ADD VALUE TO TAKE VALUE
-
-                                                onTap: () {
-                                                  if (incentive.text == '0') {
-                                                    incentive.text = '';
-                                                  }
-                                                },
-
-                                                onFieldSubmitted: (s) {
-                                                  try {
-                                                    // if (employeeDetails[data]==null||employeeDetails[data]['ot'] ==
-                                                    //     null) {
-                                                    //   employeeDetails[data] = {'ot':0};
-                                                    // } else if (employeeDetails[data]==null||employeeDetails[data]
-                                                    //         ['deduction'] ==
-                                                    //     null) {
-                                                    //   employeeDetails[data] = {'deduction':0};
-                                                    // } else if (employeeDetails[data]==null||employeeDetails[data]
-                                                    //         ['incentive'] ==
-                                                    //     null) {
-                                                    //   employeeDetails[data] = {'incentive':0};
-                                                    // }
-
-                                                    if (incentive.text != '') {
-                                                      int incentives =
-                                                          double.tryParse(
-                                                                  incentive
-                                                                      .text)
-                                                              .round();
-
-                                                      int pay =
-                                                          employeeDetails[data]
-                                                                  ['payable']
-                                                              .round();
-
-                                                      employeeDetails[data]
-                                                          ['takeHome'] = pay +
-                                                              (incentives +
-                                                                      employeeDetails[
-                                                                              data]
-                                                                          [
-                                                                          'ot'] ??
-                                                                  0) -
-                                                              employeeDetails[
-                                                                      data][
-                                                                  'deduction'] ??
-                                                          0;
-
-                                                      employeeDetails[data]
-                                                              ['incentive'] =
-                                                          incentives;
-
-                                                      setState(() {});
-                                                    } else {
-                                                      double incentives =
-                                                          double.tryParse('0');
-                                                      double pay =
-                                                          employeeDetails[data]
-                                                                  ['payable']
-                                                              .round();
-
-                                                      employeeDetails[data]
-                                                          ['takeHome'] = pay +
-                                                              (incentives +
-                                                                      employeeDetails[
-                                                                              data]
-                                                                          [
-                                                                          'ot'] ??
-                                                                  0) -
-                                                              employeeDetails[
-                                                                      data][
-                                                                  'deduction'] ??
-                                                          0;
-
-                                                      employeeDetails[data]
-                                                              ['incentive'] =
-                                                          incentives;
-
-                                                      setState(() {});
-                                                    }
-                                                  } catch (err) {
-                                                    print(err);
-                                                    showUploadMessage(context,
-                                                        'Provide Only Digit');
-                                                  }
-                                                },
-
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                ),
-                                                style: FlutterFlowTheme
-                                                    .bodyText2
-                                                    .override(
-                                                  fontFamily: 'Montserrat',
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-
-                                            //TEXT FORM FIELD TO INSERT OT
-
-                                            DataCell(
-                                              TextFormField(
-                                                readOnly: closed,
-                                                controller: ot,
-                                                obscureText: false,
-
-                                                //ADD VALUE TO TAKE VALUE
-
-                                                onTap: () {
-                                                  if (ot.text == '0') {
-                                                    ot.text = '';
-                                                  }
-                                                },
-
-                                                onFieldSubmitted: (s) {
-                                                  try {
-                                                    if (ot.text != '') {
-                                                      double otAmount =
-                                                          double.tryParse(
-                                                              ot.text);
-
-                                                      double pay =
-                                                          employeeDetails[data]
-                                                                  ['payable']
-                                                              .round();
-
-                                                      employeeDetails[data]
-                                                          ['takeHome'] = pay +
-                                                              (otAmount +
-                                                                      employeeDetails[
-                                                                              data]
-                                                                          [
-                                                                          'incentive'] ??
-                                                                  0) -
-                                                              employeeDetails[
-                                                                      data][
-                                                                  'deduction'] ??
-                                                          0;
-
-                                                      employeeDetails[data]
-                                                          ['ot'] = otAmount;
-
-                                                      setState(() {});
-                                                    } else {
-                                                      double otAmount =
-                                                          double.tryParse('0');
-
-                                                      double pay =
-                                                          employeeDetails[data]
-                                                                  ['payable']
-                                                              .round();
-
-                                                      employeeDetails[data]
-                                                          ['takeHome'] = pay +
-                                                              (otAmount +
-                                                                      employeeDetails[
-                                                                              data]
-                                                                          [
-                                                                          'incentive'] ??
-                                                                  0) -
-                                                              employeeDetails[
-                                                                      data][
-                                                                  'deduction'] ??
-                                                          0;
-
-                                                      employeeDetails[data]
-                                                          ['ot'] = otAmount;
-
-                                                      setState(() {});
-                                                    }
-                                                  } catch (err) {
-                                                    print(err);
-                                                    showUploadMessage(context,
-                                                        'Provide Only Digit');
-                                                  }
-                                                },
-
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                ),
-
-                                                style: FlutterFlowTheme
-                                                    .bodyText2
-                                                    .override(
-                                                  fontFamily: 'Montserrat',
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-
-                                            //TEXT FORM FIELD TO INSERT DEDUCTION
-
-                                            DataCell(
-                                              TextFormField(
-                                                readOnly: closed,
-                                                controller: deduction,
-                                                obscureText: false,
-
-                                                //ADD VALUE TO TAKE VALUE
-
-                                                onTap: () {
-                                                  if (deduction.text == '0') {
-                                                    deduction.text = '';
-                                                  }
-                                                },
-
-                                                onFieldSubmitted: (s) {
-                                                  try {
-                                                    // if (employeeDetails[data]['ot'] ==
-                                                    //     null) {
-                                                    //   employeeDetails[data]['ot'] = 0;
-                                                    // } else if (employeeDetails[data]
-                                                    //         ['deduction'] ==
-                                                    //     null) {
-                                                    //   employeeDetails[data]
-                                                    //       ['deduction'] = 0;
-                                                    // } else if (employeeDetails[data]
-                                                    //         ['incentive'] ==
-                                                    //     null) {
-                                                    //   employeeDetails[data]
-                                                    //       ['incentive'] = 0;
-                                                    // }
-
-                                                    if (deduction.text != '') {
-                                                      double deductionAmount =
-                                                          double.tryParse(
-                                                              deduction.text);
-                                                      double pay =
-                                                          employeeDetails[data]
-                                                                  ['payable']
-                                                              .round();
-
-                                                      employeeDetails[data]
-                                                          ['takeHome'] = (pay +
-                                                              (employeeDetails[
-                                                                          data]
-                                                                      ['ot'] ??
-                                                                  0) +
-                                                              (employeeDetails[
-                                                                          data][
-                                                                      'incentive'] ??
-                                                                  0)) -
-                                                          deductionAmount;
-
-                                                      employeeDetails[data]
-                                                              ['deduction'] =
-                                                          deductionAmount;
-
-                                                      setState(() {});
-                                                    } else {
-                                                      double deductionAmount =
-                                                          double.tryParse('0');
-
-                                                      double pay =
-                                                          employeeDetails[data]
-                                                                  ['payable']
-                                                              .round();
-
-                                                      employeeDetails[data]
-                                                          ['takeHome'] = ((pay +
-                                                                      employeeDetails[
-                                                                              data]
-                                                                          [
-                                                                          'ot'] ??
-                                                                  0) +
-                                                              (employeeDetails[
-                                                                          data][
-                                                                      'incentive'] ??
-                                                                  0)) -
-                                                          deductionAmount;
-
-                                                      employeeDetails[data]
-                                                              ['deduction'] =
-                                                          deductionAmount;
-
-                                                      setState(() {});
-                                                    }
-                                                  } catch (err) {
-                                                    print(err);
-                                                    showUploadMessage(context,
-                                                        'Provide Only Digit');
-                                                  }
-                                                },
-
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                ),
-
-                                                style: FlutterFlowTheme
-                                                    .bodyText2
-                                                    .override(
-                                                  fontFamily: 'Montserrat',
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-
-                                            DataCell(
-                                              Text(
-                                                takeHome,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        );
+                          children: [
+                            Expanded(
+                              child: SizedBox(
+                                child: SingleChildScrollView(
+                                  child: Theme(
+                                    data: ThemeData(
+                                        cardColor:
+                                        Theme.of(context)
+                                            .cardColor,
+                                        textTheme: TextTheme(
+                                            bodySmall: TextStyle(
+                                                color: Colors
+                                                    .black))),
+                                    child: PaginatedDataTable(
+                                      key: paginateKey,
+
+                                      onPageChanged: (value) {
+                                        scrollController.animateTo(
+                                            0,
+                                            duration: Duration(
+                                                milliseconds:
+                                                500),
+                                            curve: Curves
+                                                .fastOutSlowIn);
                                       },
+                                      checkboxHorizontalMargin:
+                                      10,
+                                      source: _dataSemi,
+                                      columnSpacing: 10.0,
+                                      horizontalMargin: 10,
+                                      onRowsPerPageChanged: (r) {
+                                        setState(() {
+                                          _rowPerPage = r;
+                                        });
+                                      },
+                                      rowsPerPage: _rowPerPage,
+                                      columns: [
+                                            DataColumn(
+                                              label: Text(
+                                                "Sl No",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12),
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Text("Emp ID",
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 12)),
+                                            ),
+                                            DataColumn(
+                                              label: Text("Emp Name",
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 12)),
+                                            ),
+                                            DataColumn(
+                                              label: Flexible(
+                                                child: Text("Total Working Days",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 12)),
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Flexible(
+                                                child: Text("Number Of Leave",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 12)),
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Flexible(
+                                                child: Text("Casual Leaves",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 12)),
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Flexible(
+                                                child: Text("Basic Salary",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 12)),
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Flexible(
+                                                child: Text("Payable Salary",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 12)),
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Flexible(
+                                                child: Text("Incentive",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 12)),
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Flexible(
+                                                child: Text("Over Time",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 12)),
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Flexible(
+                                                child: Text("Advance",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 12)),
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Flexible(
+                                                child: Text("Take Home",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 12)),
+                                              ),
+                                            ),
+                                      ],
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
+                        ),
                   ],
                 ),
               ),
@@ -2004,5 +1405,1553 @@ class _AddAttendanceState extends State<AddAttendance> {
           employeeList[i]['empId'], lastDay);
     }
     showUploadMessage(context, 'Pay Slip Successfully Shared..');
+  }
+
+
+  /// SEARCH FOR EMPLOYEE
+
+//GET FIRST 20 SEARCHED DATA
+  getSearchedProjects(String txt) {
+    sortedEmployeeList = [];
+    for (int i = 0; i < employeeListFull.length; i++) {
+      if (employeeListFull[i]['name'].toString().toLowerCase().contains(txt) ||
+          employeeListFull[i]['mobile'].toString().toLowerCase().contains(txt) ||
+          employeeListFull[i]['email'].toString().toLowerCase().contains(txt)) {
+        Map<String, dynamic> data = {};
+        data = employeeListFull[i];
+        data['index'] = i;
+        sortedEmployeeList.add(data);
+
+
+        // listOfFilteredProjects.add(listOfActiveProjects[i]);
+      }
+    }
+
+    setState(() {});
+  }
+}
+
+
+class MyData extends DataTableSource {
+  var context;
+  Function refresh;
+  bool closed;
+  List currentEmployeeList;
+
+  MyData(BuildContext this.context , this.refresh,this.closed,this.currentEmployeeList);
+
+
+  @override
+  bool get isRowCountApproximate => false;
+  @override
+  int get rowCount => currentEmployeeList.length;
+  @override
+  int get selectedRowCount => 0;
+  @override
+  DataRow getRow(int index) {
+
+
+
+          final data =
+              currentEmployeeList[index]['empId'];
+
+
+          if (employeeDetails.keys
+              .toList()
+              .isNotEmpty) {
+            if (employeeDetails[data] == null) {
+              employeeDetails[data] = {
+                "workDay": 0,
+                "offDay": 0,
+                "lateCut": 0,
+                "halfDay": 0,
+                "leave": 0,
+                'casualLeave': 0,
+                "payable": 0,
+                "incentive": 0,
+                "ot": 0,
+                "deduction": 0,
+                "takeHome": 0,
+              };
+            }
+          }
+
+          TextEditingController workingDays =
+              TextEditingController(
+                  text: employeeDetails[data] !=
+                              null &&
+                          employeeDetails[data]
+                                  ['offDay'] !=
+                              null
+                      ? (30 -
+                              (employeeDetails[
+                                          data][
+                                      'offDay'] ??
+                                  0))
+                          .toString()
+                      : '');
+
+          TextEditingController incentive =
+              TextEditingController(
+                  text: employeeDetails[data] !=
+                          null
+                      ? employeeDetails[data]
+                              ['incentive']
+                          .toString()
+                      : '');
+
+          TextEditingController deduction =
+              TextEditingController(
+                  text: employeeDetails[data] !=
+                          null
+                      ? employeeDetails[data]
+                              ['deduction']
+                          .toString()
+                      : '');
+
+          TextEditingController ot =
+              TextEditingController(
+                  text: employeeDetails[data] !=
+                          null
+                      ? employeeDetails[data]
+                              ['ot']
+                          .toString()
+                      : '');
+
+          TextEditingController payable =
+              TextEditingController(
+                  text: employeeDetails[data] !=
+                          null
+                      ? employeeDetails[data]
+                              ['payable']
+                          .toString()
+                      : '');
+
+          TextEditingController leave =
+          TextEditingController(
+              text: employeeDetails[data] !=
+                  null &&
+                  employeeDetails[data]
+                  ['leave'] !=
+                      null
+                  ? (employeeDetails[data]['leave'] ??
+                  0)
+                  .toString()
+                  : '');
+
+          TextEditingController casualLeave =
+          TextEditingController(
+              text: employeeDetails[data] !=
+                  null &&
+                  employeeDetails[data]
+                  ['casualLeave'] !=
+                      null
+                  ? (employeeDetails[data]['casualLeave'] ??
+                  0)
+                  .toString()
+                  : '');
+
+
+
+          String name =
+              empDataById[data].name ?? '';
+
+          // String totalDays =
+          //     employeeDetails[data] != null &&
+          //             employeeDetails[data]
+          //                     ['offDay'] !=
+          //                 null
+          //         ? (30 -
+          //                 (employeeDetails[data]
+          //                         ['offDay'] ??
+          //                     0))
+          //             .toString()
+          //         : '';
+
+          // String leaves = employeeDetails[data] !=
+          //             null &&
+          //         employeeDetails[data]
+          //                 ['leave'] !=
+          //             null
+          //     ? (employeeDetails[data]['leave'] ??
+          //             0)
+          //         .toString()
+          //     : '';
+
+          // String casualLeave =
+          //     employeeDetails[data] != null &&
+          //             employeeDetails[data]
+          //                     ['casualLeave'] !=
+          //                 null
+          //         ? (employeeDetails[data]
+          //                     ['casualLeave'] ??
+          //                 0)
+          //             .toString()
+          //         : '';
+
+          double basicSalary = double.tryParse(
+              empDataById[data].ctc.toString());
+
+          // int halfDays = employeeDetails[data]['halfDay'];
+          //
+          // int lateCut = employeeDetails[data]['lateCut'];
+          //
+          // double presentDays =
+          //     employeeDetails[data]['workDay'];
+
+          // String payable = employeeDetails[data] !=
+          //             null &&
+          //         employeeDetails[data]['payable'] !=
+          //             null
+          //     ? (employeeDetails[data]['payable'] ?? 0)
+          //         .toStringAsFixed(2)
+          //     : '';
+
+          String takeHome =
+              employeeDetails[data] != null &&
+                      employeeDetails[data]
+                              ['takeHome'] !=
+                          null
+                  ? (employeeDetails[data]
+                              ['takeHome'] ??
+                          0)
+                      .toString()
+                  : '';
+
+          return DataRow(
+            color: index.isOdd
+                ? MaterialStateProperty.all(Colors
+                    .blueGrey.shade50
+                    .withOpacity(0.7))
+                : MaterialStateProperty.all(
+                    Colors.blueGrey.shade50),
+            cells: [
+              DataCell(
+                Text((index + 1).toString(),
+                    style: TextStyle(
+                        fontWeight:
+                            FontWeight.bold,
+                        fontSize: 12)),
+              ),
+
+              DataCell(
+                Text(data,
+                    style: TextStyle(
+                        fontWeight:
+                            FontWeight.bold,
+                        fontSize: 12)),
+              ),
+
+              DataCell(
+                Text(name.toString() ?? '',
+                    style: TextStyle(
+                        fontWeight:
+                            FontWeight.bold,
+                        fontSize: 12)),
+              ),
+
+              //EDIT TOTAL WORKING DAYS TO CHANGE
+
+              DataCell(
+                TextFormField(
+                  readOnly: closed,
+                  controller: workingDays,
+                  obscureText: false,
+
+                  //ADD VALUE TO TAKE VALUE
+
+                  // onTap: () {
+                  //   if (payable.text == '0') {
+                  //     payable.text = '';
+                  //   }
+                  // },
+
+                  onFieldSubmitted: (s) {
+                    try {
+
+                      employeeDetails[data]
+                                  ['offDay'] =
+                              (30 -
+                                  int.tryParse(
+                                      workingDays
+                                          .text));
+
+                      // for (var id
+                      //     in employeeDetails.keys
+                      //         .toList()) {
+                      //   if (30 -
+                      //           (employeeDetails[
+                      //                       id][
+                      //                   'offDay'] ??
+                      //               0) ==
+                      //       30) {
+                      //     employeeDetails[id]
+                      //             ['offDay'] =
+                      //         (30 -
+                      //             int.tryParse(
+                      //                 workingDays
+                      //                     .text));
+                      //   }
+                      // }
+
+
+                    } catch (err) {
+                      print(err);
+                      showUploadMessage(context,
+                          'Unexpected error occurred!!!');
+                    }
+                  },
+
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                  ),
+                  style: FlutterFlowTheme
+                      .bodyText2
+                      .override(
+                    fontFamily: 'Montserrat',
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+
+              DataCell(
+                TextFormField(
+                  readOnly: closed,
+                  controller: leave,
+                  obscureText: false,
+
+                  //ADD VALUE TO TAKE VALUE
+
+                  // onTap: () {
+                  //   if (payable.text == '0') {
+                  //     payable.text = '';
+                  //   }
+                  // },
+
+                  onFieldSubmitted: (s) {
+                    try {
+
+
+                      int oldLeave=employeeDetails[data]['leave'];
+                      int workDay=employeeDetails[data]['workDay'];
+
+                      int newLeave=int.tryParse(leave.text);
+
+                      employeeDetails[data]['leave'] =newLeave;
+                      employeeDetails[data]['workDay'] =workDay-(newLeave-oldLeave) ;
+
+
+
+                      double salary=0;
+
+
+                      // if ((leave + ((halfDay + lateCut) * 0.5)) > 5) {
+                      //   payable = (basicSalary / 30) * (totalWork - (0.5 * lateCut));
+                      // } else {
+                      //   payable =
+                      //       (basicSalary / 30) * (30 - (leave - ((halfDay + lateCut) * 0.5)));
+                      // }
+
+                      if ((employeeDetails[data]['leave']-(employeeDetails[data]['casualLeave']??0)) > 5) {
+                        salary = (basicSalary / 30) * (  employeeDetails[data]['workDay']);
+                      } else {
+
+                        salary =
+                            (basicSalary / 30) * (30 - ((employeeDetails[data]['leave']-(employeeDetails[data]['casualLeave']??0)) ));
+                      }
+                      employeeDetails[data]['payable']=salary.round();
+                      employeeDetails[data]['takeHome']=(employeeDetails[data]['payable']-employeeDetails[data]['deduction'])+(employeeDetails[data]['incentive']+employeeDetails[data]['ot']);
+
+
+
+                      // for (var id
+                      //     in employeeDetails.keys
+                      //         .toList()) {
+                      //   if (30 -
+                      //           (employeeDetails[
+                      //                       id][
+                      //                   'offDay'] ??
+                      //               0) ==
+                      //       30) {
+                      //     employeeDetails[id]
+                      //             ['offDay'] =
+                      //         (30 -
+                      //             int.tryParse(
+                      //                 workingDays
+                      //                     .text));
+                      //   }
+                      // }
+
+                      refresh();
+                    } catch (err) {
+                      print(err);
+                      showUploadMessage(context,
+                          'Unexpected error occurred!!!');
+                    }
+                  },
+
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                  ),
+                  style: FlutterFlowTheme
+                      .bodyText2
+                      .override(
+                    fontFamily: 'Montserrat',
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+
+              DataCell(
+                TextFormField(
+                  readOnly: closed,
+                  controller: casualLeave,
+                  obscureText: false,
+
+                  //ADD VALUE TO TAKE VALUE
+
+                  // onTap: () {
+                  //   if (payable.text == '0') {
+                  //     payable.text = '';
+                  //   }
+                  // },
+
+                  onFieldSubmitted: (s) {
+                    try {
+
+                      employeeDetails[data]
+                      ['casualLeave'] =
+
+                          int.tryParse(
+                              casualLeave
+                                  .text);
+
+
+
+                      double salary=0;
+
+
+                      // if ((leave + ((halfDay + lateCut) * 0.5)) > 5) {
+                      //   payable = (basicSalary / 30) * (totalWork - (0.5 * lateCut));
+                      // } else {
+                      //   payable =
+                      //       (basicSalary / 30) * (30 - (leave - ((halfDay + lateCut) * 0.5)));
+                      // }
+
+                      if ((employeeDetails[data]['leave']-(employeeDetails[data]['casualLeave']??0)) > 5) {
+                        salary = (basicSalary / 30) * (  employeeDetails[data]['workDay']);
+                      } else {
+
+                        salary =
+                            (basicSalary / 30) * (30 - (employeeDetails[data]['leave']-(employeeDetails[data]['casualLeave']??0)));
+                      }
+                      employeeDetails[data]['payable']=salary.round();
+                      employeeDetails[data]['takeHome']=(employeeDetails[data]['payable']-employeeDetails[data]['deduction'])+(employeeDetails[data]['incentive']+employeeDetails[data]['ot']);
+
+
+
+                      // for (var id
+                      //     in employeeDetails.keys
+                      //         .toList()) {
+                      //   if (30 -
+                      //           (employeeDetails[
+                      //                       id][
+                      //                   'offDay'] ??
+                      //               0) ==
+                      //       30) {
+                      //     employeeDetails[id]
+                      //             ['offDay'] =
+                      //         (30 -
+                      //             int.tryParse(
+                      //                 workingDays
+                      //                     .text));
+                      //   }
+                      // }
+
+                      refresh();
+                    } catch (err) {
+                      print(err);
+                      showUploadMessage(context,
+                          'Unexpected error occurred!!!');
+                    }
+                  },
+
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                  ),
+                  style: FlutterFlowTheme
+                      .bodyText2
+                      .override(
+                    fontFamily: 'Montserrat',
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+
+              // DataCell(
+              //   Text('$casualLeave',
+              //       style: TextStyle(
+              //           fontWeight:
+              //               FontWeight.bold,
+              //           fontSize: 12)),
+              // ),
+
+              DataCell(
+                Text(basicSalary.toString(),
+                    style: TextStyle(
+                        fontWeight:
+                            FontWeight.bold,
+                        fontSize: 12)),
+              ),
+
+              //TEXT FORM FIELD TO INSERT Payable
+
+              DataCell(
+                TextFormField(
+                  readOnly: closed,
+                  controller: payable,
+                  obscureText: false,
+
+                  //ADD VALUE TO TAKE VALUE
+
+                  onTap: () {
+                    if (payable.text == '0') {
+                      payable.text = '';
+                    }
+                  },
+
+                  onFieldSubmitted: (s) {
+                    try {
+                      if (payable.text != '') {
+                        double salary =
+                            double.tryParse(
+                                payable.text);
+
+                        double incentiv =
+                            double.tryParse(
+                                incentive.text ==
+                                        ''
+                                    ? '0'
+                                    : incentive
+                                        .text);
+
+                        double otAmt =
+                            double.tryParse(
+                                ot.text == ''
+                                    ? '0'
+                                    : ot.text);
+
+                        double ded =
+                            double.tryParse(
+                                deduction.text ==
+                                        ''
+                                    ? '0'
+                                    : deduction
+                                        .text);
+
+                        employeeDetails[data]
+                                ['takeHome'] =
+                            salary +
+                                (incentiv +
+                                    otAmt) -
+                                ded;
+
+                        employeeDetails[data]
+                            ['payable'] = salary;
+
+                        refresh();
+                      } else {
+                        double salary =
+                            double.tryParse(
+                                payable.text);
+
+                        double incentiv =
+                            double.tryParse(
+                                incentive.text ==
+                                        ''
+                                    ? '0'
+                                    : payable
+                                        .text);
+
+                        double otAmt =
+                            double.tryParse(
+                                ot.text == ''
+                                    ? '0'
+                                    : payable
+                                        .text);
+
+                        double ded =
+                            double.tryParse(
+                                deduction.text ==
+                                        ''
+                                    ? '0'
+                                    : payable
+                                        .text);
+
+                        employeeDetails[data]
+                                ['takeHome'] =
+                            salary +
+                                (incentiv +
+                                    otAmt) -
+                                ded;
+
+                        employeeDetails[data]
+                            ['payable'] = salary;
+
+                        refresh();
+                      }
+                    } catch (err) {
+                      print(err);
+                      showUploadMessage(context,
+                          'Provide Only Digit');
+                    }
+                  },
+
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                  ),
+                  style: FlutterFlowTheme
+                      .bodyText2
+                      .override(
+                    fontFamily: 'Montserrat',
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+
+              //TEXT FORM FIELD TO INSERT INCENTIVE
+
+              DataCell(
+                TextFormField(
+                  readOnly: closed,
+                  controller: incentive,
+                  obscureText: false,
+
+                  //ADD VALUE TO TAKE VALUE
+
+                  onTap: () {
+                    if (incentive.text == '0') {
+                      incentive.text = '';
+                    }
+                  },
+
+                  onFieldSubmitted: (s) {
+                    try {
+                      // if (employeeDetails[data]==null||employeeDetails[data]['ot'] ==
+                      //     null) {
+                      //   employeeDetails[data] = {'ot':0};
+                      // } else if (employeeDetails[data]==null||employeeDetails[data]
+                      //         ['deduction'] ==
+                      //     null) {
+                      //   employeeDetails[data] = {'deduction':0};
+                      // } else if (employeeDetails[data]==null||employeeDetails[data]
+                      //         ['incentive'] ==
+                      //     null) {
+                      //   employeeDetails[data] = {'incentive':0};
+                      // }
+
+                      if (incentive.text != '') {
+                        int incentives =
+                            double.tryParse(
+                                    incentive
+                                        .text)
+                                .round();
+
+                        int pay =
+                            employeeDetails[data]
+                                    ['payable']
+                                .round();
+
+                        employeeDetails[data]
+                            ['takeHome'] = pay +
+                                (incentives +
+                                        employeeDetails[
+                                                data]
+                                            [
+                                            'ot'] ??
+                                    0) -
+                                employeeDetails[
+                                        data][
+                                    'deduction'] ??
+                            0;
+
+                        employeeDetails[data]
+                                ['incentive'] =
+                            incentives;
+
+                        refresh();
+                      } else {
+                        double incentives =
+                            double.tryParse('0');
+                        double pay =
+                            employeeDetails[data]
+                                    ['payable']
+                                .round();
+
+                        employeeDetails[data]
+                            ['takeHome'] = pay +
+                                (incentives +
+                                        employeeDetails[
+                                                data]
+                                            [
+                                            'ot'] ??
+                                    0) -
+                                employeeDetails[
+                                        data][
+                                    'deduction'] ??
+                            0;
+
+                        employeeDetails[data]
+                                ['incentive'] =
+                            incentives;
+
+                        refresh();
+                      }
+                    } catch (err) {
+                      print(err);
+                      showUploadMessage(context,
+                          'Provide Only Digit');
+                    }
+                  },
+
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                  ),
+                  style: FlutterFlowTheme
+                      .bodyText2
+                      .override(
+                    fontFamily: 'Montserrat',
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+
+              //TEXT FORM FIELD TO INSERT OT
+
+              DataCell(
+                TextFormField(
+                  readOnly: closed,
+                  controller: ot,
+                  obscureText: false,
+
+                  //ADD VALUE TO TAKE VALUE
+
+                  onTap: () {
+                    if (ot.text == '0') {
+                      ot.text = '';
+                    }
+                  },
+
+                  onFieldSubmitted: (s) {
+                    try {
+                      if (ot.text != '') {
+                        double otAmount =
+                            double.tryParse(
+                                ot.text);
+
+                        double pay =
+                            employeeDetails[data]
+                                    ['payable']
+                                .round();
+
+                        employeeDetails[data]
+                            ['takeHome'] = pay +
+                                (otAmount +
+                                        employeeDetails[
+                                                data]
+                                            [
+                                            'incentive'] ??
+                                    0) -
+                                employeeDetails[
+                                        data][
+                                    'deduction'] ??
+                            0;
+
+                        employeeDetails[data]
+                            ['ot'] = otAmount;
+
+                        refresh();
+                      } else {
+                        double otAmount =
+                            double.tryParse('0');
+
+                        double pay =
+                            employeeDetails[data]
+                                    ['payable']
+                                .round();
+
+                        employeeDetails[data]
+                            ['takeHome'] = pay +
+                                (otAmount +
+                                        employeeDetails[
+                                                data]
+                                            [
+                                            'incentive'] ??
+                                    0) -
+                                employeeDetails[
+                                        data][
+                                    'deduction'] ??
+                            0;
+
+                        employeeDetails[data]
+                            ['ot'] = otAmount;
+
+                        refresh();
+                      }
+                    } catch (err) {
+                      print(err);
+                      showUploadMessage(context,
+                          'Provide Only Digit');
+                    }
+                  },
+
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                  ),
+
+                  style: FlutterFlowTheme
+                      .bodyText2
+                      .override(
+                    fontFamily: 'Montserrat',
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+
+              //TEXT FORM FIELD TO INSERT DEDUCTION
+
+              DataCell(
+                TextFormField(
+                  readOnly: closed,
+                  controller: deduction,
+                  obscureText: false,
+
+                  //ADD VALUE TO TAKE VALUE
+
+                  onTap: () {
+                    if (deduction.text == '0') {
+                      deduction.text = '';
+                    }
+                  },
+
+                  onFieldSubmitted: (s) {
+                    try {
+                      // if (employeeDetails[data]['ot'] ==
+                      //     null) {
+                      //   employeeDetails[data]['ot'] = 0;
+                      // } else if (employeeDetails[data]
+                      //         ['deduction'] ==
+                      //     null) {
+                      //   employeeDetails[data]
+                      //       ['deduction'] = 0;
+                      // } else if (employeeDetails[data]
+                      //         ['incentive'] ==
+                      //     null) {
+                      //   employeeDetails[data]
+                      //       ['incentive'] = 0;
+                      // }
+
+                      if (deduction.text != '') {
+                        double deductionAmount =
+                            double.tryParse(
+                                deduction.text);
+                        double pay =
+                            employeeDetails[data]
+                                    ['payable']
+                                .round();
+
+                        employeeDetails[data]
+                            ['takeHome'] = (pay +
+                                (employeeDetails[
+                                            data]
+                                        ['ot'] ??
+                                    0) +
+                                (employeeDetails[
+                                            data][
+                                        'incentive'] ??
+                                    0)) -
+                            deductionAmount;
+
+                        employeeDetails[data]
+                                ['deduction'] =
+                            deductionAmount;
+
+                        refresh();
+                      } else {
+                        double deductionAmount =
+                            double.tryParse('0');
+
+                        double pay =
+                            employeeDetails[data]
+                                    ['payable']
+                                .round();
+
+                        employeeDetails[data]
+                            ['takeHome'] = ((pay +
+                                        employeeDetails[
+                                                data]
+                                            [
+                                            'ot'] ??
+                                    0) +
+                                (employeeDetails[
+                                            data][
+                                        'incentive'] ??
+                                    0)) -
+                            deductionAmount;
+
+                        employeeDetails[data]
+                                ['deduction'] =
+                            deductionAmount;
+
+                        refresh();
+                      }
+                    } catch (err) {
+                      print(err);
+                      showUploadMessage(context,
+                          'Provide Only Digit');
+                    }
+                  },
+
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                  ),
+
+                  style: FlutterFlowTheme
+                      .bodyText2
+                      .override(
+                    fontFamily: 'Montserrat',
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+
+              DataCell(
+                Text(
+                  takeHome,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+    ]
+    );
+
+    ///
+  //   final product = orderDataSemi[index];
+  //   DateTime createdDateTime =
+  //   orderDataByIdSemi![product['orderId']]['createdTime'].toDate();
+  //   String createdDate =
+  //       "${DateFormat('dd-MMM-yyyy').format(createdDateTime)} ";
+  //   // "${DateFormat.jm().format(DateFormat("hh:mm:ss").parse(DateFormat('hh:mm:ss').format(createdDateTime)))}";
+  //   DateTime committedDateTime =
+  //   orderDataByIdSemi![product['orderId']]['committedDate'].toDate();
+  //   DateTime committedDateTimeFormatted = DateTime(
+  //       committedDateTime.year, committedDateTime.month, committedDateTime.day);
+  //   String committedDate =
+  //       "${DateFormat('dd-MMM-yyyy').format(committedDateTime)} ";
+  //   // final differenceInDays = committedDateTimeFormatted
+  //   //     .difference(DateTime(
+  //   //         DateTime.now().year, DateTime.now().month, DateTime.now().day))
+  //   //     .inDays;
+  //   return DataRow(
+  //       color: index.isOdd
+  //           ? MaterialStateProperty.all(
+  //           Colors.blueGrey.shade50.withOpacity(0.8))
+  //           : MaterialStateProperty.all(Colors.blueGrey.shade100),
+  //       cells: [
+  //         DataCell(
+  //           Text(
+  //             "${index + 1}",
+  //             style: FlutterFlowTheme.bodyText2.override(
+  //               fontFamily: 'Lexend Deca',
+  //               color: Colors.black,
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //         ),
+  //         DataCell(
+  //           Text(
+  //             createdDate,
+  //             style: FlutterFlowTheme.bodyText2.override(
+  //               fontFamily: 'Lexend Deca',
+  //               color: Colors.black,
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //         ),
+  //         DataCell(
+  //           Text(
+  //             committedDate,
+  //             style: FlutterFlowTheme.bodyText2.override(
+  //               fontFamily: 'Lexend Deca',
+  //               color: Colors.black,
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //         ),
+  //         DataCell(
+  //           Text(
+  //             product.containsKey("pmnaReceivedDate") &&
+  //                 product['pmnaReceivedDate'] != null
+  //                 ? DateFormat('dd-MMM-yyyy')
+  //                 .format(product['pmnaReceivedDate'].toDate())
+  //                 : "",
+  //             style: FlutterFlowTheme.bodyText2.override(
+  //               fontFamily: 'Lexend Deca',
+  //               color: Colors.black,
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //         ),
+  //         DataCell(
+  //           Text(
+  //             product.containsKey("pmnaStitchedDate") &&
+  //                 product['pmnaStitchedDate'] != null
+  //                 ? DateFormat('dd-MMM-yyyy')
+  //                 .format(product['pmnaStitchedDate'].toDate())
+  //                 : "",
+  //             style: FlutterFlowTheme.bodyText2.override(
+  //               fontFamily: 'Lexend Deca',
+  //               color: Colors.black,
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //         ),
+  //         DataCell(Text(
+  //             customerDataById[orderDataByIdSemi![product['orderId']]
+  //             ['customerId']]['fullName'],
+  //             style: FlutterFlowTheme.bodyText2.override(
+  //               fontFamily: 'Lexend Deca',
+  //               color: Colors.black,
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //         ),
+  //         DataCell(
+  //           Text(
+  //             customerDataById[orderDataByIdSemi![product['orderId']]
+  //             ['customerId']]['mobileNumber'],
+  //             style: FlutterFlowTheme.bodyText2.override(
+  //               fontFamily: 'Lexend Deca',
+  //               color: Colors.black,
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //         ),
+  //         DataCell(
+  //           Text(
+  //             orderDataByIdSemi![product['orderId']]['orderedBy'] == 'MOA'
+  //                 ? 'Online'
+  //                 : 'BP',
+  //             style: FlutterFlowTheme.bodyText2.override(
+  //               fontFamily: 'Lexend Deca',
+  //               color: Colors.black,
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //         ),
+  //         DataCell(
+  //           Text(
+  //             orderDataByIdSemi![product['orderId']]['currencyType'],
+  //             style: FlutterFlowTheme.bodyText2.override(
+  //               fontFamily: 'Lexend Deca',
+  //               color: Colors.black,
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //         ),
+  //         DataCell(Text(
+  //           product['productOrderId'],
+  //           style: FlutterFlowTheme.bodyText2.override(
+  //             fontFamily: 'Lexend Deca',
+  //             color: Colors.black,
+  //             fontSize: 12,
+  //             fontWeight: FontWeight.bold,
+  //           ),
+  //         )),
+  //         DataCell(
+  //           Text(
+  //             orderDataByIdSemi![product['orderId']]['status'].last['name'],
+  //             style: FlutterFlowTheme.bodyText2.override(
+  //               fontFamily: 'Lexend Deca',
+  //               color: Colors.black,
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //         ),
+  //         DataCell(
+  //           FFButtonWidget(
+  //             onPressed: () {
+  //               showDialog(
+  //                 context: context,
+  //                 builder: (context) {
+  //                   final audioPlayer = ap.AudioPlayer();
+  //                   final isPlayingProvider =
+  //                   StateProvider<bool>((ref) => false);
+  //                   bool isPlaying = false;
+  //
+  //                   if (product['audioUrl'] != null) {
+  //                     audioPlayer.setUrl(product['audioUrl']);
+  //                   }
+  //                   var width = MediaQuery.of(context).size.width;
+  //
+  //                   // final audioPlayer =
+  //                   //     ap.AudioPlayer();
+  //                   // bool
+  //                   //     isPlaying =
+  //                   //     false;
+  //                   // listenAudioPlayer() {
+  //                   //   audioPlayer
+  //                   //       .onPlayerStateChanged
+  //                   //       .listen(
+  //                   //           (state) {
+  //                   //     setState(
+  //                   //         () {
+  //                   //       isPlaying =
+  //                   //           state == ap.PlayerState.PLAYING;
+  //                   //     });
+  //                   //   });
+  //                   // }
+  //                   //
+  //                   // listenAudioPlayer();
+  //                   // if (product[
+  //                   //         'audioUrl'] !=
+  //                   //     null) {
+  //                   //   audioPlayer
+  //                   //       .setUrl(
+  //                   //           product['audioUrl']);
+  //                   // }
+  //                   return Consumer(builder: (context, ref, child) {
+  //                     audioPlayer.onPlayerStateChanged.listen((state) {
+  //                       if (state == ap.PlayerState.PLAYING) {
+  //                         ref.read(isPlayingProvider.notifier).state = true;
+  //                       } else if (state == ap.PlayerState.COMPLETED) {
+  //                         ref.read(isPlayingProvider.notifier).state = false;
+  //                       } else {
+  //                         ref.read(isPlayingProvider.notifier).state = false;
+  //                       }
+  //                     });
+  //                     return AlertDialog(
+  //                       scrollable: true,
+  //                       title: Text('Product Details'),
+  //                       content: SizedBox(
+  //                         width: 1000,
+  //                         child: Container(
+  //                           width: double.infinity,
+  //                           padding: EdgeInsets.all(20),
+  //                           child: Column(
+  //                             crossAxisAlignment: CrossAxisAlignment.start,
+  //                             children: [
+  //                               Row(
+  //                                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                                 children: [
+  //                                   product['referenceImages'].isNotEmpty
+  //                                       ? SingleChildScrollView(
+  //                                     scrollDirection: Axis.horizontal,
+  //                                     child: Padding(
+  //                                       padding: EdgeInsets.only(
+  //                                         top: MediaQuery.of(context)
+  //                                             .size
+  //                                             .width *
+  //                                             0.02,
+  //                                         bottom: MediaQuery.of(context)
+  //                                             .size
+  //                                             .width *
+  //                                             0.02,
+  //                                       ),
+  //                                       child: Column(
+  //                                         children: List.generate(
+  //                                             product['referenceImages']
+  //                                                 .length, (index) {
+  //                                           return Padding(
+  //                                             padding:
+  //                                             const EdgeInsets.only(
+  //                                                 right: 10.0),
+  //                                             child: Container(
+  //                                               width: 300,
+  //                                               child: CachedNetworkImage(
+  //                                                   imageUrl: product[
+  //                                                   'referenceImages']
+  //                                                   [index]),
+  //                                             ),
+  //                                           );
+  //                                         }),
+  //                                       ),
+  //                                     ),
+  //                                   )
+  //                                       : SizedBox(),
+  //                                   Expanded(
+  //                                     child: Padding(
+  //                                       padding: EdgeInsets.all(
+  //                                           MediaQuery.of(context).size.width *
+  //                                               0.02),
+  //                                       child: Table(
+  //                                         border: TableBorder.all(),
+  //                                         children: [
+  //                                           TableRow(
+  //                                             children: [
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "Item Length " +
+  //                                                       isPlaying.toString(),
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "${product['productLength']}",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                             ],
+  //                                           ),
+  //                                           TableRow(
+  //                                             children: [
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "Bottom Length",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "${product['bottomLength']}",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                             ],
+  //                                           ),
+  //                                           TableRow(
+  //                                             children: [
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "Shall Length",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "${product['shallLength']}",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                             ],
+  //                                           ),
+  //                                           TableRow(
+  //                                             children: [
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "Chest Length",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "${product['chestLength']}",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                             ],
+  //                                           ),
+  //                                           TableRow(
+  //                                             children: [
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "Color",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "${product['colour']}",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                             ],
+  //                                           ),
+  //                                           TableRow(
+  //                                             children: [
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "Shall Color",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "${product['shallColour']}",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                             ],
+  //                                           ),
+  //                                           product['frontOpen'] == true
+  //                                               ? TableRow(
+  //                                             children: [
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets
+  //                                                     .all(15),
+  //                                                 child: Text(
+  //                                                   "Front Open",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight
+  //                                                           .w600),
+  //                                                 ),
+  //                                               ),
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets
+  //                                                     .all(15),
+  //                                                 child: Text(
+  //                                                   "Yes",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       color: product[
+  //                                                       'frontOpen'] ==
+  //                                                           true
+  //                                                           ? Colors.black
+  //                                                           : Colors.red,
+  //                                                       fontWeight:
+  //                                                       FontWeight
+  //                                                           .w600),
+  //                                                 ),
+  //                                               ),
+  //                                             ],
+  //                                           )
+  //                                               : TableRow(children: [
+  //                                             SizedBox(),
+  //                                             SizedBox(),
+  //                                           ]),
+  //                                           TableRow(
+  //                                             children: [
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "Description",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   product['description'],
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                             ],
+  //                                           ),
+  //                                           TableRow(
+  //                                             children: [
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "Product Price",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   product['price']
+  //                                                       .toStringAsFixed(2),
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                             ],
+  //                                           ),
+  //                                           TableRow(
+  //                                             children: [
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "Addon",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   product['addons']
+  //                                                       .toStringAsFixed(2),
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                             ],
+  //                                           ),
+  //                                           TableRow(
+  //                                             children: [
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: Text(
+  //                                                   "Voice Clip",
+  //                                                   style: TextStyle(
+  //                                                       fontSize: 18,
+  //                                                       fontWeight:
+  //                                                       FontWeight.w600),
+  //                                                 ),
+  //                                               ),
+  //                                               Padding(
+  //                                                 padding:
+  //                                                 const EdgeInsets.all(15),
+  //                                                 child: IconButton(
+  //                                                   onPressed: () async {
+  //                                                     if (ref.watch(
+  //                                                         isPlayingProvider)) {
+  //                                                       await audioPlayer
+  //                                                           .stop();
+  //                                                     } else {
+  //                                                       await audioPlayer
+  //                                                           .resume();
+  //                                                     }
+  //                                                   },
+  //                                                   icon: Icon(ref.watch(
+  //                                                       isPlayingProvider)
+  //                                                       ? Icons.stop
+  //                                                       : Icons.play_arrow),
+  //                                                   iconSize: 30,
+  //                                                 ),
+  //                                               ),
+  //                                             ],
+  //                                           ),
+  //                                         ],
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     );
+  //                   });
+  //                 },
+  //               );
+  //             },
+  //             text: 'View',
+  //             options: FFButtonOptions(
+  //               width: 50,
+  //               height: 30,
+  //               color: Colors.teal,
+  //               textStyle: FlutterFlowTheme.subtitle2.override(
+  //                   fontFamily: 'Poppins',
+  //                   color: Colors.white,
+  //                   fontSize: 8,
+  //                   fontWeight: FontWeight.bold),
+  //               borderSide: BorderSide(
+  //                 color: Colors.transparent,
+  //                 width: 1,
+  //               ),
+  //               borderRadius: 8,
+  //             ),
+  //           ),
+  //         ),
+  //       ]);
   }
 }
