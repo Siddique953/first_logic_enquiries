@@ -80,7 +80,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
   double width = 0;
   double height = 0;
 
-  int tabIndex = 2;
+  int tabIndex = 0;
 
   bool preRegistered = false;
   bool cancelHover = false;
