@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -319,8 +320,41 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
               ),
               Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(20, 0, 30, 0),
+                    child: InkWell(
+                      onTap: (){
+
+                        importData();
+                        /// EXCEL DOWNLOAD
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 30,
+                        decoration: BoxDecoration(
+                            color: Colors.blueGrey,
+                            borderRadius: BorderRadius.all(Radius.circular(20))
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.download,color: Colors.white,),
+                            Text('Excel',
+                              style: FlutterFlowTheme.subtitle2.override(
+                                fontFamily: 'Poppins',
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),),
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
                     child: Container(
@@ -436,6 +470,7 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
                       ),
                     ),
                   ),
+                  Container()
                 ],
               ),
               listOfFilteredCustomers.length == 0
@@ -845,19 +880,13 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
   Future<void> importData() async {
     var excel = Excel.createExcel();
 
-    List test=[];
-    test.addAll(listOfCustomers);
 
-    test=test.where((element) => element['gender']=='Female').toList();
 
-    test.sort((a, b) {
-      return b["dob"].compareTo(a["dob"]);
-    });
-
-    Sheet sheetObject = excel['DoB'];
+    Sheet sheetObject = excel['Employee'];
     CellStyle cellStyle = CellStyle(
         verticalAlign: VerticalAlign.Center,
         horizontalAlign: HorizontalAlign.Center,
+
         // backgroundColorHex: "#1AFF1A",
         fontFamily: getFontFamily(FontFamily.Calibri));
     CellStyle totalStyle = CellStyle(
@@ -867,63 +896,197 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
 
     //HEADINGS
 
-    if (test.length > 0) {
-      var cell1 = sheetObject.cell(CellIndex.indexByString("A1"));
+    if (listOfCustomers.length > 0) {
+      var cell1 = sheetObject.cell(CellIndex.indexByString("A2"));
       cell1.value = 'SL NO';
       cell1.cellStyle = cellStyle;
-      var cell2 = sheetObject.cell(CellIndex.indexByString("B1"));
-      cell2.value = 'Name'; // dynamic values support provided;
+
+      var cell2 = sheetObject.cell(CellIndex.indexByString("B2"));
+      cell2.value = 'Emp ID'; // dynamic values support provided;
       cell2.cellStyle = cellStyle;
-      var cell3 = sheetObject.cell(CellIndex.indexByString("C1"));
-      cell3.value = 'DoB'; // dynamic values support provided;
+
+      var cell3 = sheetObject.cell(CellIndex.indexByString("C2"));
+      cell3.value = 'Name'; // dynamic values support provided;
       cell3.cellStyle = cellStyle;
 
+      var cell4 = sheetObject.cell(CellIndex.indexByString("D2"));
+      cell4.value = 'E-Mail'; // dynamic values support provided;
+      cell4.cellStyle = cellStyle;
+
+      var cell5 = sheetObject.cell(CellIndex.indexByString("E2"));
+      cell5.value = 'Phone Number'; // dynamic values support provided;
+      cell5.cellStyle = cellStyle;
+
+      var cell6 = sheetObject.cell(CellIndex.indexByString("F2"));
+      cell6.value = 'DoB'; // dynamic values support provided;
+      cell6.cellStyle = cellStyle;
+
+      ///
+      var cell7 = sheetObject.cell(CellIndex.indexByString("G2"));
+      cell7.value = 'Gender'; // dynamic values support provided;
+      cell7.cellStyle = cellStyle;
+
+      var cell8 = sheetObject.cell(CellIndex.indexByString("H2"));
+      cell8.value = 'PAN Number'; // dynamic values support provided;
+      cell8.cellStyle = cellStyle;
+
+      var cell9 = sheetObject.cell(CellIndex.indexByString("I2"));
+      cell9.value = 'Department'; // dynamic values support provided;
+      cell9.cellStyle = cellStyle;
+
+      var cell10 = sheetObject.cell(CellIndex.indexByString("J2"));
+      cell10.value = 'Sub Department'; // dynamic values support provided;
+      cell10.cellStyle = cellStyle;
+
+      var cell11 = sheetObject.cell(CellIndex.indexByString("K2"));
+      cell11.value = 'Designation'; // dynamic values support provided;
+      cell11.cellStyle = cellStyle;
+
+      var cell12 = sheetObject.cell(CellIndex.indexByString("L2"));
+      cell12.value = 'Reporting Manager'; // dynamic values support provided;
+      cell12.cellStyle = cellStyle;
+      var cell13 = sheetObject.cell(CellIndex.indexByString("M2"));
+      cell13.value = 'Team Leader'; // dynamic values support provided;
+      cell13.cellStyle = cellStyle;
+      var cell14 = sheetObject.cell(CellIndex.indexByString("N2"));
+      cell14.value = 'Work Type'; // dynamic values support provided;
+      cell14.cellStyle = cellStyle;
+      var cell15 = sheetObject.cell(CellIndex.indexByString("O2"));
+      cell15.value = 'Probation Period'; // dynamic values support provided;
+      cell15.cellStyle = cellStyle;
+      var cell16 = sheetObject.cell(CellIndex.indexByString("P2"));
+      cell16.value = 'Date of Joining'; // dynamic values support provided;
+      cell16.cellStyle = cellStyle;
+      var cell17 = sheetObject.cell(CellIndex.indexByString("Q2"));
+      cell17.value = 'CTC'; // dynamic values support provided;
+      cell17.cellStyle = cellStyle;
+      var cell18 = sheetObject.cell(CellIndex.indexByString("R2"));
+      cell18.value = 'Account Holder Name'; // dynamic values support provided;
+      cell18.cellStyle = cellStyle;
+      var cell19 = sheetObject.cell(CellIndex.indexByString("S2"));
+      cell19.value = 'Bank Name'; // dynamic values support provided;
+      cell19.cellStyle = cellStyle;
+      var cell20 = sheetObject.cell(CellIndex.indexByString("T2"));
+      cell20.value = 'City'; // dynamic values support provided;
+      cell20.cellStyle = cellStyle;
+      var cell21 = sheetObject.cell(CellIndex.indexByString("U2"));
+      cell21.value = 'IFSC'; // dynamic values support provided;
+      cell21.cellStyle = cellStyle;
+      var cell22 = sheetObject.cell(CellIndex.indexByString("V2"));
+      cell22.value = 'Branch Name'; // dynamic values support provided;
+      cell22.cellStyle = cellStyle;
+      var cell23 = sheetObject.cell(CellIndex.indexByString("W2"));
+      cell23.value = 'Account Number'; // dynamic values support provided;
+      cell23.cellStyle = cellStyle;
     }
 
     //CELL VALUES
 
-    for (int i = 0; i < test.length; i++) {
+    for (int i = 0; i < listOfCustomers.length; i++) {
 
-      var cell1 = sheetObject.cell(CellIndex.indexByString("A${i + 2}"));
-      cell1.value = '${i + 1}'; // dynamic values support provided;
+      String pan='';
+      String teamLead='';
+      String reportingMan='';
+      try {
+        pan= listOfCustomers[i]['pan'] ?? '';
+
+        if(listOfCustomers[i]['reportingManager']!=''){
+          reportingMan=empDataById[listOfCustomers[i]['reportingManager']].name;
+        }
+        if(listOfCustomers[i]['teamLead']!=''){
+          teamLead=empDataById[listOfCustomers[i]['teamLead']].name;
+        }
+
+
+      } catch (e) {
+        pan='';
+      }
+
+      var cell1 = sheetObject.cell(CellIndex.indexByString("A${i+4}"));
+      cell1.value = i+1;
       cell1.cellStyle = cellStyle;
-      var cell2 = sheetObject.cell(CellIndex.indexByString("C${i + 2}"));
-      cell2.value = dateTimeFormat(
-          'd-MMM-y',
-          test[i]['dob']
-              .toDate()); // dynamic values support provided;
-      cell2.cellStyle = cellStyle;
-      var cell3 = sheetObject.cell(CellIndex.indexByString("B${i + 2}"));
-      cell3.value = test[i]['name']; // dynamic values support provided;
-      cell3.cellStyle = cellStyle;
-      // var cell4 = sheetObject.cell(CellIndex.indexByString("D${i + 2}"));
-      // cell4.value = payments[i]['amount']; // dynamic values support provided;
-      // cell4.cellStyle = cellStyle;
-      // var cell5 = sheetObject.cell(CellIndex.indexByString("E${i + 2}"));
-      // cell5.value =
-      // payments[i]['description']; // dynamic values support provided;
-      // cell5.cellStyle = cellStyle;
-      // var cell6 = sheetObject.cell(CellIndex.indexByString("F${i + 2}"));
-      // cell6.value =
-      // payments[i]['paymentMethode']; // dynamic values support provided;
-      // cell6.cellStyle = cellStyle;
-      // var cell7 = sheetObject.cell(CellIndex.indexByString("G${i + 2}"));
-      // cell7.value =
-      // payments[i]['staffName']; // dynamic values support provided;
-      // cell7.cellStyle = cellStyle;
 
-      // var cell7 = sheetObject.cell(CellIndex.indexByString("G${i + 2}"));
-      // cell7.value = payments[i]['modeOfPayment']
-      //     .toString(); // dynamic values support provided;
-      // cell7.cellStyle = cellStyle;
-      // var cell8 = sheetObject.cell(CellIndex.indexByString("H${i + 2}"));
-      // cell8.value =
-      //     payments[i]['amount'].toString(); // dynamic values support provided;
-      // cell8.cellStyle = cellStyle;
+      var cell2 = sheetObject.cell(CellIndex.indexByString("B${i+4}"));
+      cell2.value = listOfCustomers[i]['empId']; // dynamic values support provided;
+      cell2.cellStyle = cellStyle;
+
+      var cell3 = sheetObject.cell(CellIndex.indexByString("C${i+4}"));
+      cell3.value = listOfCustomers[i]['name']; // dynamic values support provided;
+      cell3.cellStyle = cellStyle;
+
+      var cell4 = sheetObject.cell(CellIndex.indexByString("D${i+4}"));
+      cell4.value = listOfCustomers[i]['email']; // dynamic values support provided;
+      cell4.cellStyle = cellStyle;
+
+      var cell5 = sheetObject.cell(CellIndex.indexByString("E${i+4}"));
+      cell5.value = listOfCustomers[i]['phone']; // dynamic values support provided;
+      cell5.cellStyle = cellStyle;
+
+      var cell6 = sheetObject.cell(CellIndex.indexByString("F${i+4}"));
+      cell6.value = DateFormat('dd - MMM - yyyy').format(listOfCustomers[i]['dob'].toDate()); // dynamic values support provided;
+      cell6.cellStyle = cellStyle;
+
+      ///
+      var cell7 = sheetObject.cell(CellIndex.indexByString("G${i+4}"));
+      cell7.value = listOfCustomers[i]['gender']; // dynamic values support provided;
+      cell7.cellStyle = cellStyle;
+
+      var cell8 = sheetObject.cell(CellIndex.indexByString("H${i+4}"));
+      cell8.value = pan; // dynamic values support provided;
+      cell8.cellStyle = cellStyle;
+
+      var cell9 = sheetObject.cell(CellIndex.indexByString("I${i+4}"));
+      cell9.value = listOfCustomers[i]['dept']; // dynamic values support provided;
+      cell9.cellStyle = cellStyle;
+
+      var cell10 = sheetObject.cell(CellIndex.indexByString("J${i+4}"));
+      cell10.value = listOfCustomers[i]['subDept']; // dynamic values support provided;
+      cell10.cellStyle = cellStyle;
+
+      var cell11 = sheetObject.cell(CellIndex.indexByString("K${i+4}"));
+      cell11.value = listOfCustomers[i]['designation']; // dynamic values support provided;
+      cell11.cellStyle = cellStyle;
+
+      var cell12 = sheetObject.cell(CellIndex.indexByString("L${i+4}"));
+      cell12.value = reportingMan; // dynamic values support provided;
+      cell12.cellStyle = cellStyle;
+      var cell13 = sheetObject.cell(CellIndex.indexByString("M${i+4}"));
+      cell13.value = teamLead; // dynamic values support provided;
+      cell13.cellStyle = cellStyle;
+      var cell14 = sheetObject.cell(CellIndex.indexByString("N${i+4}"));
+      cell14.value = listOfCustomers[i]['empType']; // dynamic values support provided;
+      cell14.cellStyle = cellStyle;
+      var cell15 = sheetObject.cell(CellIndex.indexByString("O${i+4}"));
+      cell15.value = listOfCustomers[i]['probation']; // dynamic values support provided;
+      cell15.cellStyle = cellStyle;
+      var cell16 = sheetObject.cell(CellIndex.indexByString("P${i+4}"));
+      cell16.value = DateFormat('dd - MMM - yyyy',).format(listOfCustomers[i]['joinedDate'].toDate()); // dynamic values support provided;
+      cell16.cellStyle = cellStyle;
+      var cell17 = sheetObject.cell(CellIndex.indexByString("Q${i+4}"));
+      cell17.value = listOfCustomers[i]['ctc']; // dynamic values support provided;
+      cell17.cellStyle = cellStyle;
+      var cell18 = sheetObject.cell(CellIndex.indexByString("R${i+4}"));
+      cell18.value = listOfCustomers[i]['accountHolderName']; // dynamic values support provided;
+      cell18.cellStyle = cellStyle;
+      var cell19 = sheetObject.cell(CellIndex.indexByString("S${i+4}"));
+      cell19.value = listOfCustomers[i]['bankName']; // dynamic values support provided;
+      cell19.cellStyle = cellStyle;
+      var cell20 = sheetObject.cell(CellIndex.indexByString("T${i+4}"));
+      cell20.value = listOfCustomers[i]['city']; // dynamic values support provided;
+      cell20.cellStyle = cellStyle;
+      var cell21 = sheetObject.cell(CellIndex.indexByString("U${i+4}"));
+      cell21.value = listOfCustomers[i]['ifsc']; // dynamic values support provided;
+      cell21.cellStyle = cellStyle;
+      var cell22 = sheetObject.cell(CellIndex.indexByString("V${i+4}"));
+      cell22.value = listOfCustomers[i]['branchName']; // dynamic values support provided;
+      cell22.cellStyle = cellStyle;
+      var cell23 = sheetObject.cell(CellIndex.indexByString("W${i+4}"));
+      cell23.value = listOfCustomers[i]['accountNumber']; // dynamic values support provided;
+      cell23.cellStyle = cellStyle;
 
     }
 
-    excel.setDefaultSheet('DoB');
+    excel.setDefaultSheet('Employee');
     var fileBytes = excel.encode();
     File file;
 

@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fl_erp/app/tabs/Human%20Resources/PayRoll_Slip/paySlipPdf/paySlipModel.dart';
-import 'package:flutter/foundation.dart';
+import 'package:universal_html/html.dart' as html;
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -88,7 +88,7 @@ class PaySlip {
               children: [
                 Container(
                   height: 50,
-                  width: 500,
+                  width: 550,
                   decoration: BoxDecoration(
                       color: PdfColor.fromHex('D89795'),
                       border: Border.all(width: 1, color: PdfColors.black)),
@@ -1067,7 +1067,7 @@ class PaySlip {
 
                 ///CONTENTS
                 Container(
-                  width: 500,
+                  width: 550,
                   height: 20,
                   decoration: BoxDecoration(
                       border: Border(
@@ -1138,7 +1138,7 @@ class PaySlip {
                             ]),
                       ),
                       Container(
-                        width: 75,
+                        width: 100,
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -1828,7 +1828,8 @@ class PaySlip {
                 ///
               ],
             ),
-          )];
+          ),
+          ];
         },
       ),
     );
@@ -1837,9 +1838,25 @@ class PaySlip {
     Uint8List bytes = Uint8List.fromList(data);
     print('pdffffffffffffffffffffffffff');
 
+    //WEB DOWNLOAD
+
+    // // var data = await pdf.save();
+    // // Uint8List bytes = Uint8List.fromList(data);
+    // final blob = html.Blob([bytes], 'application/pdf');
+    // final url = html.Url.createObjectUrlFromBlob(blob);
+    // final anchor = html.document.createElement('a') as html.AnchorElement
+    //   ..href = url
+    //   ..style.display = 'none'
+    //   ..download = '${invoice.name}.pdf';
+    //
+    // html.document.body.children.add(anchor);
+    // anchor.click();
+    // html.document.body.children.remove(anchor);
+    // html.Url.revokeObjectUrl(url);
+
     uploadFileToFireBase(invoice.name, bytes, 'pdf', employeeDetails,
         employeeAttendance, empId, lastDay);
-
+///
     //android
     // return PdfApi.saveDocument(name: '${invoice.name}+feedetail.pdf', pdf: pdf);
   }
