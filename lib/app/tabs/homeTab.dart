@@ -4,14 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 
 import '../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../flutter_flow/upload_media.dart';
 import 'Enquiry/EnquiryDetails.dart';
 
 class HomeTab extends StatefulWidget {
-  const HomeTab({Key key}) : super(key: key);
+  const HomeTab({Key? key}) : super(key: key);
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -23,58 +22,58 @@ class _HomeTabState extends State<HomeTab> {
   Color firstColor = Colors.blue.shade50;
   Color textColor = Colors.black;
   Color borderColor = Colors.black;
-  final List<SubscriberSeries> data2 = [
-    SubscriberSeries(
-        year: "2008",
-        subscribers: 10000000,
-        barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-        enquiry: 324535,
-        completed: 132545),
-    SubscriberSeries(
-        year: "2009",
-        subscribers: 11000000,
-        barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-        enquiry: 324735,
-        completed: 132555),
-    SubscriberSeries(
-        year: "2010",
-        subscribers: 12000000,
-        barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-        enquiry: 354535,
-        completed: 332545),
-    SubscriberSeries(
-        year: "2011",
-        subscribers: 10000000,
-        barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-        enquiry: 654535,
-        completed: 134545),
-    SubscriberSeries(
-        year: "2012",
-        subscribers: 8500000,
-        barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-        enquiry: 324535,
-        completed: 132545),
-    SubscriberSeries(
-        year: "2013",
-        subscribers: 7700000,
-        barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-        enquiry: 329535,
-        completed: 132095),
-    SubscriberSeries(
-        year: "2014",
-        subscribers: 7600000,
-        barColor: charts.ColorUtil.fromDartColor(Colors.blue),
-        enquiry: 398535,
-        completed: 452545),
-    SubscriberSeries(
-        year: "2015",
-        subscribers: 5500000,
-        barColor: charts.ColorUtil.fromDartColor(Colors.red),
-        enquiry: 325635,
-        completed: 332545),
-  ];
+  // final List<SubscriberSeries> data2 = [
+  //   SubscriberSeries(
+  //       year: "2008",
+  //       subscribers: 10000000,
+  //       barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+  //       enquiry: 324535,
+  //       completed: 132545),
+  //   SubscriberSeries(
+  //       year: "2009",
+  //       subscribers: 11000000,
+  //       barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+  //       enquiry: 324735,
+  //       completed: 132555),
+  //   SubscriberSeries(
+  //       year: "2010",
+  //       subscribers: 12000000,
+  //       barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+  //       enquiry: 354535,
+  //       completed: 332545),
+  //   SubscriberSeries(
+  //       year: "2011",
+  //       subscribers: 10000000,
+  //       barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+  //       enquiry: 654535,
+  //       completed: 134545),
+  //   SubscriberSeries(
+  //       year: "2012",
+  //       subscribers: 8500000,
+  //       barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+  //       enquiry: 324535,
+  //       completed: 132545),
+  //   SubscriberSeries(
+  //       year: "2013",
+  //       subscribers: 7700000,
+  //       barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+  //       enquiry: 329535,
+  //       completed: 132095),
+  //   SubscriberSeries(
+  //       year: "2014",
+  //       subscribers: 7600000,
+  //       barColor: charts.ColorUtil.fromDartColor(Colors.blue),
+  //       enquiry: 398535,
+  //       completed: 452545),
+  //   SubscriberSeries(
+  //       year: "2015",
+  //       subscribers: 5500000,
+  //       barColor: charts.ColorUtil.fromDartColor(Colors.red),
+  //       enquiry: 325635,
+  //       completed: 332545),
+  // ];
 
-  Timestamp todayDate;
+  late Timestamp todayDate;
   @override
   void initState() {
     DateTime today = DateTime.now();
@@ -85,14 +84,14 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
-    List<charts.Series<SubscriberSeries, String>> series = [
-      charts.Series(
-          id: "Subscribers",
-          data: data2,
-          domainFn: (SubscriberSeries series, _) => series.year,
-          measureFn: (SubscriberSeries series, _) => series.subscribers,
-          colorFn: (SubscriberSeries series, _) => series.barColor)
-    ];
+    // List<charts.Series<SubscriberSeries, String>> series = [
+    //   charts.Series(
+    //       id: "Subscribers",
+    //       data: data2,
+    //       domainFn: (SubscriberSeries series, _) => series.year,
+    //       measureFn: (SubscriberSeries series, _) => series.subscribers,
+    //       colorFn: (SubscriberSeries series, _) => series.barColor)
+    // ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -154,7 +153,7 @@ class _HomeTabState extends State<HomeTab> {
                                                   child:
                                                       CircularProgressIndicator());
                                             }
-                                            var data = snapshot.data.docs;
+                                            var data = snapshot.data!.docs;
                                             int totalSales = data.length;
 
                                             return Row(
@@ -407,7 +406,7 @@ class _HomeTabState extends State<HomeTab> {
                                                   child:
                                                       CircularProgressIndicator());
                                             }
-                                            var data = snapshot.data.docs;
+                                            var data = snapshot.data!.docs;
                                             int totalSales = data.length;
 
                                             return Row(
@@ -660,7 +659,7 @@ class _HomeTabState extends State<HomeTab> {
                                                   child:
                                                       CircularProgressIndicator());
                                             }
-                                            var data = snapshot.data.docs;
+                                            var data = snapshot.data!.docs;
                                             int totalSales = data.length;
 
                                             return Row(
@@ -1024,8 +1023,9 @@ class _HomeTabState extends State<HomeTab> {
                                 height: 10,
                               ),
                               Expanded(
-                                  child:
-                                      charts.BarChart(series, animate: true)),
+                                  child:Container()
+                                      // charts.BarChart(series, animate: true)
+                              ),
                             ],
                           ),
                         ),
@@ -1078,7 +1078,7 @@ class _HomeTabState extends State<HomeTab> {
                                           child: CircularProgressIndicator(),
                                         );
                                       }
-                                      var data = snapshot.data.docs;
+                                      var data = snapshot.data!.docs;
 
                                       if (data.isEmpty) {
                                         return Center(
@@ -1290,7 +1290,7 @@ class _HomeTabState extends State<HomeTab> {
                                               child:
                                                   CircularProgressIndicator());
                                         }
-                                        var data = snapshot.data.docs;
+                                        var data = snapshot.data!.docs;
                                         if (data.isEmpty) {
                                           Center(child: Text('No Messages'));
                                         }
@@ -1429,17 +1429,17 @@ class _HomeTabState extends State<HomeTab> {
   }
 }
 
-class SubscriberSeries {
-  final String year;
-  final int subscribers;
-  final int enquiry;
-  final int completed;
-  final charts.Color barColor;
-
-  SubscriberSeries(
-      {@required this.enquiry,
-      @required this.completed,
-      @required this.year,
-      @required this.subscribers,
-      @required this.barColor});
-}
+// class SubscriberSeries {
+//   final String year;
+//   final int subscribers;
+//   final int enquiry;
+//   final int completed;
+//   final charts.Color barColor;
+//
+//   SubscriberSeries(
+//       {@required this.enquiry,
+//       @required this.completed,
+//       @required this.year,
+//       @required this.subscribers,
+//       @required this.barColor});
+// }

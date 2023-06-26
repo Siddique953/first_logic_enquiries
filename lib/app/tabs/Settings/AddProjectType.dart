@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:multiple_select/Item.dart';
-import '../../../backend/schema/index.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../flutter_flow/upload_media.dart';
 
 class AddProjectTypeWidget extends StatefulWidget {
-  const AddProjectTypeWidget({Key key}) : super(key: key);
+  const AddProjectTypeWidget({Key? key}) : super(key: key);
 
   @override
   _AddProjectTypeWidgetState createState() => _AddProjectTypeWidgetState();
@@ -16,14 +14,14 @@ class AddProjectTypeWidget extends StatefulWidget {
 class _AddProjectTypeWidgetState extends State<AddProjectTypeWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   bool edit = false;
-  TextEditingController name;
-  TextEditingController search;
-  TextEditingController eName;
+  late TextEditingController name;
+  late TextEditingController search;
+  late TextEditingController eName;
 
   String currentId = '';
-  String type;
-  String durationValue;
-  List<Item> intakes = [];
+  String type = '';
+  String durationValue = '';
+
   List selectedIntakes = [];
 
   @override
@@ -35,7 +33,7 @@ class _AddProjectTypeWidgetState extends State<AddProjectTypeWidget> {
   }
 
   setSearchParam(String caseNumber) {
-    List<String> caseSearchList = List<String>();
+    List<String> caseSearchList = [];
     String temp = "";
 
     List<String> nameSplits = caseNumber.split(" ");
@@ -484,7 +482,7 @@ class _AddProjectTypeWidgetState extends State<AddProjectTypeWidget> {
                           if (!snapshot.hasData) {
                             return Center(child: CircularProgressIndicator());
                           }
-                          var data = snapshot.data.docs;
+                          var data = snapshot.data!.docs;
                           print(data.length);
                           return Container(
                             width: MediaQuery.of(context).size.width * 0.75,
@@ -613,7 +611,7 @@ class _AddProjectTypeWidgetState extends State<AddProjectTypeWidget> {
                           if (!snapshot.hasData) {
                             return Center(child: CircularProgressIndicator());
                           }
-                          var data = snapshot.data.docs;
+                          var data = snapshot.data!.docs;
                           print(data.length);
                           return Container(
                             width: MediaQuery.of(context).size.width * 0.75,

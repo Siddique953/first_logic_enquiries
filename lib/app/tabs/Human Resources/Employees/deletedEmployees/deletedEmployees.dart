@@ -14,8 +14,8 @@ import '../Employee_List/employeeList.dart';
 class DeletedEmployees extends StatefulWidget {
   final TabController _tabController;
   const DeletedEmployees({
-    Key key,
-    @required TabController tabController,
+    Key? key,
+    required TabController tabController,
   })  : _tabController = tabController,
         super(key: key);
   @override
@@ -50,7 +50,7 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
   //   });
   // }
 
-  TextEditingController search;
+  late TextEditingController search;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   int firstIndex = 0;
@@ -593,7 +593,7 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
                             listOfFilteredCustomers[index]
                             ['designation'];
 
-                            String manager = empDataById[
+                            String? manager = empDataById[
                             listOfFilteredCustomers[index]
                             ['reportingManager'] ??
                                 ''] ==
@@ -602,8 +602,8 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
                                 : empDataById[
                             listOfFilteredCustomers[index]
                             ['reportingManager'] ??
-                                '']
-                                .name;
+                                '']!
+                                .name??'';
 
                             String email =
                             listOfFilteredCustomers[index]['email'];
@@ -991,10 +991,10 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
         pan= listOfCustomers[i]['pan'] ?? '';
 
         if(listOfCustomers[i]['reportingManager']!=''){
-          reportingMan=empDataById[listOfCustomers[i]['reportingManager']].name;
+          reportingMan=empDataById[listOfCustomers[i]['reportingManager']]!.name!;
         }
         if(listOfCustomers[i]['teamLead']!=''){
-          teamLead=empDataById[listOfCustomers[i]['teamLead']].name;
+          teamLead=empDataById[listOfCustomers[i]['teamLead']]!.name!;
         }
 
 
@@ -1090,7 +1090,7 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
     var fileBytes = excel.encode();
     File file;
 
-    final content = base64Encode(fileBytes);
+    final content = base64Encode(fileBytes!);
     final anchor = html.AnchorElement(
         href: "data:application/octet-stream;charset=utf-16le;base64,$content")
       ..setAttribute(

@@ -17,8 +17,8 @@ String customerName = '';
 class CustomerListingWidget extends StatefulWidget {
   final TabController _tabController;
   const CustomerListingWidget({
-    Key key,
-    @required TabController tabController,
+    Key? key,
+    required TabController tabController,
   })  : _tabController = tabController,
         super(key: key);
 
@@ -54,7 +54,7 @@ class _CustomerListingWidgetState extends State<CustomerListingWidget> {
     });
   }
 
-  TextEditingController search;
+ late TextEditingController search;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   int firstIndex = 0;

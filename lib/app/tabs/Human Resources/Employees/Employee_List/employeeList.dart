@@ -18,8 +18,8 @@ String employeeId = '';
 class EmployeeList extends StatefulWidget {
   final TabController _tabController;
   const EmployeeList({
-    Key key,
-    @required TabController tabController,
+    Key? key,
+    required TabController tabController,
   })  : _tabController = tabController,
         super(key: key);
 
@@ -55,7 +55,7 @@ class _EmployeeListState extends State<EmployeeList> {
   //   });
   // }
 
-  TextEditingController search;
+  late TextEditingController search;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   int firstIndex = 0;
@@ -669,8 +669,8 @@ class _EmployeeListState extends State<EmployeeList> {
                                       : empDataById[
                                               listOfFilteredCustomers[index]
                                                       ['reportingManager'] ??
-                                                  '']
-                                          .name;
+                                                  '']!
+                                          .name??'';
 
                                   String email =
                                       listOfFilteredCustomers[index]['email'];
@@ -1058,10 +1058,10 @@ class _EmployeeListState extends State<EmployeeList> {
        pan= listOfCustomers[i]['pan'] ?? '';
 
        if(listOfCustomers[i]['reportingManager']!=''){
-         reportingMan=empDataById[listOfCustomers[i]['reportingManager']].name;
+         reportingMan=empDataById[listOfCustomers[i]['reportingManager']]!.name??'';
        }
        if(listOfCustomers[i]['teamLead']!=''){
-         teamLead=empDataById[listOfCustomers[i]['teamLead']].name;
+         teamLead=empDataById[listOfCustomers[i]['teamLead']]!.name??'';
        }
 
 
@@ -1157,7 +1157,7 @@ class _EmployeeListState extends State<EmployeeList> {
     var fileBytes = excel.encode();
     File file;
 
-    final content = base64Encode(fileBytes);
+    final content = base64Encode(fileBytes!);
     final anchor = html.AnchorElement(
         href: "data:application/octet-stream;charset=utf-16le;base64,$content")
       ..setAttribute(

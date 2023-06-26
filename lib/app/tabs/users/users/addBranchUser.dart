@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:fl_erp/backend/backend.dart';
+
 
 import 'package:flutter/services.dart';
 
@@ -21,7 +21,7 @@ import '../../../pages/home_page/home.dart';
 import '../../Branch/AddBranch.dart';
 
 class CreateUsersWidget extends StatefulWidget {
-  const CreateUsersWidget({Key key}) : super(key: key);
+  const CreateUsersWidget({Key? key}) : super(key: key);
 
   @override
   _CreateUsersWidgetState createState() => _CreateUsersWidgetState();
@@ -29,19 +29,18 @@ class CreateUsersWidget extends StatefulWidget {
 
 class _CreateUsersWidgetState extends State<CreateUsersWidget> {
   String uploadedFileUrl = '';
-  String userSelectValue;
-  String editUserRole;
-  TextEditingController name;
-  TextEditingController email;
-  TextEditingController password;
-  TextEditingController branch;
-  TextEditingController phone;
-
-  TextEditingController editName;
-  TextEditingController editEmail;
-  TextEditingController editPassword;
-  TextEditingController editBranch;
-  TextEditingController editPhone;
+  String userSelectValue = '';
+  String editUserRole = '';
+  late TextEditingController name;
+  late TextEditingController email;
+  late TextEditingController password;
+  late TextEditingController branch;
+  late TextEditingController phone;
+  late TextEditingController editName;
+  late TextEditingController editEmail;
+  late TextEditingController editPassword;
+  late TextEditingController editBranch;
+  late TextEditingController editPhone;
 
   String selectedBranch = '';
 
@@ -280,7 +279,7 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                                         AutovalidateMode.onUserInteraction,
                                     keyboardType: TextInputType.phone,
                                     validator: (value) {
-                                      if (value.isEmpty) {
+                                      if (value!.isEmpty) {
                                         return "Enter phone number";
                                       } else if (!RegExp(
                                               r'(^(?:[+0]9)?[0-9]{10,12}$)')
@@ -387,7 +386,7 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                                       AutovalidateMode.onUserInteraction,
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (email) {
-                                    if (email.isEmpty) {
+                                    if (email!.isEmpty) {
                                       return "Enter your email";
                                     } else if (!RegExp(
                                             r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}')
@@ -441,7 +440,7 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                                     autovalidateMode:
                                         AutovalidateMode.onUserInteraction,
                                     validator: (value) {
-                                      if (value.isEmpty) {
+                                      if (value!.isEmpty) {
                                         return "Enter password number";
                                       } else if (value.length < 6) {
                                         return "password length must be more than six characters";
@@ -538,27 +537,28 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                                     UserCredential newUser = await auth
                                         .createUserWithEmailAndPassword(
                                             email: email.text,
-                                            password: password.text)
-                                        .onError((FirebaseAuthException error,
-                                            stackTrace) {
-                                      print(
-                                          '[[[[[[[[[[[[[[[[[[error]]]]]]]]]]]]]]]]]]');
-                                      print(error.message);
-                                      showUploadMessage(context, error.message);
-                                      return;
-                                    });
+                                            password: password.text);
+                                    //     .onError((FirebaseAuthException error,
+                                    //         stackTrace) {
+                                    //   print(
+                                    //       '[[[[[[[[[[[[[[[[[[error]]]]]]]]]]]]]]]]]]');
+                                    //   print(error.message);
+                                    //   showUploadMessage(context, error.message!);
+                                    //   return error;
+                                    //
+                                    // });
                                     print('2');
                                     await FirebaseAuth.instance.signOut();
                                     print('3');
-                                    final user = signInWithEmail(
-                                        context, ogUser, ogPass);
+                                    final user = FirebaseAuth.instance.signInWithEmailAndPassword(email: ogUser,password: ogPass);
+
                                     print('4');
                                     print(newUser);
                                     if (newUser != null) {
                                       print('ifffffffff');
                                       FirebaseFirestore.instance
                                           .collection('admin_users')
-                                          .doc(newUser.user.uid)
+                                          .doc(newUser.user!.uid)
                                           .set({
                                         'branchName': currentbranchName,
                                         'branchId': currentBranchId,
@@ -570,7 +570,7 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                                         'phone': phone.text,
                                         'photo_url': uploadedFileUrl,
                                         'role': userSelectValue,
-                                        'uid': newUser.user.uid,
+                                        'uid': newUser.user!.uid,
                                         'verified': true,
                                       }).then((value) {
                                         FirebaseFirestore.instance
@@ -592,6 +592,12 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                                     }
                                   } catch (e) {
                                     print(e);
+                                    if (e is FirebaseAuthException) {
+                                      print('[[[[[[[[[[[[[[[[[[error]]]]]]]]]]]]]]]]]]');
+                                      print(e.message);
+                                      showUploadMessage(context, e.message!);
+                                      return null;
+                                    }
                                   }
                                 } else {
                                   name.text == ''
@@ -698,9 +704,9 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                             ),
                           ],
                           rows: List.generate(
-                            user.docs.length,
+                            user!.docs.length,
                             (index) {
-                              DocumentSnapshot data = user.docs[index];
+                              DocumentSnapshot data = user!.docs[index];
 
                               return DataRow(
                                 color: index.isOdd

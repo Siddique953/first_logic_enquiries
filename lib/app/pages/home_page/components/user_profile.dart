@@ -5,7 +5,7 @@ import '../home.dart';
 
 class UserProfile extends StatelessWidget {
   const UserProfile({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

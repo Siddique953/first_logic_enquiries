@@ -13,25 +13,25 @@ import 'customer_SinglePage.dart';
 
 class CreateProject extends StatefulWidget {
   final String id;
-  const CreateProject({Key key, this.id}) : super(key: key);
+  const CreateProject({Key? key, required this.id}) : super(key: key);
 
   @override
   State<CreateProject> createState() => _CreateProjectState();
 }
 
 class _CreateProjectState extends State<CreateProject> {
-  TextEditingController selectedProjectType;
-  TextEditingController projectName;
-  TextEditingController domain;
-  TextEditingController deliverables;
-  TextEditingController platform;
-  TextEditingController additionalInfo;
-  TextEditingController careOfNo;
-  String selectedCountry;
+  late TextEditingController selectedProjectType;
+  late TextEditingController projectName;
+  late TextEditingController domain;
+  late TextEditingController deliverables;
+  late TextEditingController platform;
+  late TextEditingController additionalInfo;
+  late TextEditingController careOfNo;
+  late String selectedCountry;
 
   List projectDetails = [];
 
-  Timestamp datePicked;
+ late Timestamp datePicked;
   DateTime selectedDate = DateTime.now();
 
   @override
@@ -80,13 +80,17 @@ class _CreateProjectState extends State<CreateProject> {
                                 firstDate: DateTime(1901, 1),
                                 lastDate: DateTime(2100, 1))
                             .then((value) {
-                          setState(() {
-                            datePicked = Timestamp.fromDate(DateTime(
-                                value.year, value.month, value.day, 0, 0, 0));
+                              if(value!=null) {
+                                setState(() {
+                                  datePicked = Timestamp.fromDate(DateTime(
+                                      value.year, value.month, value.day, 0, 0,
+                                      0));
 
-                            selectedDate = value;
-                          });
+                                  selectedDate = value;
+                                });
+                              }
                         });
+
                       },
                       child: Container(
                           width: MediaQuery.of(context).size.width * 0.1,

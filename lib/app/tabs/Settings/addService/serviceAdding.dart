@@ -6,7 +6,7 @@ import '../../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../app_widget.dart';
 
 class AddServices extends StatefulWidget {
-  const AddServices({Key key}) : super(key: key);
+  const AddServices({Key? key}) : super(key: key);
 
   @override
   State<AddServices> createState() => _AddServicesState();
@@ -14,8 +14,8 @@ class AddServices extends StatefulWidget {
 
 class _AddServicesState extends State<AddServices> {
   bool edit = false;
-  String currentServiceId;
-  TextEditingController expenseHead;
+  String currentServiceId = '';
+  TextEditingController expenseHead = TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
@@ -207,7 +207,7 @@ class _AddServicesState extends State<AddServices> {
                             child: CircularProgressIndicator(),
                           );
                         }
-                        List data = snapshot.data.docs;
+                        List data = snapshot.data!.docs;
 
                         return data.isEmpty
                             ? SizedBox(

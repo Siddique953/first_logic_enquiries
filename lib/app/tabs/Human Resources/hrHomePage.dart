@@ -6,8 +6,8 @@ import 'dashbordSingleGridView/grid.dart';
 class HrDashBoard extends StatefulWidget {
   final TabController _tabController;
   const HrDashBoard({
-    Key key,
-    @required TabController tabController,
+    Key? key,
+    required TabController tabController,
   })  : _tabController = tabController,
         super(key: key);
 

@@ -5,7 +5,7 @@ import '../../../flutter_flow/upload_media.dart';
 
 class EnquiryProjectsTable extends StatefulWidget {
   final List projects;
-  const EnquiryProjectsTable({Key key, this.projects}) : super(key: key);
+  const EnquiryProjectsTable({Key? key, required this.projects}) : super(key: key);
 
   @override
   State<EnquiryProjectsTable> createState() => _EnquiryProjectsTableState();

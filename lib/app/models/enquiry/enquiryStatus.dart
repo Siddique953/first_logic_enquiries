@@ -1,10 +1,10 @@
 class EnquiryStatus {
-  String dId;
-  String status;
-  String eId;
-  DateTime date;
-  DateTime next;
-  String branch;
+  String? dId;
+  String? status;
+  String? eId;
+  DateTime? date;
+  DateTime? next;
+  String? branch;
 
   EnquiryStatus(
       {this.dId, this.status, this.eId, this.date, this.next, this.branch});

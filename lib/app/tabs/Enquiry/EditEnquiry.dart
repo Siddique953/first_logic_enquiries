@@ -1,8 +1,5 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:multiple_select/Item.dart';
-import 'package:multiple_select/multi_filter_select.dart';
-import 'package:multiple_select/multiple_select.dart';
 import '../../../auth/auth_util.dart';
 import '../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
@@ -18,8 +15,8 @@ class EditEnquiry extends StatefulWidget {
   final String eId;
 
   const EditEnquiry({
-    Key key,
-    this.eId,
+    Key? key,
+    required this.eId,
   }) : super(key: key);
 
   @override
@@ -27,35 +24,34 @@ class EditEnquiry extends StatefulWidget {
 }
 
 class _EditEnquiryState extends State<EditEnquiry> {
-  TextEditingController name;
-  TextEditingController email;
-  TextEditingController mobile;
-  TextEditingController place;
-  TextEditingController additionalInfo;
-  TextEditingController qualification;
-  TextEditingController institute;
-  TextEditingController year;
-  TextEditingController branch;
-  TextEditingController projectType;
-  TextEditingController address;
-  TextEditingController agentName;
+ late TextEditingController name;
+ late TextEditingController email;
+ late TextEditingController mobile;
+ late TextEditingController place;
+ late TextEditingController additionalInfo;
+ late TextEditingController qualification;
+ late TextEditingController institute;
+ late TextEditingController year;
+ late TextEditingController branch;
+ late TextEditingController projectType;
+ late TextEditingController address;
+ late TextEditingController agentName;
   // TextEditingController careOfNo;
 
-  TextEditingController workname;
-  TextEditingController requirement;
-  TextEditingController platform;
-  TextEditingController topic;
+ late TextEditingController workname;
+ late TextEditingController requirement;
+ late TextEditingController platform;
+ late TextEditingController topic;
 
   List projectDetails = [];
 
-  TextEditingController domain;
-  TextEditingController deliverables;
+ late TextEditingController domain;
+ late TextEditingController deliverables;
 
   List abc = [];
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  List<Item> universityList = [];
 
   List selectedUniversities = [];
 
@@ -68,51 +64,10 @@ class _EditEnquiryState extends State<EditEnquiry> {
   List selectedCountry = [];
   List projectDetailsList = [];
 
-  List<MultipleSelectItem> country = [];
 
-  List<Item> countryList = [];
-
-  getCountry() async {
-    QuerySnapshot data1 =
-        await FirebaseFirestore.instance.collection("country").get();
-    // int rowIndex=1;
-    for (var size in data1.docs) {
-      print(size.get('name'));
-      countryList.add(Item.build(
-        value: size.id,
-        display: size.get('name'),
-        content: size.get('name').toString(),
-      ));
-    }
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  // List<MultipleSelectItem> course = [];
-  // List<Item> coursesList = [];
-  // getCourse() async {
-  //   QuerySnapshot data1 =
-  //   await FirebaseFirestore.instance.collection("course").get();
-  //   for (var size in data1.docs) {
-  //     print(size.get('name'));
-  //     coursesList.add(Item.build(
-  //       value: size.id,
-  //       display: size.get('name'),
-  //       content: size.get('name').toString(),
-  //     ));
-  //
-  //   }
-  //   if(mounted){
-  //     setState(() {
-  //
-  //     });
-  //   }
-  //
-  // }
 
   setSearchParam(String caseNumber) {
-    List<String> caseSearchList = List<String>();
+    List<String> caseSearchList = [];
     String temp = "";
 
     List<String> nameSplits = caseNumber.split(" ");
@@ -137,8 +92,6 @@ class _EditEnquiryState extends State<EditEnquiry> {
   @override
   void initState() {
     super.initState();
-    // getCourse();
-    getCountry();
     name = TextEditingController();
     email = TextEditingController();
     mobile = TextEditingController();
@@ -163,7 +116,7 @@ class _EditEnquiryState extends State<EditEnquiry> {
     domain = TextEditingController();
   }
 
-  DocumentSnapshot data;
+  late DocumentSnapshot data;
 
   @override
   Widget build(BuildContext context) {
@@ -198,9 +151,9 @@ class _EditEnquiryState extends State<EditEnquiry> {
                 child: CircularProgressIndicator(),
               );
             }
-            data = snapshot.data;
+            data = snapshot.data!;
 
-            if (snapshot.data.exists) {
+            if (snapshot.data!.exists) {
               name.text = data.get('name');
               place.text = data.get('place');
               mobile.text = data.get('mobile');

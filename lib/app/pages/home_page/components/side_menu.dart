@@ -1,4 +1,5 @@
 import 'package:expandable/expandable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fl_erp/auth/auth_util.dart';
@@ -11,8 +12,8 @@ import 'user_profile.dart';
 class SideMenu extends StatefulWidget {
   final TabController _tabController;
   const SideMenu({
-    Key key,
-    @required TabController tabController,
+    Key? key,
+    required TabController tabController,
   })  : _tabController = tabController,
         super(key: key);
 
@@ -206,7 +207,40 @@ class _SideMenuState extends State<SideMenu> {
                                     )),
                               ],
                             ),
+                          ), collapsed: Container(
+                          height: 30,
+                          decoration: BoxDecoration(
+                            border: selectedTab == 1
+                                ? Border(
+                              left: BorderSide(
+                                color: Color(0xff0054FF),
+                                width: 3,
+                              ),
+                            )
+                                : null,
                           ),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.category,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                              SizedBox(
+                                width: 7,
+                              ),
+                              Text(
+                                "Enquiry",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                         ),
                         Divider(
                           color: Colors.blueGrey.shade800,
@@ -215,6 +249,40 @@ class _SideMenuState extends State<SideMenu> {
                         //1,3
                         //Customer
                         ExpandablePanel(
+                          collapsed:Container(
+                            height: 30,
+                            decoration: BoxDecoration(
+                              border: selectedTab == 2
+                                  ? Border(
+                                left: BorderSide(
+                                  color: Color(0xff0054FF),
+                                  width: 3,
+                                ),
+                              )
+                                  : null,
+                            ),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Icon(
+                                  Icons.group,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                                SizedBox(
+                                  width: 7,
+                                ),
+                                Text(
+                                  "Customer",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ) ,
                           theme: ExpandableThemeData(
                             iconColor: Colors.white,
                             iconSize: 14,
@@ -367,6 +435,40 @@ class _SideMenuState extends State<SideMenu> {
                             });
                           },
                           child: ExpandablePanel(
+                            collapsed: Container(
+                              height: 30,
+                              decoration: BoxDecoration(
+                                border: selectedTab == 4
+                                    ? Border(
+                                  left: BorderSide(
+                                    color: Color(0xff0054FF),
+                                    width: 3,
+                                  ),
+                                )
+                                    : null,
+                              ),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Icon(
+                                    Icons.account_balance_outlined,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                  SizedBox(
+                                    width: 7,
+                                  ),
+                                  Text(
+                                    "Accounts",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
                               theme: ExpandableThemeData(
                                 iconColor: Colors.white,
                                 iconSize: 14,
@@ -471,6 +573,40 @@ class _SideMenuState extends State<SideMenu> {
                             });
                           },
                           child: ExpandablePanel(
+                            collapsed: Container(
+                              height: 30,
+                              decoration: BoxDecoration(
+                                border: selectedTab == 5
+                                    ? Border(
+                                  left: BorderSide(
+                                    color: Color(0xff0054FF),
+                                    width: 3,
+                                  ),
+                                )
+                                    : null,
+                              ),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Icon(
+                                    Icons.support_agent_outlined,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                  SizedBox(
+                                    width: 7,
+                                  ),
+                                  Text(
+                                    "Agents",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
                               theme: ExpandableThemeData(
                                 iconColor: Colors.white,
                                 iconSize: 14,
@@ -569,6 +705,40 @@ class _SideMenuState extends State<SideMenu> {
                         InkWell(
                           onTap: () {},
                           child: ExpandablePanel(
+                            collapsed: Container(
+                              height: 30,
+                              decoration: BoxDecoration(
+                                border: selectedTab == 6
+                                    ? Border(
+                                  left: BorderSide(
+                                    color: Color(0xff0054FF),
+                                    width: 3,
+                                  ),
+                                )
+                                    : null,
+                              ),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Icon(
+                                    FontAwesomeIcons.inbox,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                  SizedBox(
+                                    width: 7,
+                                  ),
+                                  Text(
+                                    "Reports",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
                             theme: ExpandableThemeData(
                               iconColor: Colors.white,
                               iconSize: 14,
@@ -765,6 +935,40 @@ class _SideMenuState extends State<SideMenu> {
                             });
                           },
                           child: ExpandablePanel(
+                            collapsed: Container(
+                              height: 30,
+                              decoration: BoxDecoration(
+                                border: selectedTab == 7
+                                    ? Border(
+                                  left: BorderSide(
+                                    color: Color(0xff0087cd),
+                                    width: 3,
+                                  ),
+                                )
+                                    : null,
+                              ),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Icon(
+                                    Icons.person_pin_rounded,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                  SizedBox(
+                                    width: 7,
+                                  ),
+                                  Text(
+                                    "Leadz",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
                               theme: ExpandableThemeData(
                                 iconColor: Colors.white,
                                 iconSize: 14,
@@ -863,6 +1067,7 @@ class _SideMenuState extends State<SideMenu> {
                         InkWell(
                           onTap: () {},
                           child: ExpandablePanel(
+                            collapsed: Container(),
                               theme: ExpandableThemeData(
                                 iconColor: Colors.white,
                                 iconSize: 14,
@@ -1039,7 +1244,7 @@ class _SideMenuState extends State<SideMenu> {
                                         subTab = 0;
                                         selectedTab = 0;
                                         Navigator.pop(alertDialogContext);
-                                        await signOut();
+                                        await FirebaseAuth.instance.signOut();
                                         Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
@@ -1123,6 +1328,7 @@ class _SideMenuState extends State<SideMenu> {
 
                   //ENQUIRY
                   ExpandablePanel(
+                  collapsed: Container(),
                     theme: ExpandableThemeData(
                       iconColor: Colors.white,
                       iconSize: 14,
@@ -1237,6 +1443,7 @@ class _SideMenuState extends State<SideMenu> {
                   //1,3
                   //Customer
                   ExpandablePanel(
+                    collapsed: Container(),
                     theme: ExpandableThemeData(
                       iconColor: Colors.white,
                       iconSize: 14,
@@ -1389,6 +1596,7 @@ class _SideMenuState extends State<SideMenu> {
                       });
                     },
                     child: ExpandablePanel(
+                      collapsed: Container(),
                         theme: ExpandableThemeData(
                           iconColor: Colors.white,
                           iconSize: 14,
@@ -1493,6 +1701,7 @@ class _SideMenuState extends State<SideMenu> {
                       });
                     },
                     child: ExpandablePanel(
+collapsed: Container(),
                         theme: ExpandableThemeData(
                           iconColor: Colors.white,
                           iconSize: 14,
@@ -1591,6 +1800,7 @@ class _SideMenuState extends State<SideMenu> {
                   InkWell(
                     onTap: () {},
                     child: ExpandablePanel(
+collapsed: Container(),
                       theme: ExpandableThemeData(
                         iconColor: Colors.white,
                         iconSize: 14,
@@ -1787,6 +1997,7 @@ class _SideMenuState extends State<SideMenu> {
                       });
                     },
                     child: ExpandablePanel(
+                        collapsed: Container(),
                         theme: ExpandableThemeData(
                           iconColor: Colors.white,
                           iconSize: 14,
@@ -1885,6 +2096,7 @@ class _SideMenuState extends State<SideMenu> {
                   InkWell(
                     onTap: () {},
                     child: ExpandablePanel(
+                        collapsed: Container(),
                         theme: ExpandableThemeData(
                           iconColor: Colors.white,
                           iconSize: 14,
@@ -2044,6 +2256,7 @@ class _SideMenuState extends State<SideMenu> {
                   InkWell(
                     onTap: () {},
                     child: ExpandablePanel(
+                    collapsed: Container(),
                         theme: ExpandableThemeData(
                           iconColor: Colors.white,
                           iconSize: 14,
@@ -2139,7 +2352,7 @@ class _SideMenuState extends State<SideMenu> {
                                   subTab = 0;
                                   selectedTab = 0;
                                   Navigator.pop(alertDialogContext);
-                                  await signOut();
+                                  await FirebaseAuth.instance.signOut();
                                   Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
@@ -2223,6 +2436,7 @@ class _SideMenuState extends State<SideMenu> {
                             //10,11
                             //Customer
                             ExpandablePanel(
+                            collapsed: Container(),
                               theme: ExpandableThemeData(
                                 iconColor: Colors.white,
                                 iconSize: 14,
@@ -2324,6 +2538,7 @@ class _SideMenuState extends State<SideMenu> {
                                 });
                               },
                               child: ExpandablePanel(
+                              collapsed: Container(),
                                   theme: ExpandableThemeData(
                                     iconColor: Colors.white,
                                     iconSize: 14,
@@ -2425,6 +2640,7 @@ class _SideMenuState extends State<SideMenu> {
                             InkWell(
                               onTap: () {},
                               child: ExpandablePanel(
+                              collapsed: Container(),
                                 theme: ExpandableThemeData(
                                   iconColor: Colors.white,
                                   iconSize: 14,
@@ -2624,6 +2840,7 @@ class _SideMenuState extends State<SideMenu> {
                             InkWell(
                               onTap: () {},
                               child: ExpandablePanel(
+                            collapsed: Container(),
                                   theme: ExpandableThemeData(
                                     iconColor: Colors.white,
                                     iconSize: 14,
@@ -2738,7 +2955,7 @@ class _SideMenuState extends State<SideMenu> {
                                             subTab = 0;
                                             selectedTab = 0;
                                             Navigator.pop(alertDialogContext);
-                                            await signOut();
+                                            await FirebaseAuth.instance.signOut();
                                             Navigator.pushAndRemoveUntil(
                                                 context,
                                                 MaterialPageRoute(
@@ -2893,7 +3110,7 @@ class _SideMenuState extends State<SideMenu> {
                                                 selectedTab = 0;
                                                 Navigator.pop(
                                                     alertDialogContext);
-                                                await signOut();
+                                                await FirebaseAuth.instance.signOut();
                                                 Navigator.pushAndRemoveUntil(
                                                     context,
                                                     MaterialPageRoute(
@@ -2975,6 +3192,7 @@ class _SideMenuState extends State<SideMenu> {
                                 //0,0
                                 //ENQUIRY
                                 ExpandablePanel(
+                                  collapsed: Container(),
                                   theme: ExpandableThemeData(
                                     iconColor: Colors.white,
                                     iconSize: 14,
@@ -3092,6 +3310,7 @@ class _SideMenuState extends State<SideMenu> {
                                 //1,3
                                 //Customer
                                 ExpandablePanel(
+                                collapsed: Container(),
                                   theme: ExpandableThemeData(
                                     iconColor: Colors.white,
                                     iconSize: 14,
@@ -3194,6 +3413,7 @@ class _SideMenuState extends State<SideMenu> {
                                     });
                                   },
                                   child: ExpandablePanel(
+                                  collapsed: Container(),
                                       theme: ExpandableThemeData(
                                         iconColor: Colors.white,
                                         iconSize: 14,
@@ -3291,7 +3511,7 @@ class _SideMenuState extends State<SideMenu> {
                                                 selectedTab = 0;
                                                 Navigator.pop(
                                                     alertDialogContext);
-                                                await signOut();
+                                                await FirebaseAuth.instance.signOut();
                                                 Navigator.pushAndRemoveUntil(
                                                     context,
                                                     MaterialPageRoute(
@@ -3323,7 +3543,7 @@ class _SideMenuState extends State<SideMenu> {
 
 class CustomSideMenuItem extends StatelessWidget {
   const CustomSideMenuItem({
-    Key key,
+    Key? key,
     this.icon,
     this.iconSize = 18,
     this.iconColor = Colors.white,
@@ -3333,14 +3553,14 @@ class CustomSideMenuItem extends StatelessWidget {
     this.backColor,
   }) : super(key: key);
 
-  final IconData icon;
-  final double iconSize;
-  final Color iconColor;
-  final Color backColor;
-  final String title;
-  final TextStyle titleStyle;
+  final IconData? icon;
+  final double? iconSize;
+  final Color? iconColor;
+  final Color? backColor;
+  final String? title;
+  final TextStyle? titleStyle;
 
-  final Function onTap;
+  final Function? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -3361,7 +3581,7 @@ class CustomSideMenuItem extends StatelessWidget {
               width: 4,
             ),
             Text(
-              title,
+              title??'',
               style: titleStyle ??
                   TextStyle(
                     color: Colors.grey[400],

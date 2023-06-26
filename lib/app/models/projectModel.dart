@@ -1,22 +1,22 @@
 class ProjectModel {
-  String branch;
-  String branchId;
-  String companyName;
-  String companyAddress;
-  String currentStatus;
-  String customerId;
-  DateTime date;
-  String description;
-  String nextStatus;
-  List<PaymentDetails> paymentDetails;
-  double projectCost;
-  String projectId;
-  String projectName;
-  String projectTopic;
-  String projectType;
-  int status;
-  String userId;
-  List<ProjectDetails> projectDetails;
+  String? branch;
+  String? branchId;
+  String? companyName;
+  String? companyAddress;
+  String? currentStatus;
+  String? customerId;
+  DateTime? date;
+  String? description;
+  String? nextStatus;
+  List<PaymentDetails>? paymentDetails;
+  double? projectCost;
+  String? projectId;
+  String? projectName;
+  String? projectTopic;
+  String? projectType;
+  int? status;
+  String? userId;
+  List<ProjectDetails>? projectDetails;
 
   ProjectModel(
       {this.branch,
@@ -58,13 +58,13 @@ class ProjectModel {
     if (json['projectDetails'] != null) {
       projectDetails = <ProjectDetails>[];
       json['projectDetails'].forEach((v) {
-        projectDetails.add(new ProjectDetails.fromJson(v));
+        projectDetails!.add(new ProjectDetails.fromJson(v));
       });
     }
     if (json['paymentDetails'] != null) {
       paymentDetails = <PaymentDetails>[];
       json['paymentDetails'].forEach((v) {
-        paymentDetails.add(new PaymentDetails.fromJson(v));
+        paymentDetails!.add(new PaymentDetails.fromJson(v));
       });
     }
   }
@@ -89,20 +89,20 @@ class ProjectModel {
     data['userId'] = this.userId;
     if (this.projectDetails != null) {
       data['projectDetails'] =
-          this.projectDetails.map((v) => v.toJson()).toList();
+          this.projectDetails!.map((v) => v.toJson()).toList();
     }
     if (this.paymentDetails != null) {
       data['paymentDetails'] =
-          this.paymentDetails.map((v) => v.toJson()).toList();
+          this.paymentDetails!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class ProjectDetails {
-  String domain;
-  String deliverable;
-  String platform;
+  String? domain;
+  String? deliverable;
+  String? platform;
 
   ProjectDetails({this.domain, this.deliverable, this.platform});
 
@@ -122,13 +122,13 @@ class ProjectDetails {
 }
 
 class PaymentDetails {
-  int amount;
-  String billCode;
-  String datePaid;
-  String description;
-  String paymentMethode;
-  String staffName;
-  String projectName;
+  int? amount;
+  String? billCode;
+  String? datePaid;
+  String? description;
+  String? paymentMethode;
+  String? staffName;
+  String? projectName;
 
   PaymentDetails(
       {this.amount,

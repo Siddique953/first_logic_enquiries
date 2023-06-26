@@ -19,7 +19,7 @@ void main() async {
         measurementId: "G-58TS14550F"
     ));
     runApp(MyApp());
-  }else {
+  } else {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
     runApp(MyApp());
@@ -28,7 +28,7 @@ void main() async {
 }
 
 setSearchParam(String caseNumber) {
-  List<String> caseSearchList = List<String>();
+  List<String> caseSearchList = [];
   String temp = "";
 
   List<String> nameSplits = caseNumber.split(" ");

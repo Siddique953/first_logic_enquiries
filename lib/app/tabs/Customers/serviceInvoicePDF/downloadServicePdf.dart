@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:intl/intl.dart';
@@ -18,7 +17,7 @@ var globIcon;
 var format = NumberFormat.simpleCurrency(locale: 'en_in');
 
 class GenerateInvoice {
-  static Future<File> downloadPdf(paymentDetail invoice) async {
+  static Future<File?> downloadPdf(paymentDetail invoice) async {
     final pdf = Document();
     image = await imageFromAssetBundle('assets/images/fl_new.png');
     globIcon = await imageFromAssetBundle('assets/images/globeIconPDF.png');
@@ -114,19 +113,19 @@ class GenerateInvoice {
                                 ),
                                 pw.SizedBox(height: 5),
                                 pw.Text(
-                                  invoice.customerName,
+                                  invoice.customerName!,
                                   style: pw.TextStyle(
                                     fontSize: 12,
                                   ),
                                 ),
                                 pw.Text(
-                                  invoice.nameOfProject,
+                                  invoice.nameOfProject!,
                                   style: pw.TextStyle(
                                     fontSize: 12,
                                   ),
                                 ),
                                 pw.Text(
-                                  invoice.customerPhoneNo,
+                                  invoice.customerPhoneNo!,
                                   style: pw.TextStyle(
                                     fontSize: 12,
                                   ),
@@ -187,7 +186,7 @@ class GenerateInvoice {
                                   children: [
                                     pw.Text('Date'),
                                     pw.SizedBox(height: 5),
-                                    pw.Text(invoice.date,
+                                    pw.Text(invoice.date!,
                                         style: pw.TextStyle(
                                           fontWeight: pw.FontWeight.bold,
                                           fontSize: 13,
@@ -211,7 +210,7 @@ class GenerateInvoice {
                                     children: [
                                       pw.Text('Invoice No.'),
                                       pw.SizedBox(height: 5),
-                                      pw.Text(invoice.receiptNo,
+                                      pw.Text(invoice.receiptNo!,
                                           style: pw.TextStyle(
                                             fontWeight: pw.FontWeight.bold,
                                             fontSize: 13,
@@ -423,7 +422,7 @@ class GenerateInvoice {
                                       ),
                                     ),
                                     pw.Text(
-                                      '${invoice.lastPaymentAmount.toStringAsFixed(2)}',
+                                      '${invoice.lastPaymentAmount!.toStringAsFixed(2)}',
                                       style: pw.TextStyle(
                                         fontSize: 15,
                                         fontWeight: pw.FontWeight.bold,
@@ -547,9 +546,9 @@ class GenerateInvoice {
       ..style.display = 'none'
       ..download = '${invoice.name}.pdf';
 
-    html.document.body.children.add(anchor);
+    html.document.body!.children.add(anchor);
     anchor.click();
-    html.document.body.children.remove(anchor);
+    html.document.body!.children.remove(anchor);
     html.Url.revokeObjectUrl(url);
 
     //android

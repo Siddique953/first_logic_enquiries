@@ -18,8 +18,8 @@ import 'customerListPage.dart';
 class CustomerStatement extends StatefulWidget {
   final TabController _tabController;
   const CustomerStatement({
-    Key key,
-    @required TabController tabController,
+    Key? key,
+    required TabController tabController,
   })  : _tabController = tabController,
         super(key: key);
 
@@ -190,7 +190,7 @@ class _CustomerStatementState extends State<CustomerStatement> {
                           } catch (e) {
                             print(e);
 
-                            return showDialog(
+                             showDialog(
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
@@ -705,7 +705,7 @@ class _CustomerStatementState extends State<CustomerStatement> {
     excel.setDefaultSheet(customerName);
     var fileBytes = excel.encode();
 
-    final content = base64Encode(fileBytes);
+    final content = base64Encode(fileBytes!);
     final anchor = html.AnchorElement(
         href: "data:application/octet-stream;charset=utf-16le;base64,$content")
       ..setAttribute(

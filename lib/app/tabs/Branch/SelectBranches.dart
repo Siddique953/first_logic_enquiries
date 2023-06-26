@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -13,7 +14,7 @@ import '../../app_widget.dart';
 import '../../pages/home_page/home.dart';
 
 class BranchesWidget extends StatefulWidget {
-  const BranchesWidget({Key key}) : super(key: key);
+  const BranchesWidget({Key? key}) : super(key: key);
 
   @override
   _BranchesWidgetState createState() => _BranchesWidgetState();
@@ -42,11 +43,11 @@ class _BranchesWidgetState extends State<BranchesWidget> {
         localStorage.setString('address', event.docs.first['address']);
         localStorage.setString('phone', event.docs.first['phone']);
 
-        currentBranchId = localStorage.getString('branchId');
-        currentbranchName = localStorage.getString('branchName');
-        currentbranchShortName = localStorage.getString('shortName');
-        currentbranchAddress = localStorage.getString('address');
-        currentbranchphoneNumber = localStorage.getString('phone');
+        currentBranchId = localStorage.getString('branchId')!;
+        currentbranchName = localStorage.getString('branchName')!;
+        currentbranchShortName = localStorage.getString('shortName')!;
+        currentbranchAddress = localStorage.getString('address')!;
+        currentbranchphoneNumber = localStorage.getString('phone')!;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (mainContext) => Home()),
@@ -110,7 +111,7 @@ class _BranchesWidgetState extends State<BranchesWidget> {
                         TextButton(
                           onPressed: () async {
                             Navigator.pop(alertDialogContext);
-                            await signOut();
+                            await  FirebaseAuth.instance.signOut();
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
@@ -151,13 +152,13 @@ class _BranchesWidgetState extends State<BranchesWidget> {
                       localStorage.setString('address', branch['address']);
                       localStorage.setString('phone', branch['phone']);
 
-                      currentBranchId = localStorage.getString('branchId');
-                      currentbranchName = localStorage.getString('branchName');
-                      currentbranchAddress = localStorage.getString('address');
+                      currentBranchId = localStorage.getString('branchId')!;
+                      currentbranchName = localStorage.getString('branchName')!;
+                      currentbranchAddress = localStorage.getString('address')!;
                       currentbranchShortName =
-                          localStorage.getString('shortName');
+                          localStorage.getString('shortName')!;
                       currentbranchphoneNumber =
-                          localStorage.getString('phone');
+                          localStorage.getString('phone')!;
 
                       Navigator.pushReplacement(
                         context,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
 class ColaspeItem extends StatelessWidget {
-  ColaspeItem({this.icon, this.label, this.style});
+  ColaspeItem({required this.icon, required this.label, required this.style});
   final IconData icon;
   final String label;
   final TextStyle style;

@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
-import 'package:month_picker_dialog_2/month_picker_dialog_2.dart';
-import '../../../backend/backend.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
+
 import '../../../flutter_flow/flutter_flow_drop_down.dart';
 import '../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
@@ -19,7 +20,7 @@ import 'package:universal_html/html.dart' as html;
 import '../../pages/home_page/home.dart';
 
 class Reports extends StatefulWidget {
-  const Reports({Key key}) : super(key: key);
+  const Reports({Key? key}) : super(key: key);
 
   @override
   _ReportsState createState() => _ReportsState();
@@ -79,10 +80,10 @@ class _ReportsState extends State<Reports> {
     });
   }
 
-  DateTime today;
-  DateTime fromDate;
-  DateTime toDate;
-  DateTime lastDate;
+  late DateTime today;
+  late DateTime fromDate;
+  late DateTime toDate;
+  late DateTime lastDate;
 
   int i = 0;
 
@@ -166,7 +167,7 @@ class _ReportsState extends State<Reports> {
     excel.setDefaultSheet('sales');
     var fileBytes = excel.encode();
 
-    final content = base64Encode(fileBytes);
+    final content = base64Encode(fileBytes!);
     final anchor = html.AnchorElement(
         href: "data:application/octet-stream;charset=utf-16le;base64,$content")
       ..setAttribute(
@@ -265,7 +266,7 @@ class _ReportsState extends State<Reports> {
                           .then((value) {
                         setState(() {
                           toDate = DateTime(
-                              value.year, value.month, value.day, 23, 59, 59);
+                              value!.year, value!.month, value!.day, 23, 59, 59);
                         });
                       });
                     },
@@ -363,11 +364,11 @@ class _ReportsState extends State<Reports> {
                             lastDate: DateTime(DateTime.now().year + 100, 12),
                             initialDate: fromDate,
 
-                            confirmText: Text(
-                              'Select',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            cancelText: Text('Cancel'),
+                            // confirmText: Text(
+                            //   'Select',
+                            //   style: TextStyle(fontWeight: FontWeight.bold),
+                            // ),
+                            // cancelText: Text('Cancel'),
                             // yearFirst: true,
                           ).then((date) {
                             if (date != null) {
@@ -622,7 +623,7 @@ class _ReportsState extends State<Reports> {
                           } catch (e) {
                             print(e);
 
-                            return showDialog(
+                             showDialog(
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(

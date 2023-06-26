@@ -18,14 +18,14 @@ import 'generateBankSlip.dart';
 
 class BankSlipPage extends StatefulWidget {
   final Map paySlip;
-  const BankSlipPage({Key key, this.paySlip}) : super(key: key);
+  const BankSlipPage({Key? key, required this.paySlip}) : super(key: key);
 
   @override
   State<BankSlipPage> createState() => _BankSlipPageState();
 }
 
 class _BankSlipPageState extends State<BankSlipPage> {
-  TextEditingController chequeNumber;
+  late TextEditingController chequeNumber;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -104,7 +104,7 @@ class _BankSlipPageState extends State<BankSlipPage> {
                               } catch (e) {
                                 print(e);
 
-                                return showDialog(
+                                 showDialog(
                                     context: context,
                                     builder: (context) {
                                       return AlertDialog(
@@ -294,7 +294,7 @@ class _BankSlipPageState extends State<BankSlipPage> {
                                           : double.tryParse((widget.paySlip[id]
                                                       ['takeHome'] ??
                                                   '0')
-                                              .toString()));
+                                              .toString())!);
                                 }
 
                                 return index == slipNames.length
@@ -504,7 +504,7 @@ class _BankSlipPageState extends State<BankSlipPage> {
                                               ),
                                               DataCell(
                                                 Text(
-                                                  empDataById[id].name ?? '',
+                                                  empDataById[id]!.name ?? '',
                                                   style: FlutterFlowTheme
                                                       .bodyText2
                                                       .override(
@@ -521,7 +521,7 @@ class _BankSlipPageState extends State<BankSlipPage> {
                                               ),
                                               DataCell(
                                                 Text(
-                                                  empDataById[id].accountNumber,
+                                                  empDataById[id]!.accountNumber!,
                                                   style: FlutterFlowTheme
                                                       .bodyText2
                                                       .override(
@@ -769,12 +769,12 @@ class _BankSlipPageState extends State<BankSlipPage> {
         );
 
         var cell2 = sheetObject.cell(CellIndex.indexByString("C${i + 2}"));
-        cell2.value = empDataById[slipNames[num]['empId']]
+        cell2.value = empDataById[slipNames[num]['empId']]!
             .name
             .toString(); // dynamic values support provided;
         cell2.cellStyle = cellStyle;
         var cell3 = sheetObject.cell(CellIndex.indexByString("D${i + 2}"));
-        cell3.value = empDataById[slipNames[num]['empId']]
+        cell3.value = empDataById[slipNames[num]['empId']]!
             .accountNumber; // dynamic values support provided;
         cell3.cellStyle = CellStyle(
           fontSize: 10,
@@ -835,7 +835,7 @@ class _BankSlipPageState extends State<BankSlipPage> {
               DateTime.now().month - 1,
               DateTime.now().day,
             ))}.xlsx');
-    Uint8List bytes = Uint8List.fromList(data);
+    Uint8List bytes = Uint8List.fromList(data!);
     uploadFileToFireBase(
       dateTimeFormat(
           'MMM y',

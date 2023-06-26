@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
@@ -11,7 +10,7 @@ import '../../../../../paymentReport/report/Invoice.dart';
 var format = NumberFormat.simpleCurrency(locale: 'en_in');
 
 class InvoicePrintingFunction {
-  static Future<File> createPrint(paymentDetail invoice) async {
+  static Future<File?> createPrint(paymentDetail invoice) async {
     final pdf = Document();
     pdf.addPage(MultiPage(
       build: (context) => [
@@ -56,19 +55,19 @@ class InvoicePrintingFunction {
                               ),
                               pw.SizedBox(height: 5),
                               pw.Text(
-                                invoice.customerName,
+                                invoice.customerName!,
                                 style: pw.TextStyle(
                                   fontSize: 12,
                                 ),
                               ),
                               pw.Text(
-                                invoice.nameOfProject,
+                                invoice.nameOfProject!,
                                 style: pw.TextStyle(
                                   fontSize: 12,
                                 ),
                               ),
                               pw.Text(
-                                invoice.customerPhoneNo,
+                                invoice.customerPhoneNo!,
                                 style: pw.TextStyle(
                                   fontSize: 12,
                                 ),
@@ -129,7 +128,7 @@ class InvoicePrintingFunction {
                                 children: [
                                   pw.Text('Date'),
                                   pw.SizedBox(height: 5),
-                                  pw.Text(invoice.date,
+                                  pw.Text(invoice.date!,
                                       style: pw.TextStyle(
                                         fontWeight: pw.FontWeight.bold,
                                         fontSize: 13,
@@ -153,7 +152,7 @@ class InvoicePrintingFunction {
                                   children: [
                                     pw.Text('Invoice No.'),
                                     pw.SizedBox(height: 5),
-                                    pw.Text(invoice.receiptNo,
+                                    pw.Text(invoice.receiptNo!,
                                         style: pw.TextStyle(
                                           fontWeight: pw.FontWeight.bold,
                                           fontSize: 13,
@@ -299,7 +298,7 @@ class InvoicePrintingFunction {
                                     ),
                                   ),
                                   pw.Text(
-                                    '${invoice.lastPaymentAmount.toStringAsFixed(2)}',
+                                    '${invoice.lastPaymentAmount!.toStringAsFixed(2)}',
                                     style: pw.TextStyle(
                                       fontSize: 15,
                                       fontWeight: pw.FontWeight.bold,

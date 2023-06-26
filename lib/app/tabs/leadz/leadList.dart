@@ -9,14 +9,14 @@ import '../../pages/home_page/home.dart';
 import '../Enquiry/AddEnquiry.dart';
 
 class LeadList extends StatefulWidget {
-  const LeadList({Key key}) : super(key: key);
+  const LeadList({Key? key}) : super(key: key);
 
   @override
   State<LeadList> createState() => _LeadListState();
 }
 
 class _LeadListState extends State<LeadList> {
-  TextEditingController branch;
+  late TextEditingController branch;
   String selectedBranch = '';
 
   @override
@@ -95,7 +95,7 @@ class _LeadListState extends State<LeadList> {
                             return Center(child: CircularProgressIndicator());
                           }
                           var data = snapshot.data;
-                          List LeadList = data['lead'];
+                          List LeadList = data!['lead'];
                           List leadz = [];
                           for (var item in LeadList) {
                             if (item['converted'] == false) {

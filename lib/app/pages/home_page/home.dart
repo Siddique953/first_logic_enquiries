@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:multiple_select/Item.dart';
+
 import 'package:responsive_builder/responsive_builder.dart';
 import '../../../auth/auth_util.dart';
 import '../../../flutter_flow/flutter_flow_util.dart';
@@ -42,7 +42,7 @@ import '../../tabs/Reports/projectPaymentReport.dart';
 import '../../tabs/Reports/projectReport.dart';
 import '../../tabs/Reports/reports.dart';
 import '../../tabs/Settings/addService/serviceAdding.dart';
-import '../../tabs/University/AddProjectType.dart';
+import '../../tabs/Settings/AddProjectType.dart';
 import '../../tabs/Enquiry/EnquiryList.dart';
 
 import '../../tabs/homeTab.dart';
@@ -55,6 +55,9 @@ import 'components/side_menu.dart';
 String webVersion = "1.8.4";
 
 ///
+
+String currentUserUid='';
+String currentUserEmail='';
 
 //LIST OF AGENTS
 List<String> agentNumberList = [];
@@ -167,7 +170,7 @@ Map<String, dynamic> countryMap = {};
 Map<String, dynamic> countryIdByName = {};
 
 String currentUserRole = '';
-bool currentUserPermission;
+bool? currentUserPermission;
 
 class Home extends StatefulWidget {
   @override
@@ -175,7 +178,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
-  TabController _tabController;
+  TabController? _tabController;
 
   getEmployees() {
     FirebaseFirestore.instance
@@ -188,7 +191,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       employeeList = [];
       empDataById = {};
 
-      for (DocumentSnapshot doc in event.docs) {
+      for (var doc in event.docs) {
         empDataById[doc.id] = EmployeeModel.fromJson(doc.data());
         empIdByName[doc['name']] = doc.id;
         empNames.add(doc['name']);
@@ -649,7 +652,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         .doc('settings')
         .get();
 
-    if (event.data()['version'] != webVersion) {
+    if (event.data()!['version'] != webVersion) {
       await showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -661,7 +664,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               child: ListBody(
                 children: <Widget>[
                   Text(
-                      'New version found!!! Please refresh to version ${event.data()['version']} '),
+                      'New version found!!! Please refresh to version ${event.data()!['version']} '),
                   SizedBox(
                     height: 20,
                   ),
@@ -710,7 +713,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     super.dispose();
-    _tabController.dispose();
+    _tabController!.dispose();
   }
 
   @override
@@ -760,7 +763,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SideMenu(tabController: _tabController),
+                    SideMenu(tabController: _tabController!),
                     Expanded(
                       child: TabBarView(
                         physics: NeverScrollableScrollPhysics(),
@@ -778,25 +781,25 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
                           //HR
                           HrDashBoard(
-                            tabController: _tabController,
+                            tabController: _tabController!,
                           ), //5
                           EmployeeList(
-                            tabController: _tabController,
+                            tabController: _tabController!,
                           ), //6
                           AddEmployee(
-                            tabController: _tabController,
+                            tabController: _tabController!,
                           ), //7
                           SingleEmployeeDetails(
-                            tabController: _tabController,
+                            tabController: _tabController!,
                           ), //8
                           HrAttendance(
-                            tabController: _tabController,
+                            tabController: _tabController!,
                           ), //9
                           HrLeavePage(
-                            tabController: _tabController,
+                            tabController: _tabController!,
                           ), //10
                           HrSettingsPage(
-                            tabController: _tabController,
+                            tabController: _tabController!,
                           ), //11
 
                           //ACCOUNTS
@@ -810,9 +813,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
                           //REPORTS
                           CustomerListingWidget(
-                            tabController: _tabController,
+                            tabController: _tabController!,
                           ), //17
-                          CustomerStatement(tabController: _tabController), //18
+                          CustomerStatement(tabController: _tabController!), //18
                           ProjectPaymentReport(), //19
                           ProjectReport(), //20
                           Reports(), //21
@@ -831,12 +834,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           ProjectList(), //30
                           LeadList(), //31
                           AddLeadsWidget(), //32
-                          DeletedEmployees(tabController: _tabController), //33
+                          DeletedEmployees(tabController: _tabController!), //33
 
                           UpdatesPage(), //34
 
-                          SendMailToEmployees(tabController: _tabController), //35
-                          SendToMailList(tabController: _tabController), //36
+                          SendMailToEmployees(tabController: _tabController!), //35
+                          SendToMailList(tabController: _tabController!), //36
                           ///
                         ],
                       ),
@@ -942,7 +945,7 @@ class SalesData {
 }
 
 setSearchParam(String caseNumber) {
-  List<String> caseSearchList = List<String>();
+  List<String> caseSearchList = [];
   String temp = "";
 
   List<String> nameSplits = caseNumber.split(" ");

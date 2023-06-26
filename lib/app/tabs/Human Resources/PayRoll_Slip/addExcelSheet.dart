@@ -20,13 +20,13 @@ import 'dart:typed_data';
 
 import 'BankSlip/bankSlip.dart';
 
-DataTableSource _dataSemi;
+late DataTableSource _dataSemi;
 var employeeDetails = {};
 var employeeAttendance = {};
 
 class AddAttendance extends StatefulWidget {
   const AddAttendance({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -53,18 +53,18 @@ class _AddAttendanceState extends State<AddAttendance> {
     if (result == null) return;
     final file = result.files.first;
 
-    Uint8List bytes = file.bytes;
-    _openFile(file, bytes);
+    Uint8List? bytes = file.bytes;
+    _openFile(file, bytes!);
     showUploadMessage(context, 'file uploaded successfully');
   }
 
-  List<List<dynamic>> rowDetail;
+  late List<List<dynamic>> rowDetail;
 
   void _openFile(PlatformFile file, Uint8List bytes) {
     filename = file.name;
 
     rowDetail =
-        const CsvToListConverter().convert(String.fromCharCodes(file.bytes));
+        const CsvToListConverter().convert(String.fromCharCodes(file.bytes!));
 
     for (int i = 0; i < rowDetail.length; i++) {
       if (rowDetail[i][0] == 'Empcode') {
@@ -92,9 +92,9 @@ class _AddAttendanceState extends State<AddAttendance> {
         double basicSalary = 0;
 
         if (empDataById[empCode] == null) {
-          basicSalary = double.tryParse('0');
+          basicSalary = double.tryParse('0')!;
         } else {
-          basicSalary = double.tryParse(empDataById[empCode].ctc ?? 0);
+          basicSalary = double.tryParse(empDataById[empCode]!.ctc.toString())??0;
         }
 
         int j = 0;
@@ -117,7 +117,7 @@ class _AddAttendanceState extends State<AddAttendance> {
           bool off = false;
           bool half = false;
           bool fullDayLeave = false;
-          DateTime day = DateTime.tryParse(toDay[2] + toDay[1] + toDay[0]);
+          DateTime day = DateTime.tryParse(toDay[2] + toDay[1] + toDay[0])!;
 
           String inTime = rowDetail[j][2].toString();
 
@@ -131,8 +131,8 @@ class _AddAttendanceState extends State<AddAttendance> {
           int minuit = 0;
 
           try {
-            hours = int.tryParse(rowDetail[j][4].toString().split(':')[0]);
-            minuit = int.tryParse(rowDetail[j][4].toString().split(':')[1]);
+            hours = int.tryParse(rowDetail[j][4].toString().split(':')[0])!;
+            minuit = int.tryParse(rowDetail[j][4].toString().split(':')[1])!;
           } catch (e) {
             hours = 0;
             minuit = 0;
@@ -309,8 +309,8 @@ class _AddAttendanceState extends State<AddAttendance> {
   }
 
   /// GET CASUAL LEAVES IN LAST MONTH
-  DateTime lastMonthStart;
-  DateTime lastMonthEnd;
+ late DateTime lastMonthStart;
+ late DateTime lastMonthEnd;
   // Map casualLeaves = {};
 
   // getLeaves() {
@@ -1109,10 +1109,12 @@ class _AddAttendanceState extends State<AddAttendance> {
                                       columnSpacing: 10.0,
                                       horizontalMargin: 10,
                                       onRowsPerPageChanged: (r) {
-                                        setState(() {
-                                          _rowPerPage = r;
-                                        });
-                                      },
+                                        if(r != null){
+                                            setState(() {
+                                              _rowPerPage = r;
+                                            });
+                                          }
+                                        },
                                       rowsPerPage: _rowPerPage,
                                       columns: [
                                             DataColumn(
@@ -1283,7 +1285,7 @@ class _AddAttendanceState extends State<AddAttendance> {
       cell2.value = id.toString(); // dynamic values support provided;
       cell2.cellStyle = cellStyle;
       var cell3 = sheetObject.cell(CellIndex.indexByString("C${i + 2}"));
-      cell3.value = empDataById[id].name; // dynamic values support provided;
+      cell3.value = empDataById[id]!.name; // dynamic values support provided;
       cell3.cellStyle = cellStyle;
       var cell4 = sheetObject.cell(CellIndex.indexByString("D${i + 2}"));
       cell4.value = (30 -
@@ -1294,7 +1296,7 @@ class _AddAttendanceState extends State<AddAttendance> {
           employeeDetails[id]['leave']; // dynamic values support provided;
       cell5.cellStyle = cellStyle;
       var cell6 = sheetObject.cell(CellIndex.indexByString("F${i + 2}"));
-      cell6.value = double.tryParse(empDataById[id].ctc)
+      cell6.value = double.tryParse(empDataById[id]!.ctc.toString())!
           .toString(); // dynamic values support provided;
       cell6.cellStyle = cellStyle;
       var cell7 = sheetObject.cell(CellIndex.indexByString("G${i + 2}"));
@@ -1325,7 +1327,7 @@ class _AddAttendanceState extends State<AddAttendance> {
         fileName:
             "PaySlip-${dateTimeFormat('dd MMM yyyy', DateTime.now())}.xlsx");
 
-    Uint8List bytes = Uint8List.fromList(data);
+    Uint8List bytes = Uint8List.fromList(data!);
 
     updateFileInFireBase(
         dateTimeFormat(
@@ -1356,10 +1358,10 @@ class _AddAttendanceState extends State<AddAttendance> {
 
       int offDays = int.tryParse(
           (employeeDetails[employeeList[i]['empId']]['offDay'] ?? 4)
-              .toString());
-      int workingDays = int.tryParse((30 - offDays).toString());
+              .toString())!;
+      int workingDays = int.tryParse((30 - offDays).toString())!;
 
-      double payable =double.tryParse(empDataById[employeeList[i]['empId']].ctc);
+      double payable =double.tryParse(empDataById[employeeList[i]['empId']]!.ctc??'0')!;
       double leaveCut = payable- employeeDetails[employeeList[i]['empId']]['takeHome'];
       PaySlipModel data = PaySlipModel(
         workingDays: workingDays,
@@ -1367,7 +1369,7 @@ class _AddAttendanceState extends State<AddAttendance> {
         totalDeduction:
             ((employeeDetails[employeeList[i]['empId']]['deduction'])+leaveCut).toString(),
         spAllowance: '',
-        pan: empDataById[employeeList[i]['empId']].pan ?? '',
+        pan: empDataById[employeeList[i]['empId']]?.pan ?? '',
         netSalary:
             employeeDetails[employeeList[i]['empId']]['takeHome'].toString(),
         month: dateTimeFormat(
@@ -1388,17 +1390,17 @@ class _AddAttendanceState extends State<AddAttendance> {
         code: employeeList[i]['empId'],
         cityAllow: '',
         balanceLeaves: 0,
-        basicPay: empDataById[employeeList[i]['empId']].ctc ?? '',
+        basicPay: empDataById[employeeList[i]['empId']]!.ctc ?? '',
         attended: employeeDetails[employeeList[i]['empId']]['workDay'],
         advance:
             employeeDetails[employeeList[i]['empId']]['deduction'].toString(),
-        accNumber: empDataById[employeeList[i]['empId']].accountNumber,
+        accNumber: empDataById[employeeList[i]['empId']]!.accountNumber,
         total: (employeeDetails[employeeList[i]['empId']]['incentive'] +
-                int.tryParse(empDataById[employeeList[i]['empId']].ctc))
+                int.tryParse(empDataById[employeeList[i]['empId']]!.ctc.toString())!)
             .toString(),
-        name: empDataById[employeeList[i]['empId']].name,
-        bankName: empDataById[employeeList[i]['empId']].bankName,
-        designation: empDataById[employeeList[i]['empId']].designation,
+        name: empDataById[employeeList[i]['empId']]!.name,
+        bankName: empDataById[employeeList[i]['empId']]!.bankName,
+        designation: empDataById[employeeList[i]['empId']]!.designation,
       );
 
       PaySlip.downloadPdf(data, employeeDetails, employeeAttendance,
@@ -1554,7 +1556,7 @@ class MyData extends DataTableSource {
 
 
           String name =
-              empDataById[data].name ?? '';
+              empDataById[data]!.name ?? '';
 
           // String totalDays =
           //     employeeDetails[data] != null &&
@@ -1590,7 +1592,7 @@ class MyData extends DataTableSource {
           //         : '';
 
           double basicSalary = double.tryParse(
-              empDataById[data].ctc.toString());
+              empDataById[data]!.ctc.toString())!;
 
           // int halfDays = employeeDetails[data]['halfDay'];
           //
@@ -1674,7 +1676,7 @@ class MyData extends DataTableSource {
                               (30 -
                                   int.tryParse(
                                       workingDays
-                                          .text));
+                                          .text)!);
 
                       // for (var id
                       //     in employeeDetails.keys
@@ -1736,7 +1738,7 @@ class MyData extends DataTableSource {
                       int oldLeave=employeeDetails[data]['leave'];
                       int workDay=employeeDetails[data]['workDay'];
 
-                      int newLeave=int.tryParse(leave.text);
+                      int newLeave=int.tryParse(leave.text)!;
 
                       employeeDetails[data]['leave'] =newLeave;
                       employeeDetails[data]['workDay'] =workDay-(newLeave-oldLeave) ;
@@ -1928,7 +1930,7 @@ class MyData extends DataTableSource {
                       if (payable.text != '') {
                         double salary =
                             double.tryParse(
-                                payable.text);
+                                payable.text)!;
 
                         double incentiv =
                             double.tryParse(
@@ -1936,13 +1938,13 @@ class MyData extends DataTableSource {
                                         ''
                                     ? '0'
                                     : incentive
-                                        .text);
+                                        .text)!;
 
                         double otAmt =
                             double.tryParse(
                                 ot.text == ''
                                     ? '0'
-                                    : ot.text);
+                                    : ot.text)!;
 
                         double ded =
                             double.tryParse(
@@ -1950,7 +1952,7 @@ class MyData extends DataTableSource {
                                         ''
                                     ? '0'
                                     : deduction
-                                        .text);
+                                        .text)!;
 
                         employeeDetails[data]
                                 ['takeHome'] =
@@ -1966,7 +1968,7 @@ class MyData extends DataTableSource {
                       } else {
                         double salary =
                             double.tryParse(
-                                payable.text);
+                                payable.text)!;
 
                         double incentiv =
                             double.tryParse(
@@ -1974,14 +1976,14 @@ class MyData extends DataTableSource {
                                         ''
                                     ? '0'
                                     : payable
-                                        .text);
+                                        .text)!;
 
                         double otAmt =
                             double.tryParse(
                                 ot.text == ''
                                     ? '0'
                                     : payable
-                                        .text);
+                                        .text)!;
 
                         double ded =
                             double.tryParse(
@@ -1989,7 +1991,7 @@ class MyData extends DataTableSource {
                                         ''
                                     ? '0'
                                     : payable
-                                        .text);
+                                        .text)!;
 
                         employeeDetails[data]
                                 ['takeHome'] =
@@ -2058,7 +2060,7 @@ class MyData extends DataTableSource {
                         int incentives =
                             double.tryParse(
                                     incentive
-                                        .text)
+                                        .text)!
                                 .round();
 
                         int pay =
@@ -2086,7 +2088,7 @@ class MyData extends DataTableSource {
                         refresh();
                       } else {
                         double incentives =
-                            double.tryParse('0');
+                            double.tryParse('0')!;
                         double pay =
                             employeeDetails[data]
                                     ['payable']
@@ -2152,7 +2154,7 @@ class MyData extends DataTableSource {
                       if (ot.text != '') {
                         double otAmount =
                             double.tryParse(
-                                ot.text);
+                                ot.text)!;
 
                         double pay =
                             employeeDetails[data]
@@ -2178,7 +2180,7 @@ class MyData extends DataTableSource {
                         refresh();
                       } else {
                         double otAmount =
-                            double.tryParse('0');
+                            double.tryParse('0')!;
 
                         double pay =
                             employeeDetails[data]
@@ -2260,7 +2262,7 @@ class MyData extends DataTableSource {
                       if (deduction.text != '') {
                         double deductionAmount =
                             double.tryParse(
-                                deduction.text);
+                                deduction.text)!;
                         double pay =
                             employeeDetails[data]
                                     ['payable']
@@ -2285,7 +2287,7 @@ class MyData extends DataTableSource {
                         refresh();
                       } else {
                         double deductionAmount =
-                            double.tryParse('0');
+                            double.tryParse('0')!;
 
                         double pay =
                             employeeDetails[data]

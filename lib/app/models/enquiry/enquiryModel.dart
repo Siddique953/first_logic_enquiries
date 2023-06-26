@@ -1,21 +1,21 @@
 class EnquiryModel {
-  String additionalInfo;
-  String branch;
-  String careOf;
-  String careOfEmpNo;
-  String customerId;
-  DateTime date;
-  String email;
-  String enquiryId;
-  String mobile;
-  String name;
-  String place;
-  String projectTopic;
-  String projectType;
-  String status;
-  String userEmail;
-  String userId;
-  List<ProjectDetails> projectDetails;
+  String? additionalInfo;
+  String? branch;
+  String? careOf;
+  String? careOfEmpNo;
+  String? customerId;
+  DateTime? date;
+  String? email;
+  String? enquiryId;
+  String? mobile;
+  String? name;
+  String? place;
+  String? projectTopic;
+  String? projectType;
+  String? status;
+  String? userEmail;
+  String? userId;
+  List<ProjectDetails>? projectDetails;
 
   EnquiryModel(
       {this.additionalInfo,
@@ -56,7 +56,7 @@ class EnquiryModel {
     if (json['projectDetails'] != null) {
       projectDetails = <ProjectDetails>[];
       json['projectDetails'].forEach((v) {
-        projectDetails.add(new ProjectDetails.fromJson(v));
+        projectDetails!.add(new ProjectDetails.fromJson(v));
       });
     }
   }
@@ -80,16 +80,16 @@ class EnquiryModel {
     data['userEmail'] = this.userEmail;
     data['userId'] = this.userId;
     data['projectDetails'] =
-        this.projectDetails.map((v) => v.toJson()).toList();
+        this.projectDetails!.map((v) => v.toJson()).toList();
 
     return data;
   }
 }
 
 class ProjectDetails {
-  String name;
-  String requirements;
-  String platform;
+  String? name;
+  String? requirements;
+  String? platform;
 
   ProjectDetails({this.name, this.requirements, this.platform});
 

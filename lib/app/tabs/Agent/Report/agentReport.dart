@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AgentReport extends StatefulWidget {
-  const AgentReport({Key key}) : super(key: key);
+  const AgentReport({Key? key}) : super(key: key);
 
   @override
   State<AgentReport> createState() => _AgentReportState();

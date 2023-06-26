@@ -15,17 +15,17 @@ class DownloadAssetsDemo extends StatefulWidget {
 
 class DownloadAssetsDemoState extends State<DownloadAssetsDemo> {
   //
-  bool _downloading;
-  String _dir;
-  List<String> _images, _tempImages;
+  bool? _downloading;
+  String? _dir;
+  List<String>? _images, _tempImages;
   String _zipPath = 'https://coderzheaven.com/youtube_flutter/images.zip';
   String _localZipFileName = 'images.zip';
 
   @override
   void initState() {
     super.initState();
-    _images = List();
-    _tempImages = List();
+    _images = [];
+    _tempImages = [];
     _downloading = false;
     _initDir();
   }
@@ -47,14 +47,14 @@ class DownloadAssetsDemoState extends State<DownloadAssetsDemo> {
       _downloading = true;
     });
 
-    _images.clear();
-    _tempImages.clear();
+    _images!.clear();
+    _tempImages!.clear();
 
     var zippedFile = await _downloadFile(_zipPath, _localZipFileName);
     await unarchiveAndSave(zippedFile);
 
     setState(() {
-      _images.addAll(_tempImages);
+      _images!.addAll(_tempImages!);
       _downloading = false;
     });
   }
@@ -67,7 +67,7 @@ class DownloadAssetsDemoState extends State<DownloadAssetsDemo> {
       if (file.isFile) {
         var outFile = File(fileName);
         //print('File:: ' + outFile.path);
-        _tempImages.add(outFile.path);
+        _tempImages!.add(outFile.path);
         outFile = await outFile.create(recursive: true);
         await outFile.writeAsBytes(file.content);
       }
@@ -77,10 +77,10 @@ class DownloadAssetsDemoState extends State<DownloadAssetsDemo> {
   buildList() {
     return Expanded(
       child: ListView.builder(
-        itemCount: _images.length,
+        itemCount: _images!.length,
         itemBuilder: (BuildContext context, int index) {
           return Image.file(
-            File(_images[index]),
+            File(_images![index]),
             fit: BoxFit.fitWidth,
           );
         },
@@ -106,7 +106,7 @@ class DownloadAssetsDemoState extends State<DownloadAssetsDemo> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: <Widget>[
-          _downloading ? progress() : Container(),
+          _downloading! ? progress() : Container(),
           IconButton(
             icon: Icon(Icons.file_download),
             onPressed: () {

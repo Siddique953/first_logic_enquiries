@@ -1,8 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:month_picker_dialog_2/month_picker_dialog_2.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 
-import '../../../../backend/backend.dart';
 import '../../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../../flutter_flow/flutter_flow_util.dart';
@@ -15,8 +15,8 @@ import 'employeeAttendance.dart';
 class HrAttendance extends StatefulWidget {
   final TabController _tabController;
   const HrAttendance({
-    Key key,
-    @required TabController tabController,
+    Key? key,
+    required TabController tabController,
   })  : _tabController = tabController,
         super(key: key);
 
@@ -167,11 +167,11 @@ class _HrAttendanceState extends State<HrAttendance> {
                                   DateTime.now().month - 1),
                               initialDate: fromDate,
 
-                              confirmText: Text(
-                                'Select',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              cancelText: Text('Cancel'),
+                              // confirmText: Text(
+                              //   'Select',
+                              //   style: TextStyle(fontWeight: FontWeight.bold),
+                              // ),
+                              // cancelText: Text('Cancel'),
 // yearFirst: true,
                             ).then((date) {
                               if (date != null) {
@@ -385,7 +385,7 @@ class _HrAttendanceState extends State<HrAttendance> {
                                             employeeList[index]['empId'];
 
                                         String name =
-                                            empDataById[data].name ?? '';
+                                            empDataById[data]?.name ?? '';
 
                                         String leaves = employeeDetails[data] !=
                                                     null &&
@@ -428,10 +428,10 @@ class _HrAttendanceState extends State<HrAttendance> {
                                         String present = ((workingDays == ''
                                                     ? 0
                                                     : double.tryParse(
-                                                        workingDays ?? '0')) -
+                                                        workingDays ?? '0'))! -
                                                 (leaves == ''
                                                     ? 0
-                                                    : double.tryParse(leaves)))
+                                                    : double.tryParse(leaves)!))
                                             .toString();
 
                                         return DataRow(

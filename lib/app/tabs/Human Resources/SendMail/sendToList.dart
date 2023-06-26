@@ -12,8 +12,8 @@ import '../../../pages/home_page/home.dart';
 class SendToMailList extends StatefulWidget {
   final TabController _tabController;
   const SendToMailList({
-    Key key,
-    @required TabController tabController,
+    Key? key,
+    required TabController tabController,
   })  : _tabController = tabController,
         super(key: key);
 
@@ -369,7 +369,7 @@ class _SendToMailListState extends State<SendToMailList> {
                                       value: allSelected,
                                       activeColor: Color(0xff0054FF),
 
-                                      onChanged:(bool newValue){
+                                      onChanged:(bool? newValue){
 
                                         if(allSelected){
                                           selectedEmployees=[];
@@ -725,7 +725,7 @@ class _SendToMailListState extends State<SendToMailList> {
                                                       value: selectedEmployees.contains(email),
                                                       activeColor: Color(0xff0054FF),
 
-                                                      onChanged:(bool newValue){
+                                                      onChanged:(bool? newValue){
                                                         if(selectedEmployees.contains(email)){
 
                                                           selectedEmployees.remove(email);

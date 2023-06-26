@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
@@ -14,7 +13,7 @@ var globIcon;
 var format = NumberFormat.simpleCurrency(locale: 'en_in');
 
 class PrintingFunction {
-  static Future<File> createPrint(paymentDetail invoice) async {
+  static Future<File?> createPrint(paymentDetail invoice) async {
     final pdf = Document();
     image = await imageFromAssetBundle('assets/images/fl_new.png');
     globIcon = await imageFromAssetBundle('assets/recipt Items/glob_icon.png');
@@ -107,19 +106,19 @@ class PrintingFunction {
                               ),
                               pw.SizedBox(height: 5),
                               pw.Text(
-                                invoice.customerName,
+                                invoice.customerName!,
                                 style: pw.TextStyle(
                                   fontSize: 12,
                                 ),
                               ),
                               pw.Text(
-                                invoice.nameOfProject,
+                                invoice.nameOfProject!,
                                 style: pw.TextStyle(
                                   fontSize: 12,
                                 ),
                               ),
                               pw.Text(
-                                invoice.customerPhoneNo,
+                                invoice.customerPhoneNo!,
                                 style: pw.TextStyle(
                                   fontSize: 12,
                                 ),
@@ -143,7 +142,7 @@ class PrintingFunction {
                                 ),
                                 pw.SizedBox(height: 5),
                                 pw.Text(
-                                  invoice.staff,
+                                  invoice.staff!,
                                   style: pw.TextStyle(
                                     fontSize: 12,
                                   ),
@@ -178,7 +177,7 @@ class PrintingFunction {
                                 children: [
                                   pw.Text('Date'),
                                   pw.SizedBox(height: 5),
-                                  pw.Text(invoice.date,
+                                  pw.Text(invoice.date!,
                                       style: pw.TextStyle(
                                         fontWeight: pw.FontWeight.bold,
                                         fontSize: 13,
@@ -202,7 +201,7 @@ class PrintingFunction {
                                   children: [
                                     pw.Text('Receipt No.'),
                                     pw.SizedBox(height: 5),
-                                    pw.Text(invoice.receiptNo,
+                                    pw.Text(invoice.receiptNo!,
                                         style: pw.TextStyle(
                                           fontWeight: pw.FontWeight.bold,
                                           fontSize: 13,
@@ -232,7 +231,7 @@ class PrintingFunction {
                                     children: [
                                       pw.Text('Mode of Payment'),
                                       pw.SizedBox(height: 5),
-                                      pw.Text(invoice.paymentMethod,
+                                      pw.Text(invoice.paymentMethod!,
                                           style: pw.TextStyle(
                                             fontWeight: pw.FontWeight.bold,
                                             fontSize: 13,
@@ -257,7 +256,7 @@ class PrintingFunction {
                                       pw.Text('Due Amount.'),
                                       pw.SizedBox(height: 5),
                                       pw.Text(
-                                          ' ${invoice.totalDue.toStringAsFixed(2)}',
+                                          ' ${invoice.totalDue!.toStringAsFixed(2)}',
                                           style: pw.TextStyle(
                                             fontWeight: pw.FontWeight.bold,
                                             fontSize: 13,
@@ -408,7 +407,7 @@ class PrintingFunction {
                                     ),
                                   ),
                                   pw.Text(
-                                    '${invoice.lastPaymentAmount.toStringAsFixed(2)}',
+                                    '${invoice.lastPaymentAmount!.toStringAsFixed(2)}',
                                     style: pw.TextStyle(
                                       fontSize: 15,
                                       fontWeight: pw.FontWeight.bold,
@@ -691,6 +690,7 @@ class PrintingFunction {
     await Printing.layoutPdf(
         onLayout: (PdfPageFormat format) async => pdf.save());
     print('bbbbbbbbbbbbbbbbbbbbbbbb');
+    return null;
 
     //android
     // return PdfApi.saveDocument(name: '${invoice.name}+feedetail.pdf', pdf: pdf);

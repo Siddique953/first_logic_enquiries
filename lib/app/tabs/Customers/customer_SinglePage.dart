@@ -1,3 +1,4 @@
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_pickers/country.dart';
@@ -7,14 +8,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:fl_erp/app/tabs/Customers/serviceInvoicePDF/Print/printFunction.dart';
 import 'package:fl_erp/app/tabs/Customers/serviceInvoicePDF/downloadServicePdf.dart';
-import 'package:fl_erp/backend/backend.dart';
+
 import 'package:lottie/lottie.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:excel/excel.dart';
 import '../../../paymentReport/report/Invoice.dart';
 import '../../../paymentReport/report/generatePdf.dart';
 import '../../../paymentReport/report/generatePrintFunction.dart';
-import '../../../paymentReport/report/newPDF.dart';
 import '../../../paymentReport/report/printingFunction.dart';
 import '../../pages/home_page/home.dart';
 import '../../../flutter_flow/flutter_flow_util.dart';
@@ -26,11 +26,9 @@ import '../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../flutter_flow/upload_media.dart';
 import '../../app_widget.dart';
 import 'package:country_pickers/country_pickers.dart';
-import '../Human Resources/PayRoll_Slip/paySlipPdf/paySlipPdf.dart';
 import 'StatementPDF/generateStatement.dart';
 import 'StatementPDF/statementModel.dart';
 import 'createProjectPopUp.dart';
-import 'dart:io';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:universal_html/html.dart' as html;
@@ -43,11 +41,11 @@ class CustomerSinglePage extends StatefulWidget {
   final bool tab;
   final Map project;
   const CustomerSinglePage({
-    Key key,
-    this.id,
-    this.selectedIndex,
-    this.tab,
-    this.project,
+    Key? key,
+   required this.id,
+   required this.selectedIndex,
+   required this.tab,
+   required this.project,
   }) : super(key: key);
 
   @override
@@ -74,10 +72,10 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
   ///
 
-  int selectedIndex;
+ late int selectedIndex;
   var selectedProject;
 
-  List projectsList;
+  List projectsList = [];
   int indexNum = 0;
   List<String> projectNames = [''];
   List<String> projectNamesSortList = [''];
@@ -94,45 +92,45 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  PlatformFile pickFile;
-  UploadTask uploadTask;
+ late PlatformFile pickFile;
+ late UploadTask uploadTask;
 
   //Personal Details
 
-  TextEditingController nameController;
+ late TextEditingController nameController;
   String uploadedFileUrl = '';
-  TextEditingController email;
+ late TextEditingController email;
   String countryCode = 'IN';
   String phoneCode = '';
-  TextEditingController nationality;
-  TextEditingController mobile;
-  TextEditingController whatsAppNo;
-  TextEditingController studentPlace;
-  TextEditingController address;
-  TextEditingController city;
-  TextEditingController companyName;
-  TextEditingController companyAddress;
-  TextEditingController companyEmail;
-  TextEditingController agentName;
+ late TextEditingController nationality;
+ late TextEditingController mobile;
+ late TextEditingController whatsAppNo;
+ late TextEditingController studentPlace;
+ late TextEditingController address;
+ late TextEditingController city;
+ late TextEditingController companyName;
+ late TextEditingController companyAddress;
+ late TextEditingController companyEmail;
+ late TextEditingController agentName;
   // TextEditingController careOfNo;
 
-  TextEditingController projectname;
-  TextEditingController topic;
-  TextEditingController projectCost;
+ late TextEditingController projectname;
+ late TextEditingController topic;
+ late TextEditingController projectCost;
 
-  TextEditingController Domain;
-  TextEditingController platform;
-  TextEditingController deliverable;
+ late TextEditingController Domain;
+ late TextEditingController platform;
+ late TextEditingController deliverable;
 
 // Payment Details
-  DateTime selectedDate;
-  TextEditingController staffName;
-  TextEditingController payingAmount;
-  TextEditingController description;
+ late DateTime selectedDate;
+ late TextEditingController staffName;
+ late TextEditingController payingAmount;
+ late TextEditingController description;
 
   //PAYMENT SORTING
-  TextEditingController staffNameSortValue;
-  TextEditingController projectNameSortValue;
+ late TextEditingController staffNameSortValue;
+ late TextEditingController projectNameSortValue;
 
   List<String> personalKeys = [
     'name',
@@ -148,9 +146,9 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
   ];
 
   //Education
-  String country;
-  TextEditingController projectType;
-  TextEditingController projectStatus;
+ late String country;
+ late TextEditingController projectType;
+ late TextEditingController projectStatus;
   // bool radioSelected1 = true;
   // bool cash = false;
   // // String radioval='';
@@ -158,25 +156,25 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
   String paymentMethode = '';
 
   //DOCUMENTS
-  TextEditingController documentName;
+ late TextEditingController documentName;
 
-  TextEditingController documentDescription;
+ late TextEditingController documentDescription;
 
-  TextEditingController projectNameInDocuments;
-  TextEditingController projectNameSortInDocuments;
+ late TextEditingController projectNameInDocuments;
+ late TextEditingController projectNameSortInDocuments;
   List customerDocumentList = [];
 
   List project = [];
 
   //SERVICES
 
-  DateTime serviceStartingDate;
-  DateTime serviceEndingDate;
-  TextEditingController serviceName;
-  TextEditingController serviceAmount;
-  TextEditingController serviceDescription;
-  TextEditingController projectNameInServices;
-  TextEditingController projectNameSortInServices;
+  DateTime? serviceStartingDate;
+  DateTime? serviceEndingDate;
+ late TextEditingController serviceName;
+ late TextEditingController serviceAmount;
+ late TextEditingController serviceDescription;
+ late TextEditingController projectNameInServices;
+ late TextEditingController projectNameSortInServices;
   List selectedServicesList = [];
   List serviceNames = [];
   List<String> customerServiceNames = [''];
@@ -256,7 +254,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
           value['billCode'] =
               item['billCode'].toString().replaceFirst('PMNA', '');
-          double exp = double.tryParse(item['amount'].toString());
+          double exp = double.tryParse(item['amount'].toString())!;
           totalExp += exp;
 
           servicePaymentList.add(value);
@@ -514,7 +512,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
           value['type'] = 'Project';
           value['billCode'] =
               data[i]['billCode'].toString().replaceFirst('PMNA', '');
-          double exp = double.tryParse(data[i]['amount'].toString());
+          double exp = double.tryParse(data[i]['amount'].toString())!;
           totalExp += exp;
           payments.add(value);
           paymentsSort.add(value);
@@ -1131,10 +1129,10 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
     excel.setDefaultSheet(customer);
     var fileBytes = excel.encode();
-    File file;
 
-    final content = base64Encode(fileBytes);
-    final anchor = html.AnchorElement(
+
+    final content = base64Encode(fileBytes!);
+    html.AnchorElement(
         href: "data:application/octet-stream;charset=utf-16le;base64,$content")
       ..setAttribute(
           "download", "${DateTime.now().toString().substring(0, 10)}.xlsx")
@@ -1226,13 +1224,13 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
     super.dispose();
   }
 
-  @override
-  DocumentSnapshot cust;
+
+ late DocumentSnapshot cust;
 
   downloadUrl(String urls) async {
-    var url = urls;
-    if (await canLaunch(url)) {
-      await launch(url);
+    Uri url = Uri.tryParse(urls.toString())!;
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
     } else {
       throw 'Could not launch $url';
     }
@@ -1275,9 +1273,9 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
               ));
         }
 
-        cust = snapshot.data;
+        cust = snapshot.data!;
 
-        Map<String, dynamic> customerData = snapshot.data.data();
+        Map<String, dynamic> customerData = snapshot.data!.data()! as Map<String,dynamic>;
         bool PD = true;
         for (String key in personalKeys) {
           if (customerData[key] == null || customerData[key] == "") {
@@ -1690,15 +1688,17 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                               autovalidateMode: AutovalidateMode
                                                   .onUserInteraction,
                                               validator: (v) {
-                                                if (v.isNotEmpty) {
-                                                  if (!v.contains('@')) {
-                                                    return "Enter valid Email Address";
+
+                                                  if (v!.isNotEmpty) {
+                                                    if (!v.contains('@')) {
+                                                      return "Enter valid Email Address";
+                                                    } else {
+                                                      return null;
+                                                    }
                                                   } else {
                                                     return null;
                                                   }
-                                                } else {
-                                                  return null;
-                                                }
+
                                               },
                                               decoration: InputDecoration(
                                                 labelText: 'Email',
@@ -1816,7 +1816,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                             .onUserInteraction,
                                                     validator: (v) {
                                                       if (!phnValidation
-                                                          .hasMatch(v)) {
+                                                          .hasMatch(v!)) {
                                                         return "Enter valid Phone Number";
                                                       } else {
                                                         return null;
@@ -1925,7 +1925,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                   .onUserInteraction,
                                               validator: (v) {
                                                 if (!phnValidation
-                                                    .hasMatch(v)) {
+                                                    .hasMatch(v!)) {
                                                   return "Enter valid Phone Number";
                                                 } else {
                                                   return null;
@@ -2178,7 +2178,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                               autovalidateMode: AutovalidateMode
                                                   .onUserInteraction,
                                               validator: (v) {
-                                                if (v.isNotEmpty) {
+                                                if (v!.isNotEmpty) {
                                                   if (!v.contains('@')) {
                                                     return "Enter valid Email Address";
                                                   } else {
@@ -2504,7 +2504,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                 ),
                                               ),
                                               onTap: (x) {
-                                                agentName.text = x;
+                                                agentName.text = x!;
                                                 setState(() {});
                                               },
                                             ),
@@ -2616,7 +2616,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                       FFButtonWidget(
                                         onPressed: () async {
                                           final FormState form =
-                                              formKey.currentState;
+                                              formKey.currentState!;
 
                                           if (form.validate()) {
                                             bool pressed = await alert(context,
@@ -3400,7 +3400,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                     0
                                                                 ? double.tryParse(payingAmount.text.replaceAll(
                                                                             ',',
-                                                                            '')) >
+                                                                            ''))! >
                                                                         (currentProject['totalCost'] -
                                                                             currentProject['totalPaidTest'])
                                                                     ? 'Amount must be less than total due amount'
@@ -3702,7 +3702,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
                                                         final FormState form =
                                                             formKey
-                                                                .currentState;
+                                                                .currentState!;
 
                                                         if(form.validate()){
 
@@ -3753,8 +3753,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                 projectName
                                                                     .text])
                                                                     .update({
-                                                                  'totalPaid': FieldValue.increment(int.tryParse(payingAmount.text.replaceAll(',', ''))),
-                                                                  'totalPaidTest': FieldValue.increment(int.tryParse(payingAmount.text.replaceAll(',', ''))),
+                                                                  'totalPaid': FieldValue.increment(int.tryParse(payingAmount.text.replaceAll(',', ''))!),
+                                                                  'totalPaidTest': FieldValue.increment(int.tryParse(payingAmount.text.replaceAll(',', ''))!),
                                                                 });
 
                                                                 int billNumber =
@@ -3773,7 +3773,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                     .text
                                                                     .replaceAll(
                                                                     ',',
-                                                                    ''));
+                                                                    ''))!;
 
                                                                 List feePaid =
                                                                 [];
@@ -3918,8 +3918,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                 projectName
                                                                     .text])
                                                                     .update({
-                                                                  'totalPaid': FieldValue.increment(int.tryParse(payingAmount.text.replaceAll(',', ''))),
-                                                                  'totalPaidTest': FieldValue.increment(int.tryParse(payingAmount.text.replaceAll(',', ''))),
+                                                                  'totalPaid': FieldValue.increment(int.tryParse(payingAmount.text.replaceAll(',', ''))!),
+                                                                  'totalPaidTest': FieldValue.increment(int.tryParse(payingAmount.text.replaceAll(',', ''))!),
                                                                 });
 
                                                                 int billNumber =
@@ -3938,7 +3938,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                     .text
                                                                     .replaceAll(
                                                                     ',',
-                                                                    ''));
+                                                                    ''))!;
 
                                                                 List feePaid =
                                                                 [];
@@ -5304,7 +5304,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                         final pdfFile =
                                                                             await PrintingFunction.createPrint(invoice);
                                                                         await PdfApi.openFile(
-                                                                            pdfFile);
+                                                                            pdfFile!);
                                                                       } catch (e) {
                                                                         print(
                                                                             e);
@@ -5466,7 +5466,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                             } catch (e) {
                                                               print(e);
 
-                                                              return showDialog(
+                                                               showDialog(
                                                                   context:
                                                                       context,
                                                                   builder:
@@ -6389,7 +6389,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                             });
                                                                                           },
                                                                                           child: Text(
-                                                                                            serviceStartingDate == null ? 'Please Choose Starting Date' : dateTimeFormat('d-MMM-y', serviceStartingDate),
+                                                                                            serviceStartingDate == null ? 'Please Choose Starting Date' : dateTimeFormat('d-MMM-y', serviceStartingDate!),
                                                                                             style: TextStyle(
                                                                                               fontFamily: 'Poppins',
                                                                                               color: Colors.blue,
@@ -6435,7 +6435,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                             });
                                                                                           },
                                                                                           child: Text(
-                                                                                            serviceEndingDate == null ? 'Please Choose Ending Date' : dateTimeFormat('d-MMM-y', serviceEndingDate),
+                                                                                            serviceEndingDate == null ? 'Please Choose Ending Date' : dateTimeFormat('d-MMM-y', serviceEndingDate!),
                                                                                             style: TextStyle(
                                                                                               fontFamily: 'Poppins',
                                                                                               color: Colors.blue,
@@ -6703,7 +6703,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                       });
 
                                                                                       FirebaseFirestore.instance.collection('projects').doc(projectIdByName[projectNameInServices.text]).update({
-                                                                                        'totalCost': FieldValue.increment(double.tryParse(serviceAmount.text.replaceAll(',', ''))),
+                                                                                        'totalCost': FieldValue.increment(double.tryParse(serviceAmount.text.replaceAll(',', ''))!),
                                                                                       });
 
                                                                                       showUploadMessage(context, 'services added successfully');
@@ -7033,7 +7033,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                 final pdfFile =
                                                                                 await InvoicePrintingFunction.createPrint(invoice);
                                                                                 await PdfApi.openFile(
-                                                                                    pdfFile);
+                                                                                    pdfFile!);
                                                                               // } catch (e) {
                                                                               //   print(
                                                                               //       e);
@@ -8777,7 +8777,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
     excel.setDefaultSheet(customerName);
     var fileBytes = excel.encode();
 
-    final content = base64Encode(fileBytes);
+    final content = base64Encode(fileBytes!);
     final anchor = html.AnchorElement(
         href: "data:application/octet-stream;charset=utf-16le;base64,$content")
       ..setAttribute(

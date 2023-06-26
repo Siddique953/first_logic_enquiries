@@ -4,8 +4,8 @@ import 'package:flutter/scheduler.dart';
 class FlutterFlowDropDown extends StatefulWidget {
   const FlutterFlowDropDown({
     this.initialOption,
-    @required this.options,
-    @required this.onChanged,
+    required this.options,
+    required this.onChanged,
     this.icon,
     this.width,
     this.height,
@@ -16,45 +16,45 @@ class FlutterFlowDropDown extends StatefulWidget {
     this.borderRadius,
     this.borderColor,
     this.margin,
-    this.hidesUnderline = false, String hintText,
+    this.hidesUnderline = false, String? hintText,
   });
 
-  final String initialOption;
-  final List<String> options;
-  final Function(String) onChanged;
-  final Widget icon;
-  final double width;
-  final double height;
-  final Color fillColor;
-  final TextStyle textStyle;
-  final double elevation;
-  final double borderWidth;
-  final double borderRadius;
-  final Color borderColor;
-  final EdgeInsetsGeometry margin;
-  final bool hidesUnderline;
+  final String? initialOption;
+  final List<String>? options;
+  final Function(String)? onChanged;
+  final Widget? icon;
+  final double? width;
+  final double? height;
+  final Color? fillColor;
+  final TextStyle? textStyle;
+  final double? elevation;
+  final double? borderWidth;
+  final double? borderRadius;
+  final Color? borderColor;
+  final EdgeInsetsGeometry? margin;
+  final bool? hidesUnderline;
 
   @override
   State<FlutterFlowDropDown> createState() => _FlutterFlowDropDownState();
 }
 
 class _FlutterFlowDropDownState extends State<FlutterFlowDropDown> {
-  String dropDownValue;
-  List<String> get effectiveOptions =>
-      widget.options.isEmpty ? ['[Option]'] : widget.options;
+  String? dropDownValue;
+  List<String>? get effectiveOptions =>
+      widget.options!.isEmpty ? ['[Option]'] : widget.options;
 
   @override
   void initState() {
     super.initState();
-    dropDownValue = widget.initialOption ?? widget.options.first;
+    dropDownValue = widget.initialOption ?? widget.options!.first;
   }
 
   @override
   Widget build(BuildContext context) {
-    dropDownValue = widget.initialOption ?? widget.options.first;
+    dropDownValue = widget.initialOption ?? widget.options!.first;
     final dropdownWidget = DropdownButton<String>(
-      value: effectiveOptions.contains(dropDownValue) ? dropDownValue : null,
-      items: effectiveOptions
+      value: effectiveOptions!.contains(dropDownValue) ? dropDownValue : null,
+      items: effectiveOptions!
           .map((e) => DropdownMenuItem(
                 value: e,
                 child: Text(
@@ -63,10 +63,10 @@ class _FlutterFlowDropDownState extends State<FlutterFlowDropDown> {
                 ),
               ))
           .toList(),
-      elevation: widget.elevation.toInt(),
+      elevation: widget.elevation!.toInt(),
       onChanged: (value) {
         dropDownValue = value;
-        widget.onChanged(value);
+        widget.onChanged!(value!);
       },
       icon: widget.icon,
       isExpanded: true,
@@ -76,14 +76,14 @@ class _FlutterFlowDropDownState extends State<FlutterFlowDropDown> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(widget.borderRadius ?? 28),
         border: Border.all(
-          color: widget.borderColor,
-          width: widget.borderWidth,
+          color: widget.borderColor!,
+          width: widget.borderWidth!,
         ),
         color: widget.fillColor,
       ),
       child: Padding(
-        padding: widget.margin,
-        child: widget.hidesUnderline
+        padding: widget.margin!,
+        child: widget.hidesUnderline!
             ? DropdownButtonHideUnderline(child: dropdownWidget)
             : dropdownWidget,
       ),

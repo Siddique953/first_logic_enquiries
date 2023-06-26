@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:intl/intl.dart';
@@ -15,7 +14,7 @@ var image;
 var format = NumberFormat.simpleCurrency(locale: 'en_in');
 
 class CreateNewPdf {
-  static Future<File> downloadPdf(paymentDetail invoice) async {
+  static Future<File?> downloadPdf(paymentDetail invoice) async {
     final pdf = Document();
     image = await imageFromAssetBundle('assets/images/fl_new.png');
     pdf.addPage(MultiPage(
@@ -238,9 +237,9 @@ class CreateNewPdf {
       ..style.display = 'none'
       ..download = '${invoice.name}.pdf';
 
-    html.document.body.children.add(anchor);
+    html.document.body!.children.add(anchor);
     anchor.click();
-    html.document.body.children.remove(anchor);
+    html.document.body!.children.remove(anchor);
     html.Url.revokeObjectUrl(url);
 
     //android

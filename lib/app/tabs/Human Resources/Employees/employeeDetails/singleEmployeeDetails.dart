@@ -17,8 +17,8 @@ import '../Employee_List/employeeList.dart';
 class SingleEmployeeDetails extends StatefulWidget {
   final TabController _tabController;
   const SingleEmployeeDetails({
-    Key key,
-    @required TabController tabController,
+    Key? key,
+    required TabController tabController,
   })  : _tabController = tabController,
         super(key: key);
 
@@ -30,8 +30,8 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
   RegExp phnValidation = RegExp(r'^[0-9]{10}$');
   RegExp numberValidation = RegExp(r'^[0-9]+$');
 
-  PlatformFile pickFile;
-  UploadTask uploadTask;
+  PlatformFile? pickFile;
+  UploadTask? uploadTask;
   String profile = '';
 
   //MANDATORY INFORMATION
@@ -39,11 +39,11 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
   TextEditingController email = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController dateOfJoining = TextEditingController();
-  DateTime joinedDate;
+  DateTime? joinedDate;
 
   //OPTIONAL INFORMATION
   TextEditingController dateOfBirth = TextEditingController();
-  DateTime dob;
+  DateTime? dob;
   String gender = '';
 
   //WORK
@@ -75,7 +75,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
   TextEditingController bodyOfMail = TextEditingController();
   List attachments = [];
 
-  DateTime createdDate;
+  DateTime? createdDate;
 
   double width = 0;
   double height = 0;
@@ -89,7 +89,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
   String mError = '';
   String oError = '';
 
-  EmployeeModel employeeDetails;
+  EmployeeModel? employeeDetails;
 
   getEmployee() {
     FirebaseFirestore.instance
@@ -97,20 +97,20 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
         .doc(employeeId)
         .snapshots()
         .listen((event) {
-      employeeDetails = EmployeeModel.fromJson(event.data());
+      employeeDetails = EmployeeModel.fromJson(event.data()!);
 
-      name.text = employeeDetails.name;
-      email.text = employeeDetails.email;
-      phone.text = employeeDetails.phone;
+      name.text = employeeDetails!.name!;
+      email.text = employeeDetails!.email!;
+      phone.text = employeeDetails!.phone!;
       dateOfJoining.text =
-          dateTimeFormat('dd-MM-yyyy', employeeDetails.joinedDate);
-      joinedDate = employeeDetails.joinedDate;
-      dateOfBirth.text = dateTimeFormat('dd-MM-yyyy', employeeDetails.dob);
-      dob = employeeDetails.dob;
-      createdDate = employeeDetails.createdDate;
-      gender = employeeDetails.gender;
-      dept.text = employeeDetails.dept;
-      profile = employeeDetails.profile;
+          dateTimeFormat('dd-MM-yyyy', employeeDetails!.joinedDate!);
+      joinedDate = employeeDetails!.joinedDate!;
+      dateOfBirth.text = dateTimeFormat('dd-MM-yyyy', employeeDetails!.dob!);
+      dob = employeeDetails!.dob!;
+      createdDate = employeeDetails!.createdDate!;
+      gender = employeeDetails!.gender!;
+      dept.text = employeeDetails!.dept!;
+      profile = employeeDetails!.profile!;
 
       if (dept.text == 'Human Resource (HR)') {
         subDepartments = [
@@ -170,34 +170,34 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
         ];
       }
 
-      subDept.text = employeeDetails.subDept;
-      designation.text = employeeDetails.designation;
+      subDept.text = employeeDetails!.subDept??'';
+      designation.text = employeeDetails!.designation??'';
       reportingManager.text =
-          empDataById[employeeDetails.reportingManager ?? ''] == null
+          empDataById[employeeDetails!.reportingManager ?? ''] == null
               ? ''
-              : empDataById[employeeDetails.reportingManager ?? ''].name;
+              : empDataById[employeeDetails!.reportingManager ?? '']!.name!;
 
       try {
-        teamLead.text = empDataById[employeeDetails.teamLead ?? ''] == null
+        teamLead.text = empDataById[employeeDetails!.teamLead ?? ''] == null
             ? ''
-            : empDataById[employeeDetails.teamLead ?? ''].name;
+            : empDataById[employeeDetails!.teamLead ?? '']!.name!;
       } catch (e) {
         print(e);
         teamLead.text = '';
       }
 
       // employeeDetails.reportingManager;
-      empType.text = employeeDetails.empType;
-      probationPeriod.text = employeeDetails.probation.toString();
-      probation = employeeDetails.probation;
-      ctc.text = employeeDetails.ctc;
-      holderName.text = employeeDetails.accountHolderName;
-      bankName.text = employeeDetails.bankName;
-      city.text = employeeDetails.city;
-      ifsc.text = employeeDetails.ifsc;
-      branchName.text = employeeDetails.branchName;
-      accountNumber.text = employeeDetails.accountNumber;
-      confirmAccountNumber.text = employeeDetails.accountNumber;
+      empType.text = employeeDetails!.empType??'';
+      probationPeriod.text = employeeDetails!.probation!.toString();
+      probation = employeeDetails!.probation??0;
+      ctc.text = employeeDetails!.ctc??'';
+      holderName.text = employeeDetails!.accountHolderName??'';
+      bankName.text = employeeDetails!.bankName??'';
+      city.text = employeeDetails!.city!;
+      ifsc.text = employeeDetails!.ifsc!;
+      branchName.text = employeeDetails!.branchName!;
+      accountNumber.text = employeeDetails!.accountNumber!;
+      confirmAccountNumber.text = employeeDetails!.accountNumber!;
 
       if (mounted) {
         setState(() {});
@@ -238,166 +238,163 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
         backgroundColor: Color(0xff231F20),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(20.0),
-          child: Theme(
-            data: Theme.of(context).copyWith(accentColor: Colors.white),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 50),
-              child: Container(
-                height: 30.0,
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // SizedBox(
-                    //   width: 15,
-                    // ),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 50),
+            child: Container(
+              height: 30.0,
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // SizedBox(
+                  //   width: 15,
+                  // ),
 
-                    Row(
-                      children: [
-                        // SizedBox(
-                        //   width: 15,
-                        // ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                tabIndex = 0;
-                                setState(() {});
-                              },
-                              child: Text(
-                                'Mandatory Info',
-                                style: TextStyle(
-                                  color: tabIndex == 0
-                                      ? Colors.white
-                                      : Colors.grey,
-                                ),
+                  Row(
+                    children: [
+                      // SizedBox(
+                      //   width: 15,
+                      // ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              tabIndex = 0;
+                              setState(() {});
+                            },
+                            child: Text(
+                              'Mandatory Info',
+                              style: TextStyle(
+                                color: tabIndex == 0
+                                    ? Colors.white
+                                    : Colors.grey,
                               ),
                             ),
-                            Spacer(),
-                            tabIndex == 0
-                                ? Container(
-                                    width: 90,
-                                    height: 5,
-                                    color: Colors.white,
-                                  )
-                                : SizedBox(),
-                            Spacer(),
-                          ],
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                /*PRE REGISTERED TRUE*/
-                                if (preRegistered) {
-                                  if (name.text != '' &&
-                                      phone.text != '' &&
-                                      email.text != '' &&
-                                      joinedDate != null) {
-                                    tabIndex = 1;
-                                    setState(() {});
-                                  } else {
-                                    name.text == ''
-                                        ? mError =
-                                            '* You Must Provide Employee Name'
-                                        : phone.text == ''
-                                            ? mError =
-                                                '* You Must Provide Employee Phone Number'
-                                            : email.text == ''
-                                                ? mError =
-                                                    '* You Must Provide Employee Official Email ID'
-                                                : mError =
-                                                    '* You Must Choose Joined Date';
-                                    setState(() {});
-                                  }
-                                } /*PRE REGISTERED FALSE*/ else {
-                                  if (name.text != '' &&
-                                      phone.text != '' &&
-                                      email.text != '') {
-                                    tabIndex = 1;
-                                    setState(() {});
-                                  } else {
-                                    name.text == ''
-                                        ? mError =
-                                            '* You Must Provide Employee Name'
-                                        : phone.text == ''
-                                            ? mError =
-                                                '* You Must Provide Employee Phone Number'
-                                            :
-                                            // email.text == ''
-                                            //     ?
-                                            mError =
-                                                '* You Must Provide Employee Official Email ID';
-                                    //     : mError =
-                                    // 'You Must Choose Joined Date';
-                                    setState(() {});
-                                  }
+                          ),
+                          Spacer(),
+                          tabIndex == 0
+                              ? Container(
+                                  width: 90,
+                                  height: 5,
+                                  color: Colors.white,
+                                )
+                              : SizedBox(),
+                          Spacer(),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              /*PRE REGISTERED TRUE*/
+                              if (preRegistered) {
+                                if (name.text != '' &&
+                                    phone.text != '' &&
+                                    email.text != '' &&
+                                    joinedDate != null) {
+                                  tabIndex = 1;
+                                  setState(() {});
+                                } else {
+                                  name.text == ''
+                                      ? mError =
+                                          '* You Must Provide Employee Name'
+                                      : phone.text == ''
+                                          ? mError =
+                                              '* You Must Provide Employee Phone Number'
+                                          : email.text == ''
+                                              ? mError =
+                                                  '* You Must Provide Employee Official Email ID'
+                                              : mError =
+                                                  '* You Must Choose Joined Date';
+                                  setState(() {});
                                 }
-                              },
-                              child: Text(
-                                'Optional Info',
-                                style: TextStyle(
-                                  color: tabIndex == 1
-                                      ? Colors.white
-                                      : Colors.grey,
-                                ),
+                              } /*PRE REGISTERED FALSE*/ else {
+                                if (name.text != '' &&
+                                    phone.text != '' &&
+                                    email.text != '') {
+                                  tabIndex = 1;
+                                  setState(() {});
+                                } else {
+                                  name.text == ''
+                                      ? mError =
+                                          '* You Must Provide Employee Name'
+                                      : phone.text == ''
+                                          ? mError =
+                                              '* You Must Provide Employee Phone Number'
+                                          :
+                                          // email.text == ''
+                                          //     ?
+                                          mError =
+                                              '* You Must Provide Employee Official Email ID';
+                                  //     : mError =
+                                  // 'You Must Choose Joined Date';
+                                  setState(() {});
+                                }
+                              }
+                            },
+                            child: Text(
+                              'Optional Info',
+                              style: TextStyle(
+                                color: tabIndex == 1
+                                    ? Colors.white
+                                    : Colors.grey,
                               ),
                             ),
-                            Spacer(),
-                            tabIndex == 1
-                                ? Container(
-                                    width: 90,
-                                    height: 5,
-                                    color: Colors.white,
-                                  )
-                                : SizedBox(),
-                            Spacer(),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                tabIndex = 2;
-                                setState(() {});
-                              },
-                              child: Text(
-                                'Mail',
-                                style: TextStyle(
-                                  color: tabIndex == 2
-                                      ? Colors.white
-                                      : Colors.grey,
-                                ),
+                          ),
+                          Spacer(),
+                          tabIndex == 1
+                              ? Container(
+                                  width: 90,
+                                  height: 5,
+                                  color: Colors.white,
+                                )
+                              : SizedBox(),
+                          Spacer(),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              tabIndex = 2;
+                              setState(() {});
+                            },
+                            child: Text(
+                              'Mail',
+                              style: TextStyle(
+                                color: tabIndex == 2
+                                    ? Colors.white
+                                    : Colors.grey,
                               ),
                             ),
-                            Spacer(),
-                            tabIndex == 2
-                                ? Container(
-                                    width: 90,
-                                    height: 5,
-                                    color: Colors.white,
-                                  )
-                                : SizedBox(),
-                            Spacer(),
-                          ],
-                        ),
-                        SizedBox(
-                          width: 30,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                          ),
+                          Spacer(),
+                          tabIndex == 2
+                              ? Container(
+                                  width: 90,
+                                  height: 5,
+                                  color: Colors.white,
+                                )
+                              : SizedBox(),
+                          Spacer(),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 30,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -657,7 +654,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                           .onUserInteraction,
                                                   validator: (v) {
                                                     if (!phnValidation
-                                                        .hasMatch(v)) {
+                                                        .hasMatch(v!)) {
                                                       return "Enter valid Phone Number";
                                                     } else {
                                                       return null;
@@ -770,16 +767,17 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                                       59,
                                                                       59))
                                                               .then((value) {
-                                                            setState(() {
-                                                              joinedDate =
-                                                                  value;
-                                                              dateOfJoining
-                                                                      .text =
-                                                                  dateTimeFormat(
-                                                                          'dd-MM-yyyy',
-                                                                          value)
-                                                                      .toString();
-                                                            });
+                                                                if (value != null) {
+                                                              setState(() {
+                                                                joinedDate =
+                                                                    value;
+                                                                dateOfJoining
+                                                                    .text = dateTimeFormat(
+                                                                        'dd-MM-yyyy',
+                                                                        value)
+                                                                    .toString();
+                                                              });
+                                                            }
                                                           });
                                                         },
                                                         onChanged: (v) {
@@ -896,7 +894,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                             children: [
                                               GestureDetector(
                                                 onTap: () async {
-                                                  if (employeeDetails.delete) {
+                                                  if (employeeDetails!.delete!) {
                                                     bool pressed = await alert(
                                                         context,
                                                         'Do you want to Add this Employee');
@@ -955,8 +953,8 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                               MainAxisAlignment
                                                                   .center,
                                                           children:
-                                                              employeeDetails
-                                                                      .delete
+                                                              employeeDetails!
+                                                                      .delete!
                                                                   ? [
                                                                       Text(
                                                                           '+ Add'),
@@ -1142,14 +1140,16 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                                     59,
                                                                     59))
                                                             .then((value) {
-                                                          setState(() {
-                                                            dob = value;
-                                                            dateOfBirth.text =
-                                                                dateTimeFormat(
-                                                                        'dd-MM-yyyy',
-                                                                        value)
-                                                                    .toString();
-                                                          });
+                                                          if(value != null){
+                                                            setState(() {
+                                                              dob = value;
+                                                              dateOfBirth.text =
+                                                                  dateTimeFormat(
+                                                                          'dd-MM-yyyy',
+                                                                          value)
+                                                                      .toString();
+                                                            });
+                                                          }
                                                         });
                                                       },
                                                       onChanged: (v) {
@@ -1914,7 +1914,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                       ),
                                                       onTap: (x) {
                                                         reportingManager.text =
-                                                            x;
+                                                            x!;
                                                         oError = '';
 
                                                         setState(() {
@@ -1996,7 +1996,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                         ),
                                                       ),
                                                       onTap: (x) {
-                                                        teamLead.text = x;
+                                                        teamLead.text = x!;
                                                         oError = '';
 
                                                         setState(() {
@@ -2082,7 +2082,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                               .onUserInteraction,
                                                       validator: (v) {
                                                         if (!numberValidation
-                                                            .hasMatch(v)) {
+                                                            .hasMatch(v!)) {
                                                           return "Insert Only Number";
                                                         } else {
                                                           return null;
@@ -2094,7 +2094,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                           probation =
                                                               int.tryParse(
                                                                   probationPeriod
-                                                                      .text);
+                                                                      .text)!;
                                                         } catch (err) {
                                                           showSnackbar(context,
                                                               'Input is not in a correct format');
@@ -2113,7 +2113,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                                   try {
                                                                     probation =
                                                                         int.tryParse(
-                                                                            probationPeriod.text);
+                                                                            probationPeriod.text)!;
                                                                     probation++;
                                                                     probationPeriod
                                                                             .text =
@@ -2137,7 +2137,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                                   try {
                                                                     probation =
                                                                         int.tryParse(
-                                                                            probationPeriod.text);
+                                                                            probationPeriod.text)!;
                                                                     probation--;
                                                                     probationPeriod
                                                                             .text =
@@ -2277,7 +2277,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                                   dateOfJoining
                                                                       .text = dateTimeFormat(
                                                                           'dd-MM-yyyy',
-                                                                          value)
+                                                                          value!)
                                                                       .toString();
                                                                 });
                                                               });
@@ -2424,7 +2424,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                               .onUserInteraction,
                                                       validator: (v) {
                                                         if (!numberValidation
-                                                            .hasMatch(v)) {
+                                                            .hasMatch(v!)) {
                                                           return "Insert Only Number";
                                                         } else {
                                                           return null;
@@ -3881,7 +3881,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                         'html': html,
                                                         'status': subject.text,
                                                         'att': attachments[0],
-                                                        'emailList': [employeeDetails.email],
+                                                        'emailList': [employeeDetails!.email],
                                                         'date':FieldValue.serverTimestamp()
                                                       });
                                                     },
@@ -3959,9 +3959,9 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
     if (result == null) return;
 
     pickFile = result.files.first;
-    String name = pickFile.name;
+    String name = pickFile!.name;
 
-    String ext = pickFile.name.split('.').last;
+    String ext = pickFile!.name.split('.').last;
     final fileBytes = result.files.first.bytes;
 
     showUploadMessage(context, 'Uploading...', showLoading: true);
@@ -3978,13 +3978,13 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
     String urlDownload = '';
     if (type == 'mail') {
       ref =
-          'employees/mailDocs/Single/${employeeDetails.empId}-${employeeDetails.name}-$name.$ext';
+          'employees/mailDocs/Single/${employeeDetails!.empId}-${employeeDetails!.name}-$name.$ext';
     } else {
       ref =
-          'profiles/employees/${employeeDetails.empId}-${employeeDetails.name}-$name.$ext';
+          'profiles/employees/${employeeDetails!.empId}-${employeeDetails!.name}-$name.$ext';
     }
     uploadTask = FirebaseStorage.instance.ref(ref).putData(fileBytes);
-    final snapshot = await uploadTask.whenComplete(() {});
+    final snapshot = await uploadTask!.whenComplete(() {});
     urlDownload = await snapshot.ref.getDownloadURL();
 
     showUploadMessage(context, '$name Uploaded Successfully...');

@@ -10,7 +10,7 @@ import '../../../flutter_flow/upload_media.dart';
 import '../../app_widget.dart';
 
 class FollowUpPage extends StatefulWidget {
-  const FollowUpPage({Key key}) : super(key: key);
+  const FollowUpPage({Key? key}) : super(key: key);
 
   @override
   _FollowUpPageState createState() => _FollowUpPageState();
@@ -81,7 +81,7 @@ class _FollowUpPageState extends State<FollowUpPage> {
                         child: CircularProgressIndicator(),
                       );
                     }
-                    var data = snapshot.data.docs;
+                    var data = snapshot.data!.docs;
                     return data.length == 0
                         ? LottieBuilder.network(
                             'https://assets9.lottiefiles.com/packages/lf20_HpFqiS.json',
@@ -186,7 +186,7 @@ class _FollowUpPageState extends State<FollowUpPage> {
                                               return Text('');
                                             }
                                             var userName = snapshot.data
-                                                .get('projectTopic');
+                                                !.get('projectTopic');
                                             return Container(
                                               width: MediaQuery.of(context)
                                                       .size

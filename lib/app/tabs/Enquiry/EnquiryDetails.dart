@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:multiple_select/Item.dart';
-import 'package:multiple_select/multi_filter_select.dart';
+
 
 import '../../../auth/auth_util.dart';
 import '../../../flutter_flow/flutter_flow_icon_button.dart';
@@ -15,13 +14,14 @@ import '../../../main.dart';
 import '../../app_widget.dart';
 import '../../models/enquiry/enquiryStatus.dart';
 import '../../models/enquiry/followUpModel.dart';
+import '../../pages/home_page/home.dart';
 import 'EditEnquiry.dart';
 
 class EnquiryDetailsWidget extends StatefulWidget {
   final String id;
-  final int tab;
 
-  const EnquiryDetailsWidget({Key key, this.id, this.tab}) : super(key: key);
+
+  const EnquiryDetailsWidget({Key? key,required this.id,}) : super(key: key);
 
   @override
   _EnquiryDetailsWidgetState createState() => _EnquiryDetailsWidgetState();
@@ -31,27 +31,26 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   List projectDetailList = [];
-  List<Item> countryList = [];
-  // List<Item> courseList = [];
+
 
   String selectedProjectType = '';
   List countries = [];
   List university = [];
 
-  TextEditingController status;
-  TextEditingController assignee;
-  TextEditingController followUp;
-  Timestamp datePicked1;
-  Timestamp datePicked2;
-  Timestamp datePicked3;
+ late TextEditingController status;
+ late TextEditingController assignee;
+ late TextEditingController followUp;
+  Timestamp? datePicked1;
+  Timestamp? datePicked2;
+  Timestamp? datePicked3;
   DateTime selectedDate1 = DateTime.now();
   DateTime selectedDate2 = DateTime.now();
   DateTime selectedDate3 = DateTime.now();
 
   int currentTab = 1;
 
-  bool statusLoading;
-  bool followUpLoading;
+ late bool statusLoading;
+ late bool followUpLoading;
 
   //Get Statuses of Current enquiry
   Stream<List<EnquiryStatus>> getStatusList() => FirebaseFirestore.instance
@@ -101,7 +100,7 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
 
   @override
   void initState() {
-    currentTab = widget.tab ?? 1;
+    currentTab =  1;
     super.initState();
     status = TextEditingController();
     assignee = TextEditingController();
@@ -111,7 +110,7 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
   @override
   Widget build(BuildContext context) {
     print('Build Start  !!!!!!!!!!!!!!!!!!!!');
-    currentTab = widget.tab ?? 1;
+    currentTab = 1;
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -150,11 +149,11 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
 
           var data = snapshot.data;
 
-          if (snapshot.data.exists) {
-            projectDetailList = snapshot.data.get('projectDetails');
-            selectedProjectType = snapshot.data.get('projectType');
+          if (snapshot.data!.exists) {
+            projectDetailList = snapshot.data!.get('projectDetails');
+            selectedProjectType = snapshot.data!.get('projectType');
           }
-          return !data.exists
+          return !data!.exists
               ? Center(
                   child: Text('Loading... asd'),
                 )
@@ -1271,19 +1270,24 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
                                                                           (value) {
                                                                     setState(
                                                                         () {
-                                                                      datePicked2 = Timestamp.fromDate(DateTime(
-                                                                          value
-                                                                              .year,
-                                                                          value
-                                                                              .month,
-                                                                          value
-                                                                              .day,
-                                                                          0,
-                                                                          0,
-                                                                          0));
+                                                                          if (value!=null) {
+                                                                            datePicked2 =
+                                                                                Timestamp
+                                                                                    .fromDate(
+                                                                                    DateTime(
+                                                                                        value
+                                                                                            .year,
+                                                                                        value
+                                                                                            .month,
+                                                                                        value
+                                                                                            .day,
+                                                                                        0,
+                                                                                        0,
+                                                                                        0));
 
-                                                                      selectedDate1 =
-                                                                          value;
+                                                                            selectedDate1 =
+                                                                                value;
+                                                                          }
                                                                     });
                                                                   });
                                                                 },
@@ -1292,7 +1296,7 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
                                                                           null
                                                                       ? 'Choose Date'
                                                                       : datePicked2
-                                                                          .toDate()
+                                                                          !.toDate()
                                                                           .toString()
                                                                           .substring(
                                                                               0,
@@ -1342,7 +1346,7 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
                                                                             date:
                                                                                 DateTime.now(),
                                                                             eId: widget.id,
-                                                                            next: datePicked2.toDate(),
+                                                                            next: datePicked2!.toDate(),
                                                                             status: status.text);
                                                                         uploadStatus(
                                                                             statusDetails);
@@ -1436,7 +1440,7 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
                                                               );
                                                             } else if (snapshot
                                                                 .data
-                                                                .docs
+                                                                !.docs
                                                                 .isEmpty) {
                                                               return Center(
                                                                 child: Text(
@@ -1445,7 +1449,7 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
                                                             } else {
                                                               var value =
                                                                   snapshot.data
-                                                                      .docs;
+                                                                      !.docs;
 
                                                               return SizedBox(
                                                                 width: double
@@ -1923,20 +1927,23 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
                                                                               1))
                                                                   .then(
                                                                       (value) {
-                                                                setState(() {
-                                                                  datePicked3 = Timestamp.fromDate(DateTime(
-                                                                      value
-                                                                          .year,
-                                                                      value
-                                                                          .month,
-                                                                      value.day,
-                                                                      0,
-                                                                      0,
-                                                                      0));
+                                                                  if(value!=null)      {
+                                                                  setState(() {
+                                                                    datePicked3 = Timestamp.fromDate(DateTime(
+                                                                        value
+                                                                            .year,
+                                                                        value
+                                                                            .month,
+                                                                        value
+                                                                            .day,
+                                                                        0,
+                                                                        0,
+                                                                        0));
 
-                                                                  selectedDate1 =
-                                                                      value;
-                                                                });
+                                                                    selectedDate1 =
+                                                                        value;
+                                                                  });
+                                                                }
                                                               });
                                                             },
                                                             child: Text(
@@ -1944,7 +1951,7 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
                                                                       null
                                                                   ? 'Choose Date'
                                                                   : datePicked3
-                                                                      .toDate()
+                                                                      !.toDate()
                                                                       .toString()
                                                                       .substring(
                                                                           0,
@@ -2115,7 +2122,7 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
                                                               );
                                                             } else if (snapshot
                                                                 .data
-                                                                .docs
+                                                                !.docs
                                                                 .isEmpty) {
                                                               return Center(
                                                                 child: Text(
@@ -2124,7 +2131,7 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
                                                             } else {
                                                               var value =
                                                                   snapshot.data
-                                                                      .docs;
+                                                                      !.docs;
 
                                                               return SizedBox(
                                                                 width: double
@@ -2184,7 +2191,7 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
                                                                     (index) {
                                                                       Map dd = value[
                                                                               index]
-                                                                          .data();
+                                                                          .data()as Map;
                                                                       print(
                                                                           '////////////////////');
 
@@ -2624,5 +2631,26 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
     showUploadMessage(context, 'New customer Registered...');
 
     Navigator.pop(context);
+  }
+
+  setSearchParam(String caseNumber) {
+    List<String> caseSearchList = [];
+    String temp = "";
+
+    List<String> nameSplits = caseNumber.split(" ");
+    for (int i = 0; i < nameSplits.length; i++) {
+      String name = "";
+
+      for (int k = i; k < nameSplits.length; k++) {
+        name = name + nameSplits[k] + " ";
+      }
+      temp = "";
+
+      for (int j = 0; j < name.length; j++) {
+        temp = temp + name[j];
+        caseSearchList.add(temp.toUpperCase());
+      }
+    }
+    return caseSearchList;
   }
 }

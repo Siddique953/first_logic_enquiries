@@ -14,8 +14,8 @@ List mailAttachments=[];
 class SendMailToEmployees extends StatefulWidget {
   final TabController _tabController;
   const SendMailToEmployees({
-    Key key,
-    @required TabController tabController,
+    Key? key,
+    required TabController tabController,
   })  : _tabController = tabController,
         super(key: key);
 
@@ -25,8 +25,8 @@ class SendMailToEmployees extends StatefulWidget {
 
 class _SendMailToEmployeesState extends State<SendMailToEmployees> {
 
-  PlatformFile pickFile;
-  UploadTask uploadTask;
+  PlatformFile?   pickFile;
+  UploadTask? uploadTask;
   bool sendToHover=false;
 
   /// SEND MAIL
@@ -605,9 +605,9 @@ class _SendMailToEmployeesState extends State<SendMailToEmployees> {
     if (result == null) return;
 
     pickFile = result.files.first;
-    String name = pickFile.name;
+    String name = pickFile!.name;
 
-    String ext = pickFile.name.split('.').last;
+    String ext = pickFile!.name.split('.').last;
     final fileBytes = result.files.first.bytes;
 
     showUploadMessage(context, 'Uploading...', showLoading: true);
@@ -627,7 +627,7 @@ class _SendMailToEmployeesState extends State<SendMailToEmployees> {
       'employees/mailDocs/Group/${DateFormat('dd - MMM - yyyy')}/$name.$ext';
 
     uploadTask = FirebaseStorage.instance.ref(ref).putData(fileBytes);
-    final snapshot = await uploadTask.whenComplete(() {});
+    final snapshot = await uploadTask!.whenComplete(() {});
     urlDownload = await snapshot.ref.getDownloadURL();
 
     showUploadMessage(context, '$name Uploaded Successfully...');

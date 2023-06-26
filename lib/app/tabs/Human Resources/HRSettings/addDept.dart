@@ -11,8 +11,8 @@ import '../../../../flutter_flow/upload_media.dart';
 class HrSettingsPage extends StatefulWidget {
   final TabController _tabController;
   const HrSettingsPage({
-    Key key,
-    @required TabController tabController,
+    Key? key,
+    required TabController tabController,
   })  : _tabController = tabController,
         super(key: key);
 
@@ -26,11 +26,11 @@ class _HrSettingsPageState extends State<HrSettingsPage> {
   String sebDeptId = '';
 
   //
-  TextEditingController dept;
+  late TextEditingController dept;
   List<String> departmentList = [''];
   Map<String, dynamic> departmentIdByName = {};
   Map<String, dynamic> departmentNameById = {};
-  TextEditingController subDept;
+  late TextEditingController subDept;
   bool subDepartment = false;
 
   @override
@@ -716,7 +716,7 @@ class _HrSettingsPageState extends State<HrSettingsPage> {
                               child: CircularProgressIndicator(),
                             );
                           }
-                          List data = snapshot.data.docs;
+                          List data = snapshot.data!.docs;
 
                           return SizedBox(
                             width: MediaQuery.of(context).size.width * 0.7,
@@ -918,7 +918,7 @@ class _HrSettingsPageState extends State<HrSettingsPage> {
     });
   }
 
-  Stream subDeptDataStream = FirebaseFirestore.instance
+  Stream<QuerySnapshot> subDeptDataStream = FirebaseFirestore.instance
       .collection('subDepartments')
       .where('delete', isEqualTo: false)
       .snapshots();

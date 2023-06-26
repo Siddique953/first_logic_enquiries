@@ -1,4 +1,6 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fl_erp/app/pages/home_page/home.dart';
 import 'package:lottie/lottie.dart';
 
 import '../app/tabs/Branch/AddBranch.dart';
@@ -12,16 +14,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginPageWidget extends StatefulWidget {
-  const LoginPageWidget({Key key}) : super(key: key);
+  const LoginPageWidget({Key? key}) : super(key: key);
 
   @override
   _LoginPageWidgetState createState() => _LoginPageWidgetState();
 }
 
 class _LoginPageWidgetState extends State<LoginPageWidget> {
-  TextEditingController emailTextController;
-  TextEditingController passwordTextController;
-  bool passwordVisibility;
+  TextEditingController? emailTextController;
+  TextEditingController? passwordTextController;
+  bool passwordVisibility=false;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -167,27 +169,27 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                           Center(
                             child: FFButtonWidget(
                               onPressed: () async {
-                                ogPass=passwordTextController.text;
-                                ogUser=emailTextController.text;
-                                final user = await signInWithEmail(
-                                  context,
-                                  emailTextController.text,
-                                  passwordTextController.text,
-                                );
+                                ogPass=passwordTextController!.text;
+                                ogUser=emailTextController!.text;
+                                final user = await FirebaseAuth.instance
+                                    .signInWithEmailAndPassword(email:emailTextController!.text,
+                                  password: passwordTextController!.text,).then((value) {
+                                  currentUserEmail=emailTextController!.text;
+                                  currentUserUid=value.user!.uid;
+                                   Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          BranchesWidget(),
+                                    ),
+                                        (r) => false,
+                                  );
+                                });
 
 
-                                if (user == null) {
-                                  return;
-                                }
 
-                                await Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        BranchesWidget(),
-                                  ),
-                                      (r) => false,
-                                );
+
+
                               },
                               text: 'Sign In',
                               loading: false,

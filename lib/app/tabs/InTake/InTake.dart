@@ -6,21 +6,22 @@ import '../../../flutter_flow/flutter_flow_util.dart';
 import '../../../flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:month_picker_dialog_2/month_picker_dialog_2.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 import '../../../flutter_flow/upload_media.dart';
+import '../../pages/home_page/home.dart';
 
 class AddIntakeWidget extends StatefulWidget {
-  const AddIntakeWidget({Key key}) : super(key: key);
+  const AddIntakeWidget({Key? key}) : super(key: key);
 
   @override
   _AddIntakeWidgetState createState() => _AddIntakeWidgetState();
 }
 
 class _AddIntakeWidgetState extends State<AddIntakeWidget> {
-  bool switchListTileValue;
+  bool? switchListTileValue;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   DateTime selectedDate1 = DateTime.now();
-  DateTime selectedDate2;
+  DateTime? selectedDate2;
 
   bool loaded = false;
 
@@ -121,7 +122,7 @@ class _AddIntakeWidgetState extends State<AddIntakeWidget> {
                                     },
                                     text: selectedDate2 == null
                                         ? 'Choose'
-                                        : dateTimeFormat('yMMM', selectedDate2),
+                                        : dateTimeFormat('yMMM', selectedDate2!),
                                     options: FFButtonOptions(
                                       width: 150,
                                       height: 40,
@@ -205,7 +206,7 @@ class _AddIntakeWidgetState extends State<AddIntakeWidget> {
                       child: CircularProgressIndicator(),
                     );
                   }
-                  List data = snapshot.data.docs;
+                  List data = snapshot.data!.docs;
                   data.sort((a, b) {
                     return a["intake"].compareTo(b["intake"]);
                   });
@@ -247,7 +248,7 @@ class _AddIntakeWidgetState extends State<AddIntakeWidget> {
                       child: CircularProgressIndicator(),
                     );
                   }
-                  List data = snapshot.data.docs;
+                  List data = snapshot.data!.docs;
                   data.sort((a, b) {
                     return a["intake"].compareTo(b["intake"]);
                   });
@@ -276,7 +277,7 @@ class Intakes extends StatefulWidget {
   final DateTime date;
   final bool available;
   final String id;
-  const Intakes({Key key, this.date, this.available, this.id})
+  const Intakes({Key? key, required this.date, required this.available, required this.id})
       : super(key: key);
 
   @override

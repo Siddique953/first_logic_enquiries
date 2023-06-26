@@ -13,17 +13,17 @@ import '../Customers/customer_SinglePage.dart';
 import 'EnquiryDetails.dart';
 
 class EnqyiryListWidget extends StatefulWidget {
-  const EnqyiryListWidget({Key key}) : super(key: key);
+  const EnqyiryListWidget({Key? key}) : super(key: key);
 
   @override
   _EnqyiryListWidgetState createState() => _EnqyiryListWidgetState();
 }
 
 class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
-  TextEditingController search;
+ late TextEditingController search;
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  List<DropdownMenuItem> listofcategory;
-  List<DropdownMenuItem> listofSubcategory;
+  List<DropdownMenuItem>? listofcategory;
+  List<DropdownMenuItem>? listofSubcategory;
   String selectedCategory = '';
   String selectedSubCategory = '';
 
@@ -183,7 +183,7 @@ class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
                             child: CircularProgressIndicator(),
                           );
                         }
-                        var data = snapshot.data.docs;
+                        var data = snapshot.data!.docs;
                         return data.length == 0
                             ? LottieBuilder.network(
                                 'https://assets9.lottiefiles.com/packages/lf20_HpFqiS.json',
@@ -325,6 +325,9 @@ class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
                                                             CustomerSinglePage(
                                                               id: data[index]
                                                                   ['studentId'],
+                                                              project: {},
+                                                              selectedIndex: 0,
+                                                              tab: false,
                                                             )));
                                               }
                                             },
@@ -416,7 +419,7 @@ class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
                             ),
                           );
                         }
-                        var data = snapshot.data.docs;
+                        var data = snapshot.data!.docs;
                         return data.length == 0
                             ? LottieBuilder.network(
                                 'https://assets9.lottiefiles.com/packages/lf20_HpFqiS.json',
@@ -557,7 +560,9 @@ class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
                                                         builder: (context) =>
                                                             CustomerSinglePage(
                                                               id: data[index]
-                                                                  ['studentId'],
+                                                                  ['studentId'], selectedIndex: 0,
+                                                              tab: false,
+                                                              project: {},
                                                             )));
                                               }
                                             },

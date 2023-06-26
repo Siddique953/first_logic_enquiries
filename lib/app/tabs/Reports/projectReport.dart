@@ -8,7 +8,7 @@ import '../../pages/home_page/home.dart';
 import '../Customers/customer_SinglePage.dart';
 
 class ProjectReport extends StatefulWidget {
-  const ProjectReport({Key key}) : super(key: key);
+  const ProjectReport({Key? key}) : super(key: key);
 
   @override
   State<ProjectReport> createState() => _ProjectReportState();
@@ -25,14 +25,14 @@ class _ProjectReportState extends State<ProjectReport> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  TextEditingController search;
+  late TextEditingController search;
 
   int firstIndex = 0;
   int lastIndex = 0;
 
   List listOfFilteredProjects = [];
   List<String> filterData = ['All', 'Completed', 'Active', 'Suspended'];
-  TextEditingController dropdownValue;
+  late TextEditingController dropdownValue;
 
   // getWorkingProjects() {
   //   for (int i = 0; i < listOfActiveProjects.length; i++) {

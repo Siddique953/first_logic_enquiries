@@ -4,37 +4,37 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_erp/app/app_widget.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../backend/firebase_storage/storage.dart';
 import '../../../../flutter_flow/flutter_flow_drop_down.dart';
 import '../../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../../flutter_flow/flutter_flow_widgets.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../../../../flutter_flow/upload_media.dart';
+import '../../../components/constants/storage.dart';
 
 class AddPromoters extends StatefulWidget {
-  const AddPromoters({Key key}) : super(key: key);
+  const AddPromoters({Key? key}) : super(key: key);
 
   @override
   _AddPromotersState createState() => _AddPromotersState();
 }
 
 class _AddPromotersState extends State<AddPromoters> {
-  TextEditingController nameController;
-  TextEditingController emailController;
-  TextEditingController placeController;
-  TextEditingController pinController;
-  TextEditingController mobileController;
-  TextEditingController alternativeMobileController;
-  TextEditingController addressController;
-  TextEditingController bankNameController;
-  TextEditingController accountHolderNameController;
-  TextEditingController IFSCController;
-  TextEditingController accountNumberController;
-  TextEditingController companyController;
-  TextEditingController facebookController;
-  TextEditingController youtubeController;
-  TextEditingController proofController;
+  TextEditingController? nameController;
+  TextEditingController? emailController;
+  TextEditingController? placeController;
+  TextEditingController? pinController;
+  TextEditingController? mobileController;
+  TextEditingController? alternativeMobileController;
+  TextEditingController? addressController;
+  TextEditingController? bankNameController;
+  TextEditingController? accountHolderNameController;
+  TextEditingController? IFSCController;
+  TextEditingController? accountNumberController;
+  TextEditingController? companyController;
+  TextEditingController? facebookController;
+  TextEditingController? youtubeController;
+  TextEditingController? proofController;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   String frontProof = '';
@@ -135,7 +135,7 @@ class _AddPromotersState extends State<AddPromoters> {
                                     controller: nameController,
                                     obscureText: false,
                                     validator: (value) {
-                                      if (value.isEmpty) {
+                                      if (value!.isEmpty) {
                                         return 'Enter name';
                                       } else {
                                         return null;
@@ -743,7 +743,7 @@ class _AddPromotersState extends State<AddPromoters> {
                                   ],
                                   onChanged: (val) {
                                     setState(() {
-                                      proofController.text = val;
+                                      proofController!.text = val;
                                     });
                                   },
                                   width: double.infinity,
@@ -1238,8 +1238,8 @@ class _AddPromotersState extends State<AddPromoters> {
                     //   // }
                     // }
 
-                    if (nameController.text != '' &&
-                        mobileController.text != '') {
+                    if (nameController!.text != '' &&
+                        mobileController!.text != '') {
                       DocumentSnapshot id = await FirebaseFirestore.instance
                           .collection('settings')
                           .doc(currentBranchId)
@@ -1253,51 +1253,51 @@ class _AddPromotersState extends State<AddPromoters> {
                           .doc(agentId)
                           .set({
                         'createdTime': FieldValue.serverTimestamp(),
-                        'name': nameController.text,
-                        'email': emailController.text,
-                        'place': placeController.text,
-                        'mobileNumber': mobileController.text,
-                        'alternativeNumber': alternativeMobileController.text,
-                        'pinCode': pinController.text,
+                        'name': nameController!.text,
+                        'email': emailController!.text,
+                        'place': placeController!.text,
+                        'mobileNumber': mobileController!.text,
+                        'alternativeNumber': alternativeMobileController!.text,
+                        'pinCode': pinController!.text,
                         'photoUrl': '',
                         'verified': true,
                         'branchId': currentBranchId,
-                        'address': addressController.text,
-                        'companyName': companyController.text,
+                        'address': addressController!.text,
+                        'companyName': companyController!.text,
                         'documents': {
-                          'document': proofController.text,
+                          'document': proofController!.text,
                           'frontImage': frontProof,
                           'backImage': backProof,
                         },
-                        'accountNumber': accountNumberController.text,
-                        'bankName': bankNameController.text,
-                        'bankAccountHolder': accountHolderNameController.text,
-                        'iFSCCode': IFSCController.text,
+                        'accountNumber': accountNumberController!.text,
+                        'bankName': bankNameController!.text,
+                        'bankAccountHolder': accountHolderNameController!.text,
+                        'iFSCCode': IFSCController!.text,
                         'uid': agentId,
                       }).then((value) {
                         showUploadMessage(
                             context, 'Agent Creation Completed Successfully.');
 
-                        nameController.text = '';
-                        emailController.text = '';
-                        placeController.text = '';
-                        mobileController.text = '';
-                        alternativeMobileController.text = '';
-                        pinController.text = '';
-                        addressController.text = '';
-                        companyController.text = '';
-                        proofController.text = '';
+                        nameController!.text = '';
+                        emailController!.text = '';
+                        placeController!.text = '';
+                        mobileController!.text = '';
+                        alternativeMobileController!.text = '';
+                        pinController!.text = '';
+                        addressController!.text = '';
+                        companyController!.text = '';
+                        proofController!.text = '';
                         frontProof = '';
                         backProof = '';
-                        accountNumberController.text = '';
-                        bankNameController.text = '';
-                        accountHolderNameController.text = '';
-                        IFSCController.text = '';
+                        accountNumberController!.text = '';
+                        bankNameController!.text = '';
+                        accountHolderNameController!.text = '';
+                        IFSCController!.text = '';
 
                         setState(() {});
                       });
                     } else {
-                      nameController.text == ''
+                      nameController!.text == ''
                           ? showUploadMessage(context, 'Please Enter Name')
                           : showUploadMessage(
                               context, 'Please Enter Phone Number');

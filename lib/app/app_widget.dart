@@ -10,7 +10,7 @@ import '../auth/firebase_user_provider.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import 'pages/home_page/home.dart';
 
-User currentUserModel;
+User? currentUserModel;
 String currentBranchId = '';
 String currentbranchName = '';
 String currentbranchAddress = '';
@@ -24,16 +24,19 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   double currentSize = 0;
-  LeadzFirebaseUser initialUser;
-
-  Stream<LeadzFirebaseUser> userStream;
+  //  LeadzFirebaseUser? initialUser;
+  //
+  // Stream<LeadzFirebaseUser>? userStream;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    userStream = leadzFirebaseUserStream()
-      ..listen((user) => initialUser ?? setState(() => initialUser = user));
+    // userStream = leadzFirebaseUserStream()
+    //   ..listen((user) => initialUser ?? setState(() => initialUser = user));
+    //
+    // print('"""""""initialUser"""""""');
+    // print(initialUser);
   }
 
   @override
@@ -59,15 +62,26 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         title: 'FIRST LOGIC ERP',
         home:
+        StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+
+
+            if (snapshot.hasData) {
+              return const BranchesWidget();
+            }
+            return const LoginPageWidget();
+          },
+        ),
             // // AddEmployee()
             // // HrDashBoard()
-            initialUser == null || currentBranchId == null
-                ? Center(
-                    child: Image.asset('assets/images/loading.gif'),
-                  )
-                : currentUser.loggedIn && currentBranchId != null
-                    ? BranchesWidget()
-                    : LoginPageWidget()
+            // initialUser == null || currentBranchId == null
+            //     ? Center(
+            //         child: Image.asset('assets/images/loading.gif'),
+            //       )
+            //     : currentUser!.loggedIn && currentBranchId != null
+            //         ? BranchesWidget()
+            //         : LoginPageWidget()
         // // home:
 
         // Scaffold(

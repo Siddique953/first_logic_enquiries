@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,7 +20,7 @@ class BankSlipGenerate {
   List<List<dynamic>> first10TableData = [];
   List<List<dynamic>> secondTableData = [];
 
-  Future<File> downloadPdf(
+  Future<File?> downloadPdf(
       Map bankSlip, String chq, double total, List employee) async {
     for (int i = 0; i < employee.length + 2; i++) {
       // List<List<String>> subTableData = tableData.sublist(i, i + rowsPerPage);
@@ -43,8 +42,8 @@ class BankSlipGenerate {
                   ])
                 : first10TableData.add([
                     (i + 1).toString(),
-                    empDataById[employee[i]['empId']].name,
-                    empDataById[employee[i]['empId']].accountNumber,
+                    empDataById[employee[i]['empId']]!.name,
+                    empDataById[employee[i]['empId']]!.accountNumber,
                     bankSlip[employee[i]['empId']]['takeHome']
                   ]);
       } else {
@@ -64,8 +63,8 @@ class BankSlipGenerate {
                   ])
                 : secondTableData.add([
                     (i + 1).toString(),
-                    empDataById[employee[i]['empId']].name,
-                    empDataById[employee[i]['empId']].accountNumber,
+                    empDataById[employee[i]['empId']]!.name,
+                    empDataById[employee[i]['empId']]!.accountNumber,
                     bankSlip[employee[i]['empId']]['takeHome']
                   ]);
       }
@@ -317,9 +316,9 @@ class BankSlipGenerate {
             DateTime.now().day,
           ))}.pdf';
 
-    html.document.body.children.add(anchor);
+    html.document.body!.children.add(anchor);
     anchor.click();
-    html.document.body.children.remove(anchor);
+    html.document.body!.children.remove(anchor);
     html.Url.revokeObjectUrl(url);
 
     //android

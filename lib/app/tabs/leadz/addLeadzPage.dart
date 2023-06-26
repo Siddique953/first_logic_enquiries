@@ -15,14 +15,14 @@ import '../../app_widget.dart';
 import '../../pages/home_page/home.dart';
 
 class AddLeadsWidget extends StatefulWidget {
-  const AddLeadsWidget({Key key}) : super(key: key);
+  const AddLeadsWidget({Key? key}) : super(key: key);
 
   @override
   _AddLeadsWidgetState createState() => _AddLeadsWidgetState();
 }
 
 class _AddLeadsWidgetState extends State<AddLeadsWidget> {
-  TextEditingController branch;
+  late TextEditingController branch;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -39,13 +39,13 @@ class _AddLeadsWidgetState extends State<AddLeadsWidget> {
     showUploadMessage(context, 'file uploaded successfully');
   }
 
-  List<List<dynamic>> rowdetail;
+  List<List<dynamic>> rowdetail=[];
   void _openFile(PlatformFile file) {
     print(file.name);
     filename = file.name;
 
     rowdetail =
-        const CsvToListConverter().convert(String.fromCharCodes(file.bytes));
+        const CsvToListConverter().convert(String.fromCharCodes(file.bytes!));
 
     print(rowdetail.length);
     print(rowdetail);

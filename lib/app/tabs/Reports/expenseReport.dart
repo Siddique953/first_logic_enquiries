@@ -1,14 +1,14 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
-import 'package:month_picker_dialog_2/month_picker_dialog_2.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:universal_html/html.dart' as html;
 import 'package:intl/intl.dart';
-import '../../../backend/backend.dart';
 import '../../../constant/Constant.dart';
 import '../../../flutter_flow/flutter_flow_drop_down.dart';
 import '../../../flutter_flow/flutter_flow_icon_button.dart';
@@ -20,7 +20,7 @@ import '../../app_widget.dart';
 import '../../pages/home_page/home.dart';
 
 class ExpenseReport extends StatefulWidget {
-  const ExpenseReport({Key key}) : super(key: key);
+  const ExpenseReport({Key? key}) : super(key: key);
 
   @override
   State<ExpenseReport> createState() => _ExpenseReportState();
@@ -34,14 +34,14 @@ class _ExpenseReportState extends State<ExpenseReport> {
       NumberFormat.compactSimpleCurrency(locale: _locale, decimalDigits: 2)
           .currencySymbol;
 
-  TextEditingController expenseHead;
+  late TextEditingController expenseHead;
 
   List payments = [];
   List todayPayment = [];
   List feeList = [];
   String dropdownValue = '';
   List expenses = [];
-  double totalExp;
+  double totalExp=0;
   // bool sort;
 
   getExpenseDetails(Timestamp from, Timestamp to) async {
@@ -65,11 +65,11 @@ class _ExpenseReportState extends State<ExpenseReport> {
           if (data[i]['particular'].toString().toLowerCase() ==
               dropdownValue.toLowerCase()) {
             expenses.add(data[i]);
-            double exp = double.tryParse(data[i]['amount'].toString());
+            double exp = double.tryParse(data[i]['amount'].toString())!;
             totalExp += exp;
           } else if (dropdownValue == 'All' || dropdownValue == '') {
             expenses.add(data[i]);
-            double exp = double.tryParse(data[i]['amount'].toString());
+            double exp = double.tryParse(data[i]['amount'].toString())!;
             totalExp += exp;
           }
         }
@@ -85,10 +85,10 @@ class _ExpenseReportState extends State<ExpenseReport> {
     });
   }
 
-  DateTime today;
-  DateTime fromDate;
-  DateTime toDate;
-  DateTime lastDate;
+  late DateTime today;
+  late DateTime fromDate;
+  late DateTime toDate;
+  late DateTime lastDate;
   List<String> currentHeadList = [];
 
   int i = 0;
@@ -174,7 +174,7 @@ class _ExpenseReportState extends State<ExpenseReport> {
     var fileBytes = excel.encode();
     File file;
 
-    final content = base64Encode(fileBytes);
+    final content = base64Encode(fileBytes!);
     final anchor = html.AnchorElement(
         href: "data:application/octet-stream;charset=utf-16le;base64,$content")
       ..setAttribute(
@@ -283,10 +283,12 @@ class _ExpenseReportState extends State<ExpenseReport> {
                               firstDate: DateTime(1901, 1),
                               lastDate: lastDate)
                           .then((value) {
-                        setState(() {
-                          toDate = DateTime(
-                              value.year, value.month, value.day, 23, 59, 59);
-                        });
+                        if(value!=null){
+                          setState(() {
+                            toDate = DateTime(
+                                value.year, value.month, value.day, 23, 59, 59);
+                          });
+                        }
                       });
                     },
                     child: Text(
@@ -382,11 +384,7 @@ class _ExpenseReportState extends State<ExpenseReport> {
                             lastDate: DateTime(DateTime.now().year + 100, 12),
                             initialDate: fromDate,
 
-                            confirmText: Text(
-                              'Select',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            cancelText: Text('Cancel'),
+
                             // yearFirst: true,
                           ).then((date) {
                             if (date != null) {
@@ -726,7 +724,7 @@ class _ExpenseReportState extends State<ExpenseReport> {
                               } catch (e) {
                                 print(e);
 
-                                return showDialog(
+                                 showDialog(
                                     context: context,
                                     builder: (context) {
                                       return AlertDialog(

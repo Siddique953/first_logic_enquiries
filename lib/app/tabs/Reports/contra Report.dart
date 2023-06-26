@@ -1,14 +1,14 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
-import 'package:month_picker_dialog_2/month_picker_dialog_2.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:universal_html/html.dart' as html;
 import 'package:intl/intl.dart';
-import '../../../backend/backend.dart';
 import '../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../flutter_flow/flutter_flow_util.dart';
@@ -17,7 +17,7 @@ import '../../app_widget.dart';
 import '../../pages/home_page/home.dart';
 
 class ContraReport extends StatefulWidget {
-  const ContraReport({Key key}) : super(key: key);
+  const ContraReport({Key? key}) : super(key: key);
 
   @override
   State<ContraReport> createState() => _ContraReportState();
@@ -31,10 +31,10 @@ class _ContraReportState extends State<ContraReport> {
       NumberFormat.compactSimpleCurrency(locale: _locale, decimalDigits: 2)
           .currencySymbol;
 
-  TextEditingController expenseHead;
+  late TextEditingController expenseHead;
 
   List expenses = [];
-  double totalExp;
+  double totalExp=0;
   // bool sort;
 
   getExpenseDetails(Timestamp from, Timestamp to) async {
@@ -55,7 +55,7 @@ class _ContraReportState extends State<ContraReport> {
         if (data[i]['date'].toDate().isAfter(from.toDate()) &&
             data[i]['date'].toDate().isBefore(to.toDate())) {
           expenses.add(data[i]);
-          double exp = double.tryParse(data[i]['amount'].toString());
+          double exp = double.tryParse(data[i]['amount'].toString())!;
           totalExp += exp;
         }
       }
@@ -69,10 +69,10 @@ class _ContraReportState extends State<ContraReport> {
     });
   }
 
-  DateTime today;
-  DateTime fromDate;
-  DateTime toDate;
-  DateTime lastDate;
+  DateTime? today;
+  DateTime? fromDate;
+  DateTime? toDate;
+  DateTime? lastDate;
   List<String> currentHeadList = [];
 
   int i = 0;
@@ -158,7 +158,7 @@ class _ContraReportState extends State<ContraReport> {
     var fileBytes = excel.encode();
     File file;
 
-    final content = base64Encode(fileBytes);
+    final content = base64Encode(fileBytes!);
     final anchor = html.AnchorElement(
         href: "data:application/octet-stream;charset=utf-16le;base64,$content")
       ..setAttribute(
@@ -176,14 +176,14 @@ class _ContraReportState extends State<ContraReport> {
     expenseHead = TextEditingController();
     today = DateTime.now();
 
-    fromDate = DateTime(today.year, today.month, 01, 0, 0, 0);
-    lastDate = DateTime(today.year, today.month + 1, 0, 23, 59, 59);
+    fromDate = DateTime(today!.year, today!.month, 01, 0, 0, 0);
+    lastDate = DateTime(today!.year, today!.month + 1, 0, 23, 59, 59);
     print('---------------------Last Day------------------');
     print(lastDate);
     toDate = DateTime(
-        fromDate.year, fromDate.month + 1, fromDate.day - 1, 23, 59, 59);
+        fromDate!.year, fromDate!.month + 1, fromDate!.day - 1, 23, 59, 59);
 
-    getExpenseDetails(Timestamp.fromDate(fromDate), Timestamp.fromDate(toDate));
+    getExpenseDetails(Timestamp.fromDate(fromDate!), Timestamp.fromDate(toDate!));
 
     headList();
   }
@@ -231,22 +231,22 @@ class _ContraReportState extends State<ContraReport> {
                   onPressed: () {
                     showDatePicker(
                             context: context,
-                            initialDate: fromDate,
+                            initialDate: fromDate!,
                             firstDate: DateTime(1901, 1),
-                            lastDate: lastDate)
+                            lastDate: lastDate!)
                         .then((value) {
                       setState(() {
                         if (value != null) {
                           fromDate = value;
 
-                          getExpenseDetails(Timestamp.fromDate(fromDate),
-                              Timestamp.fromDate(toDate));
+                          getExpenseDetails(Timestamp.fromDate(fromDate!),
+                              Timestamp.fromDate(toDate!));
                         }
                       });
                     });
                   },
                   child: Text(
-                    dateTimeFormat('dd-MM-yyyy', fromDate),
+                    dateTimeFormat('dd-MM-yyyy', fromDate!),
                     style: FlutterFlowTheme.bodyText1.override(
                       fontFamily: 'Poppins',
                       color: Colors.blue,
@@ -267,21 +267,23 @@ class _ContraReportState extends State<ContraReport> {
                     onPressed: () {
                       showDatePicker(
                               context: context,
-                              initialDate: toDate,
+                              initialDate: toDate!,
                               firstDate: DateTime(1901, 1),
-                              lastDate: lastDate)
+                              lastDate: lastDate!)
                           .then((value) {
-                        setState(() {
-                          toDate = DateTime(
-                              value.year, value.month, value.day, 23, 59, 59);
+                        if(value!=null){
+                          setState(() {
+                            toDate = DateTime(
+                                value.year, value.month, value.day, 23, 59, 59);
 
-                          getExpenseDetails(Timestamp.fromDate(fromDate),
-                              Timestamp.fromDate(toDate));
-                        });
+                            getExpenseDetails(Timestamp.fromDate(fromDate!),
+                                Timestamp.fromDate(toDate!));
+                          });
+                        }
                       });
                     },
                     child: Text(
-                      dateTimeFormat('dd-MM-yyyy', toDate),
+                      dateTimeFormat('dd-MM-yyyy', toDate!),
                       style: FlutterFlowTheme.bodyText1.override(
                         fontFamily: 'Poppins',
                         color: Colors.blue,
@@ -318,19 +320,19 @@ class _ContraReportState extends State<ContraReport> {
                           ),
                           onPressed: () async {
                             setState(() {
-                              fromDate = DateTime(fromDate.year,
-                                  fromDate.month - 1, fromDate.day);
+                              fromDate = DateTime(fromDate!.year,
+                                  fromDate!.month - 1, fromDate!.day);
 
                               toDate = DateTime(
-                                  fromDate.year,
-                                  fromDate.month + 1,
-                                  fromDate.day - 1,
+                                  fromDate!.year,
+                                  fromDate!.month + 1,
+                                  fromDate!.day - 1,
                                   23,
                                   59,
                                   59);
                             });
-                            getExpenseDetails(Timestamp.fromDate(fromDate),
-                                Timestamp.fromDate(toDate));
+                            getExpenseDetails(Timestamp.fromDate(fromDate!),
+                                Timestamp.fromDate(toDate!));
                           },
                         ),
                       ),
@@ -345,11 +347,11 @@ class _ContraReportState extends State<ContraReport> {
                             lastDate: DateTime(DateTime.now().year + 100, 12),
                             initialDate: fromDate,
 
-                            confirmText: Text(
-                              'Select',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            cancelText: Text('Cancel'),
+                            // confirmText: Text(
+                            //   'Select',
+                            //   style: TextStyle(fontWeight: FontWeight.bold),
+                            // ),
+                            // cancelText: Text('Cancel'),
                             // yearFirst: true,
                           ).then((date) {
                             if (date != null) {
@@ -357,16 +359,16 @@ class _ContraReportState extends State<ContraReport> {
                                 fromDate = date;
 
                                 toDate = DateTime(
-                                    fromDate.year,
-                                    fromDate.month + 1,
-                                    fromDate.day - 1,
+                                    fromDate!.year,
+                                    fromDate!.month + 1,
+                                    fromDate!.day - 1,
                                     23,
                                     59,
                                     59);
                               });
 
-                              getExpenseDetails(Timestamp.fromDate(fromDate),
-                                  Timestamp.fromDate(toDate));
+                              getExpenseDetails(Timestamp.fromDate(fromDate!),
+                                  Timestamp.fromDate(toDate!));
                             }
                           });
                         },
@@ -386,7 +388,7 @@ class _ContraReportState extends State<ContraReport> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10),
-                                  child: Text(dateTimeFormat('yMMM', fromDate),
+                                  child: Text(dateTimeFormat('yMMM', fromDate!),
                                       style: TextStyle(color: Colors.blue)),
                                 )
                               ]),
@@ -415,19 +417,19 @@ class _ContraReportState extends State<ContraReport> {
                           ),
                           onPressed: () async {
                             setState(() {
-                              fromDate = DateTime(fromDate.year,
-                                  fromDate.month + 1, fromDate.day);
+                              fromDate = DateTime(fromDate!.year,
+                                  fromDate!.month + 1, fromDate!.day);
 
                               toDate = DateTime(
-                                  fromDate.year,
-                                  fromDate.month + 1,
-                                  fromDate.day - 1,
+                                  fromDate!.year,
+                                  fromDate!.month + 1,
+                                  fromDate!.day - 1,
                                   23,
                                   59,
                                   59);
                             });
-                            getExpenseDetails(Timestamp.fromDate(fromDate),
-                                Timestamp.fromDate(toDate));
+                            getExpenseDetails(Timestamp.fromDate(fromDate!),
+                                Timestamp.fromDate(toDate!));
                           },
                         ),
                       ),
@@ -717,7 +719,7 @@ class _ContraReportState extends State<ContraReport> {
                               } catch (e) {
                                 print(e);
 
-                                return showDialog(
+                                 showDialog(
                                     context: context,
                                     builder: (context) {
                                       return AlertDialog(

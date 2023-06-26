@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:month_picker_dialog_2/month_picker_dialog_2.dart';
+
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 import '../../../auth/auth_util.dart';
-import '../../../backend/backend.dart';
+
 import 'package:universal_html/html.dart' as html;
 import '../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
@@ -20,7 +22,7 @@ import '../../pages/home_page/home.dart';
 import 'addExpensePopUp.dart';
 
 class AddExpense extends StatefulWidget {
-  const AddExpense({Key key}) : super(key: key);
+  const AddExpense({Key? key}) : super(key: key);
 
   @override
   _AddExpenseState createState() => _AddExpenseState();
@@ -30,11 +32,11 @@ class _AddExpenseState extends State<AddExpense> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final formState = GlobalKey<FormState>();
 
-  TextEditingController amount;
-  TextEditingController narration;
-  TextEditingController expenseHead;
-  Timestamp expenseDate;
-  DateTime today;
+  late TextEditingController amount;
+  late TextEditingController narration;
+  late TextEditingController expenseHead;
+  Timestamp? expenseDate;
+  late DateTime today;
 
   DateTime fromDate = DateTime.now();
   DateTime toDate = DateTime.now();
@@ -42,16 +44,14 @@ class _AddExpenseState extends State<AddExpense> {
   DateTime lastDate = DateTime.now();
   List expenses = [];
   List expenseHeads = [];
-  double totalExp;
+  late double totalExp;
 
   //Radio Button Ingredients
 
-  bool radioSelected1 = true;
-  bool cash = false;
-  bool bank = false;
-  String radioVal = '';
 
-  List currentHeadList = [];
+  String radioVal = 'Cash';
+
+  List<String> currentHeadList = [];
 
   getExpenseDetails(Timestamp from, Timestamp to) async {
     expenses = [];
@@ -72,7 +72,7 @@ class _AddExpenseState extends State<AddExpense> {
         if (data[i]['date'].toDate().isAfter(from.toDate()) &&
             data[i]['date'].toDate().isBefore(to.toDate())) {
           expenses.add(data[i]);
-          double exp = double.tryParse(data[i]['amount'].toString());
+          double exp = double.tryParse(data[i]['amount'].toString())!;
 
           totalExp += exp;
         }
@@ -165,7 +165,7 @@ class _AddExpenseState extends State<AddExpense> {
     var fileBytes = excel.encode();
     File file;
 
-    final content = base64Encode(fileBytes);
+    final content = base64Encode(fileBytes!);
     final anchor = html.AnchorElement(
         href: "data:application/octet-stream;charset=utf-16le;base64,$content")
       ..setAttribute(
@@ -331,14 +331,21 @@ class _AddExpenseState extends State<AddExpense> {
                                                   59,
                                                   59))
                                           .then((value) {
-                                        setState(() {
-                                          DateFormat("yyyy-MM-dd")
-                                              .format(value);
+                                        if(value!=null){
+                                          setState(() {
+                                            DateFormat("yyyy-MM-dd")
+                                                .format(value);
 
-                                          expenseDate = Timestamp.fromDate(
-                                              DateTime(value.year, value.month,
-                                                  value.day, 0, 0, 0));
-                                        });
+                                            expenseDate = Timestamp.fromDate(
+                                                DateTime(
+                                                    value.year,
+                                                    value.month,
+                                                    value.day,
+                                                    0,
+                                                    0,
+                                                    0));
+                                          });
+                                        }
                                       });
                                     },
                                     child: Center(
@@ -366,7 +373,7 @@ class _AddExpenseState extends State<AddExpense> {
                                               )
                                             : Center(
                                                 child: Text(
-                                                  expenseDate
+                                                  expenseDate!
                                                       .toDate()
                                                       .toString()
                                                       .substring(0, 10),
@@ -544,24 +551,24 @@ class _AddExpenseState extends State<AddExpense> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.002,
                             ),
-                            Radio(
+                            Radio<String>(
                               activeColor: Colors.yellow,
                               fillColor:
                                   MaterialStateProperty.all(Colors.black),
                               overlayColor:
                                   MaterialStateProperty.all(Colors.grey[200]),
                               focusColor: Colors.green,
-                              value: bank,
+                              value: 'Bank',
                               onChanged: (value) {
-                                setState(() {
-                                  value = true;
-                                  bank = value;
-                                  cash = false;
-                                  radioVal = 'Bank';
-                                  radioSelected1 = value;
-                                });
+                                if(value!=null){
+                                  setState(() {
+
+                                    radioVal = value;
+                                  });
+                                }
                               },
-                              groupValue: radioSelected1,
+                              groupValue: radioVal,
+
                             ),
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.006,
@@ -570,25 +577,25 @@ class _AddExpenseState extends State<AddExpense> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.002,
                             ),
-                            Radio(
+                            Radio<String>(
                               activeColor: Colors.yellow,
                               fillColor:
                                   MaterialStateProperty.all(Colors.black),
                               overlayColor:
                                   MaterialStateProperty.all(Colors.grey[200]),
                               focusColor: Colors.green,
-                              value: cash,
+                              value: 'Cash',
                               onChanged: (value) {
-                                value = true;
 
-                                setState(() {
-                                  radioVal = 'Cash';
-                                  cash = value;
-                                  bank = false;
-                                  radioSelected1 = value;
-                                });
+
+                                if(value!=null){
+                                  setState(() {
+                                    radioVal = value;
+
+                                  });
+                                }
                               },
-                              groupValue: radioSelected1,
+                              groupValue: radioVal,
                             ),
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.006,
@@ -604,7 +611,7 @@ class _AddExpenseState extends State<AddExpense> {
                                         expenseHead.text != '' &&
                                         radioVal != '') {
                                       double amountValue =
-                                          double.tryParse(amount.text);
+                                          double.tryParse(amount.text)!;
                                       FirebaseFirestore.instance
                                           .collection('expenseHead')
                                           .doc(currentBranchId)
@@ -743,11 +750,11 @@ class _AddExpenseState extends State<AddExpense> {
                         // selectedMonthBackgroundColor: Colors.amber[900],
                         // selectedMonthTextColor: Colors.white,
                         // unselectedMonthTextColor: Colors.green,
-                        confirmText: Text(
-                          'Select',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        cancelText: Text('Cancel'),
+                        // confirmText: Text(
+                        //   'Select',
+                        //   style: TextStyle(fontWeight: FontWeight.bold),
+                        // ),
+                        // cancelText: Text('Cancel'),
                         // yearFirst: true,
                       ).then((date) {
                         if (date != null) {
@@ -1034,7 +1041,7 @@ class _AddExpenseState extends State<AddExpense> {
                                 try {
                                   importData();
                                 } catch (e) {
-                                  return showDialog(
+                                   showDialog(
                                       context: context,
                                       builder: (context) {
                                         return AlertDialog(

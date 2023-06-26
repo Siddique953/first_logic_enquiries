@@ -1,17 +1,14 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:excel/excel.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
-import 'package:month_picker_dialog_2/month_picker_dialog_2.dart';
 import 'package:universal_html/html.dart' as html;
 
 import '../../../../auth/auth_util.dart';
-import '../../../../backend/backend.dart';
-import '../../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../../flutter_flow/flutter_flow_util.dart';
 import '../../../../flutter_flow/upload_media.dart';
@@ -19,7 +16,7 @@ import '../../../app_widget.dart';
 import '../../../pages/home_page/home.dart';
 
 class BankTransfer extends StatefulWidget {
-  const BankTransfer({Key key}) : super(key: key);
+  const BankTransfer({Key? key}) : super(key: key);
 
   @override
   State<BankTransfer> createState() => _BankTransferState();
@@ -29,11 +26,11 @@ class _BankTransferState extends State<BankTransfer> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final formState = GlobalKey<FormState>();
 
-  TextEditingController amount;
-  TextEditingController narration;
-  TextEditingController staffName;
-  Timestamp dateOfTransfer;
-  DateTime today;
+  TextEditingController amount=TextEditingController();
+  TextEditingController narration=TextEditingController();
+  TextEditingController staffName=TextEditingController();
+  Timestamp? dateOfTransfer;
+  DateTime? today;
 
   DateTime fromDate = DateTime.now();
   DateTime toDate = DateTime.now();
@@ -41,7 +38,7 @@ class _BankTransferState extends State<BankTransfer> {
   DateTime lastDate = DateTime.now();
   List expenses = [];
 
-  double totalExp;
+  double totalExp=0;
 
   getExpenseDetails(Timestamp from, Timestamp to) async {
     expenses = [];
@@ -62,7 +59,7 @@ class _BankTransferState extends State<BankTransfer> {
         if (data[i]['date'].toDate().isAfter(from.toDate()) &&
             data[i]['date'].toDate().isBefore(to.toDate())) {
           expenses.add(data[i]);
-          double exp = double.tryParse(data[i]['amount'].toString());
+          double exp = double.tryParse(data[i]['amount'].toString())!;
 
           totalExp += exp;
         }
@@ -155,7 +152,7 @@ class _BankTransferState extends State<BankTransfer> {
     var fileBytes = excel.encode();
     File file;
 
-    final content = base64Encode(fileBytes);
+    final content = base64Encode(fileBytes!);
     final anchor = html.AnchorElement(
         href: "data:application/octet-stream;charset=utf-16le;base64,$content")
       ..setAttribute(
@@ -176,10 +173,10 @@ class _BankTransferState extends State<BankTransfer> {
     //Set FROM and TO date based on Today
     today = DateTime.now();
 
-    fromDate = DateTime(today.year, today.month, 01, 0, 0, 0);
+    fromDate = DateTime(today!.year, today!.month, 01, 0, 0, 0);
     toDate = DateTime(
         fromDate.year, fromDate.month + 1, fromDate.day - 1, 23, 59, 59);
-    lastDate = DateTime(today.year, today.month + 1, 0, 23, 59, 59);
+    lastDate = DateTime(today!.year, today!.month + 1, 0, 23, 59, 59);
 
     //Call current Month data initially
     getExpenseDetails(Timestamp.fromDate(fromDate), Timestamp.fromDate(toDate));
@@ -279,7 +276,7 @@ class _BankTransferState extends State<BankTransfer> {
                                           .then((value) {
                                         setState(() {
                                           DateFormat("yyyy-MM-dd")
-                                              .format(value);
+                                              .format(value!);
 
                                           dateOfTransfer = Timestamp.fromDate(
                                               DateTime(value.year, value.month,
@@ -312,7 +309,7 @@ class _BankTransferState extends State<BankTransfer> {
                                               )
                                             : Center(
                                                 child: Text(
-                                                  dateOfTransfer
+                                                  dateOfTransfer!
                                                       .toDate()
                                                       .toString()
                                                       .substring(0, 10),
@@ -516,7 +513,7 @@ class _BankTransferState extends State<BankTransfer> {
                                         if (amount.text != '' &&
                                             staffName.text != '') {
                                           double amountValue =
-                                              double.tryParse(amount.text);
+                                              double.tryParse(amount.text)!;
 
                                           FirebaseFirestore.instance
                                               .collection('bankTransaction')
@@ -594,7 +591,7 @@ class _BankTransferState extends State<BankTransfer> {
                                         if (amount.text != '' &&
                                             staffName.text != '') {
                                           double amountValue =
-                                              double.tryParse(amount.text);
+                                              double.tryParse(amount.text)!;
 
                                           FirebaseFirestore.instance
                                               .collection('bankTransaction')

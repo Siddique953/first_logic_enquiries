@@ -8,8 +8,8 @@ import '../../../../flutter_flow/flutter_flow_theme.dart';
 class HrLeavePage extends StatefulWidget {
   final TabController _tabController;
   const HrLeavePage({
-    Key key,
-    @required TabController tabController,
+    Key? key,
+    required TabController tabController,
   })  : _tabController = tabController,
         super(key: key);
 
@@ -19,9 +19,9 @@ class HrLeavePage extends StatefulWidget {
 
 class _HrLeavePageState extends State<HrLeavePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  TextEditingController search;
+  late TextEditingController search;
 
-  Stream leaveStream;
+  late Stream<QuerySnapshot> leaveStream;
   int selectedIndex = 0;
 
   @override
@@ -254,7 +254,7 @@ class _HrLeavePageState extends State<HrLeavePage> {
                             ),
                           );
                         }
-                        var data = snapshot.data.docs;
+                        var data = snapshot.data!.docs;
                         return data.length == 0
                             ? LottieBuilder.network(
                                 'https://assets9.lottiefiles.com/packages/lf20_HpFqiS.json',
@@ -598,7 +598,7 @@ class _HrLeavePageState extends State<HrLeavePage> {
                             child: CircularProgressIndicator(),
                           );
                         }
-                        var data = snapshot.data.docs;
+                        var data = snapshot.data!.docs;
                         return data.length == 0
                             ? LottieBuilder.network(
                                 'https://assets9.lottiefiles.com/packages/lf20_HpFqiS.json',

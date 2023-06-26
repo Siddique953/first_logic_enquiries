@@ -12,16 +12,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../flutter_flow/upload_media.dart';
 
 class CreateStatusWidget extends StatefulWidget {
-  const CreateStatusWidget({Key key}) : super(key: key);
+  const CreateStatusWidget({Key? key}) : super(key: key);
 
   @override
   _CreateStatusWidgetState createState() => _CreateStatusWidgetState();
 }
 
 class _CreateStatusWidgetState extends State<CreateStatusWidget> {
-  TextEditingController status;
-  TextEditingController eStatus;
-  String type;
+  late TextEditingController status;
+  late TextEditingController eStatus;
+  late String type;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -461,7 +461,7 @@ class _CreateStatusWidgetState extends State<CreateStatusWidget> {
                 if(!snapshot.hasData){
                   return Center(child: CircularProgressIndicator(),);
                 }
-                var data=snapshot.data.docs;
+                var data=snapshot.data!.docs;
                 // statusList=data['status'];
                 return ListView.builder(
                   shrinkWrap: true,

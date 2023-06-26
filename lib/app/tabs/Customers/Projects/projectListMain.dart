@@ -9,7 +9,7 @@ import '../../../app_widget.dart';
 import '../customer_SinglePage.dart';
 
 class ProjectList extends StatefulWidget {
-  const ProjectList({Key key}) : super(key: key);
+  const ProjectList({Key? key}) : super(key: key);
 
   @override
   State<ProjectList> createState() => _ProjectListState();
@@ -43,7 +43,7 @@ class _ProjectListState extends State<ProjectList> {
     });
   }
 
-  TextEditingController search;
+  TextEditingController search=TextEditingController();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   int firstIndex = 0;

@@ -8,14 +8,14 @@ import '../../../flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 
 class LeadsWidget extends StatefulWidget {
-  const LeadsWidget({Key key}) : super(key: key);
+  const LeadsWidget({Key? key}) : super(key: key);
 
   @override
   _LeadsWidgetState createState() => _LeadsWidgetState();
 }
 
 class _LeadsWidgetState extends State<LeadsWidget> {
-  String dropDownValue;
+  late String dropDownValue;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List <String> branches=[];
   Map<String,dynamic> branchId={};

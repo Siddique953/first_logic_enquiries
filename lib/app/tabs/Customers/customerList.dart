@@ -10,7 +10,7 @@ import 'customer_SinglePage.dart';
 import 'createPopup.dart';
 
 class CustomerListWidget extends StatefulWidget {
-  const CustomerListWidget({Key key}) : super(key: key);
+  const CustomerListWidget({Key? key}) : super(key: key);
 
   @override
   _CustomerListWidgetState createState() => _CustomerListWidgetState();
@@ -44,7 +44,7 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
     });
   }
 
-  TextEditingController search;
+ late TextEditingController search;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   int firstIndex = 0;

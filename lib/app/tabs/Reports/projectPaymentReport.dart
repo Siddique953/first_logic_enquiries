@@ -9,7 +9,7 @@ import '../../pages/home_page/home.dart';
 import '../Customers/customer_SinglePage.dart';
 
 class ProjectPaymentReport extends StatefulWidget {
-  const ProjectPaymentReport({Key key}) : super(key: key);
+  const ProjectPaymentReport({Key? key}) : super(key: key);
 
   @override
   State<ProjectPaymentReport> createState() => _ProjectPaymentReportState();
@@ -26,7 +26,7 @@ class _ProjectPaymentReportState extends State<ProjectPaymentReport> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  TextEditingController search;
+ late TextEditingController search;
 
   int firstIndex = 0;
   int lastIndex = 0;

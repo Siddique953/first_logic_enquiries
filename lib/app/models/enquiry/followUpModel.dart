@@ -1,16 +1,16 @@
 class FollowUpModel {
-  String dId;
-  String followUpDetail;
-  String eId;
-  DateTime date;
-  DateTime next;
-  String branchId;
-  String assignee;
-  bool done;
-  String email;
-  String name;
-  String workName;
-  String phone;
+  String? dId;
+  String? followUpDetail;
+  String? eId;
+  DateTime? date;
+  DateTime? next;
+  String? branchId;
+  String? assignee;
+  bool? done;
+  String? email;
+  String? name;
+  String? workName;
+  String? phone;
 
   FollowUpModel(
       {this.dId,

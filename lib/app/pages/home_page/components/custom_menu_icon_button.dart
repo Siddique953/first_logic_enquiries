@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class CustomMenuIconButton extends StatelessWidget {
   const CustomMenuIconButton({
-    Key key,
-    this.icon,
+    Key? key,
+    required this.icon,
     this.iconSize = 18,
     this.iconColor = Colors.white,
-    this.title,
-    this.titleStyle,
-    this.onTap,
+    required this.title,
+     this.titleStyle,
+    required this.onTap,
   }) : super(key: key);
 
   final IconData icon;
@@ -16,14 +16,14 @@ class CustomMenuIconButton extends StatelessWidget {
   final Color iconColor;
 
   final String title;
-  final TextStyle titleStyle;
+  final TextStyle? titleStyle;
 
   final Function onTap;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: onTap(),
       child: Container(
         height: 40,
         margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),

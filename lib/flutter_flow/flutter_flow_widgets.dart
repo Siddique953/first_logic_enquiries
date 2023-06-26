@@ -20,36 +20,36 @@ class FFButtonOptions {
     this.borderSide,
   });
 
-  final TextStyle textStyle;
-  final double elevation;
-  final double height;
-  final double width;
-  final EdgeInsetsGeometry padding;
-  final Color color;
-  final Color disabledColor;
-  final Color disabledTextColor;
-  final Color splashColor;
-  final double iconSize;
-  final Color iconColor;
-  final EdgeInsetsGeometry iconPadding;
-  final double borderRadius;
-  final BorderSide borderSide;
+  final TextStyle? textStyle;
+  final double? elevation;
+  final double? height;
+  final double? width;
+  final EdgeInsetsGeometry? padding;
+  final Color? color;
+  final Color? disabledColor;
+  final Color? disabledTextColor;
+  final Color? splashColor;
+  final double? iconSize;
+  final Color? iconColor;
+  final EdgeInsetsGeometry? iconPadding;
+  final double? borderRadius;
+  final BorderSide? borderSide;
 }
 
 class FFButtonWidget extends StatelessWidget {
   const FFButtonWidget({
-    Key key,
-    @required this.text,
-    @required this.onPressed,
+    Key? key,
+    required this.text,
+    required this.onPressed,
     this.icon,
     this.iconData,
-    @required this.options,
+    required this.options,
     this.loading = false,
   }) : super(key: key);
 
   final String text;
-  final Widget icon;
-  final IconData iconData;
+  final Widget? icon;
+  final IconData? iconData;
   final VoidCallback onPressed;
   final FFButtonOptions options;
   final bool loading;
@@ -63,7 +63,7 @@ class FFButtonWidget extends StatelessWidget {
               height: 23,
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  options.textStyle.color ?? Colors.white,
+                  options.textStyle!.color ?? Colors.white,
                 ),
               ),
             ),
@@ -86,7 +86,7 @@ class FFButtonWidget extends StatelessWidget {
                 FaIcon(
                   iconData,
                   size: options.iconSize,
-                  color: options.iconColor ?? options.textStyle.color,
+                  color: options.iconColor ?? options.textStyle!.color,
                 ),
           ),
           label: textWidget,
@@ -96,7 +96,7 @@ class FFButtonWidget extends StatelessWidget {
             backgroundColor: MaterialStateProperty.all(options.color),
             padding: MaterialStateProperty.all(options.padding),
             textStyle: MaterialStateProperty.all(
-                TextStyle(color: options.textStyle.color)),
+                TextStyle(color: options.textStyle!.color)),
             elevation: MaterialStateProperty.all(options.elevation),
             shape: MaterialStateProperty.all(
               RoundedRectangleBorder(
@@ -126,7 +126,7 @@ class FFButtonWidget extends StatelessWidget {
           backgroundColor: MaterialStateProperty.all(options.color),
           padding: MaterialStateProperty.all(options.padding),
           textStyle: MaterialStateProperty.all(
-              TextStyle(color: options.textStyle.color)),
+              TextStyle(color: options.textStyle!.color)),
           elevation: MaterialStateProperty.all(options.elevation),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(

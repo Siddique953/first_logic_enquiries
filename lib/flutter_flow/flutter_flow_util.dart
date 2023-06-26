@@ -40,9 +40,9 @@ DateTime get getCurrentTimestamp => DateTime.now();
 
 bool get isAndroid => !kIsWeb && Platform.isAndroid;
 
-LatLng cachedUserLocation;
-Future<LatLng> getCurrentUserLocation(
-        {LatLng defaultLocation, bool cached = false}) async =>
+LatLng? cachedUserLocation;
+Future<Object?> getCurrentUserLocation(
+        {LatLng? defaultLocation, bool cached = false}) async =>
     cached && cachedUserLocation != null
         ? cachedUserLocation
         : queryCurrentUserLocation().then((loc) {
@@ -55,7 +55,7 @@ Future<LatLng> getCurrentUserLocation(
             return defaultLocation;
           });
 
-Future<LatLng> queryCurrentUserLocation() async {
+Future<LatLng?> queryCurrentUserLocation() async {
   final serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
     return Future.error('Location services are disabled.');
@@ -111,7 +111,7 @@ void showSnackbar(
 }
 
 extension FFStringExt on String {
-  String maybeHandleOverflow({int maxChars, String replacement = ''}) =>
+  String maybeHandleOverflow({int? maxChars, String replacement = ''}) =>
       maxChars != null && length > maxChars
           ? replaceRange(maxChars, null, replacement)
           : this;

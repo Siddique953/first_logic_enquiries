@@ -16,7 +16,7 @@ import '../Enquiry/AddEnquiry.dart';
 
 class CreateNewPopup extends StatefulWidget {
   final GlobalKey<FormState> form;
-  const CreateNewPopup({Key key, this.form}) : super(key: key);
+  const CreateNewPopup({Key? key, required this.form}) : super(key: key);
 
   @override
   State<CreateNewPopup> createState() => _CreateNewPopupState();
@@ -25,15 +25,15 @@ class CreateNewPopup extends StatefulWidget {
 class _CreateNewPopupState extends State<CreateNewPopup> {
   RegExp phnValidation = RegExp(r'^[0-9]{10}$');
 
-  TextEditingController fullName;
-  TextEditingController mobile;
-  TextEditingController email;
-  TextEditingController whatsAppNo;
-  TextEditingController careOf;
-  TextEditingController careOfNo;
-  String selectedCountry;
-  String countryDialCode;
-  String countryShortName;
+  TextEditingController fullName = TextEditingController();
+  TextEditingController mobile = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController whatsAppNo = TextEditingController();
+  TextEditingController careOf = TextEditingController();
+  TextEditingController careOfNo = TextEditingController();
+  String selectedCountry = '';
+  String countryDialCode = '';
+  String countryShortName = '';
 
   @override
   void initState() {
@@ -415,10 +415,13 @@ class _CreateNewPopupState extends State<CreateNewPopup> {
                               ),
                             ),
                             onTap: (x) {
-                              careOf.text = x;
-                              setState(() {
-                                print(x);
-                              });
+
+                              if(x!=null) {
+                                careOf.text = x;
+                                setState(() {
+                                  print(x);
+                                });
+                              }
                             },
                           ),
                         ),
@@ -497,162 +500,169 @@ class _CreateNewPopupState extends State<CreateNewPopup> {
                 padding: EdgeInsetsDirectional.fromSTEB(0, 24, 0, 44),
                 child: FFButtonWidget(
                   onPressed: () async {
-                    final FormState form = widget.form.currentState;
+                    try {
+                      final FormState form = widget.form.currentState!;
 
-                    if (form.validate()) {
-                      if (fullName.text != '' && mobile.text != ''
-                          // &&
-                          // email.text != ''
-                          ) {
-                        bool pressed =
-                            await alert(context, 'Register As Customer...');
-                        if (pressed) {
-                          DocumentSnapshot doc = await FirebaseFirestore
-                              .instance
-                              .collection('settings')
-                              .doc(currentBranchId)
-                              .get();
-                          FirebaseFirestore.instance
-                              .collection('settings')
-                              .doc(currentBranchId)
-                              .update({
-                            'customerId': FieldValue.increment(1),
-                            'enquiryId': FieldValue.increment(1),
-                          });
-                          int custId = doc.get('customerId');
-                          int enquiryId = doc.get('enquiryId');
-                          custId++;
-                          enquiryId++;
 
-                          List list = [
-                            {
-                              'name': 'Personal Details',
-                              'completed': false,
-                            },
-                            {
-                              'name': 'Project Details',
-                              'completed': false,
-                            },
-                            {
-                              'name': 'Payment Details',
-                              'completed': false,
-                            },
-                            {
-                              'name': 'Documents',
-                              'completed': false,
-                            },
-                            {
-                              'name': 'Services',
-                              'completed': false,
-                            },
-                            {
-                              'name': 'Statement',
-                              'completed': false,
-                            },
-                          ];
-
-                          List statusList = [];
-
-                          statusList.add({
-                            'date': DateTime.now(),
-                            'status': 'Registered',
-                            'comments': '',
-                            'link': '',
-                            'customerId': 'C' +
-                                currentbranchShortName +
-                                custId.toString(),
-                            'userId': currentUserUid,
-                            'branchId': currentBranchId,
-                          });
-
-                          FirebaseFirestore.instance
-                              .collection('customer')
-                              .doc('C' +
-                                  currentbranchShortName +
-                                  custId.toString())
-                              .set({
-                            'enquiryId': 'E' +
-                                currentbranchShortName +
-                                enquiryId.toString(),
-                            'form': list,
-                            'date': DateTime.now(),
-                            'status': 0,
-                            'name': fullName.text,
-                            'mobile': mobile.text,
-                            'projects': 0,
-                            'countryCode': countryDialCode,
-                            'countryShort': countryShortName,
-                            'phoneCode': '+91',
-                            'email': email.text,
-                            'nationality': selectedCountry,
-                            'place': '',
-                            'travelHistory': [],
-                            'educationalDetails': [],
-                            'address': '',
-                            'branchId': currentBranchId,
-                            'branch': currentbranchName,
-                            'userId': currentUserUid,
-                            'currentStatus': 'Registered',
-                            'nextStatus': 'Document Collection',
-                            'comments': '',
-                            'documents': {},
-                            'newDocuments': {},
-                            'referenceDetails': [],
-                            'agentId': agentIdByNumber[careOf.text] ?? '',
-                            // 'careOf': careOf.text ?? '',
-                            // 'careOfNo': careOfNo.text ?? '',
-                            'statusList': FieldValue.arrayUnion(statusList),
-                            'additionalInfo': '',
-                            'projectTopic': '',
-                            'photo': '',
-                            'projectType': '',
-                            'paymentDetails': [],
-                            'projectDetails': [],
-                            'projectCost': 0.00,
-                            'projectName': '',
-                            'whatsAppNo': whatsAppNo.text,
-                            'companyName': '',
-                            'companyAddress': '',
-                            'companyEmail': '',
-                            'customerID': 'C' +
-                                currentbranchShortName +
-                                custId.toString(),
-                          }).then((value) {
+                      if (form.validate()) {
+                        if (fullName.text != '' && mobile.text != ''
+                        // &&
+                        // email.text != ''
+                        ) {
+                          bool pressed =
+                          await alert(context, 'Register As Customer...');
+                          if (pressed) {
+                            DocumentSnapshot doc = await FirebaseFirestore
+                                .instance
+                                .collection('settings')
+                                .doc(currentBranchId)
+                                .get();
                             FirebaseFirestore.instance
-                                .collection('status')
-                                .add({
+                                .collection('settings')
+                                .doc(currentBranchId)
+                                .update({
+                              'customerId': FieldValue.increment(1),
+                              'enquiryId': FieldValue.increment(1),
+                            });
+                            int custId = doc.get('customerId');
+                            int enquiryId = doc.get('enquiryId');
+                            custId++;
+                            enquiryId++;
+
+                            List list = [
+                              {
+                                'name': 'Personal Details',
+                                'completed': false,
+                              },
+                              {
+                                'name': 'Project Details',
+                                'completed': false,
+                              },
+                              {
+                                'name': 'Payment Details',
+                                'completed': false,
+                              },
+                              {
+                                'name': 'Documents',
+                                'completed': false,
+                              },
+                              {
+                                'name': 'Services',
+                                'completed': false,
+                              },
+                              {
+                                'name': 'Statement',
+                                'completed': false,
+                              },
+                            ];
+
+                            List statusList = [];
+
+                            statusList.add({
                               'date': DateTime.now(),
                               'status': 'Registered',
                               'comments': '',
                               'link': '',
-                              'customerID': 'C' +
+                              'customerId': 'C' +
                                   currentbranchShortName +
                                   custId.toString(),
                               'userId': currentUserUid,
                               'branchId': currentBranchId,
                             });
-                          });
-                          showUploadMessage(
-                              context, 'New Customer Registered...');
 
-                          setState(() {
-                            Navigator.pop(context);
-                          });
+                            FirebaseFirestore.instance
+                                .collection('customer')
+                                .doc('C' +
+                                currentbranchShortName +
+                                custId.toString())
+                                .set({
+                              'enquiryId': 'E' +
+                                  currentbranchShortName +
+                                  enquiryId.toString(),
+                              'form': list,
+                              'date': DateTime.now(),
+                              'status': 0,
+                              'name': fullName.text,
+                              'mobile': mobile.text,
+                              'projects': 0,
+                              'countryCode': countryDialCode,
+                              'countryShort': countryShortName,
+                              'phoneCode': '+91',
+                              'email': email.text,
+                              'nationality': selectedCountry,
+                              'place': '',
+                              'travelHistory': [],
+                              'educationalDetails': [],
+                              'address': '',
+                              'branchId': currentBranchId,
+                              'branch': currentbranchName,
+                              'userId': currentUserUid,
+                              'currentStatus': 'Registered',
+                              'nextStatus': 'Document Collection',
+                              'comments': '',
+                              'documents': {},
+                              'newDocuments': {},
+                              'referenceDetails': [],
+                              'agentId': agentIdByNumber[careOf.text] ?? '',
+                              // 'careOf': careOf.text ?? '',
+                              // 'careOfNo': careOfNo.text ?? '',
+                              'statusList': FieldValue.arrayUnion(statusList),
+                              'additionalInfo': '',
+                              'projectTopic': '',
+                              'photo': '',
+                              'projectType': '',
+                              'paymentDetails': [],
+                              'projectDetails': [],
+                              'projectCost': 0.00,
+                              'projectName': '',
+                              'whatsAppNo': whatsAppNo.text,
+                              'companyName': '',
+                              'companyAddress': '',
+                              'companyEmail': '',
+                              'customerID': 'C' +
+                                  currentbranchShortName +
+                                  custId.toString(),
+                            }).then((value) {
+                              FirebaseFirestore.instance
+                                  .collection('status')
+                                  .add({
+                                'date': DateTime.now(),
+                                'status': 'Registered',
+                                'comments': '',
+                                'link': '',
+                                'customerID': 'C' +
+                                    currentbranchShortName +
+                                    custId.toString(),
+                                'userId': currentUserUid,
+                                'branchId': currentBranchId,
+                              });
+                            });
+                            showUploadMessage(
+                                context, 'New Customer Registered...');
 
-                          // Navigator.pop(context);
+                            setState(() {
+                              Navigator.pop(context);
+                            });
 
+                            // Navigator.pop(context);
+
+                          }
+                        } else {
+                          fullName.text == ''
+                              ? showUploadMessage(
+                              context, 'Please Enter Customer Name')
+                              : mobile.text == ''
+                              ? showUploadMessage(
+                              context, 'Please Enter Mobile Number')
+                              : showUploadMessage(
+                              context, 'Please Enter Email');
                         }
-                      } else {
-                        fullName.text == ''
-                            ? showUploadMessage(
-                                context, 'Please Enter Customer Name')
-                            : mobile.text == ''
-                                ? showUploadMessage(
-                                    context, 'Please Enter Mobile Number')
-                                : showUploadMessage(
-                                    context, 'Please Enter Email');
                       }
                     }
+                    catch(ex){
+                      print(ex.toString());
+                    }
+
                   },
                   text: 'Register As Customer',
                   options: FFButtonOptions(

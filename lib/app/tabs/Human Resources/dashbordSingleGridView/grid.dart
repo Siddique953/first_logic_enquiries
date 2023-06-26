@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class SingleGrid extends StatefulWidget {
   final Map content;
-  const SingleGrid({Key key, this.content}) : super(key: key);
+  const SingleGrid({Key? key, required this.content}) : super(key: key);
 
   @override
   State<SingleGrid> createState() => _SingleGridState();

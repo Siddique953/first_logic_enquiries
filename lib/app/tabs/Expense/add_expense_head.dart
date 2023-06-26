@@ -6,7 +6,7 @@ import '../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../app_widget.dart';
 
 class ExpenseHeadPage extends StatefulWidget {
-  const ExpenseHeadPage({Key key}) : super(key: key);
+  const ExpenseHeadPage({Key? key}) : super(key: key);
 
   @override
   _ExpenseHeadPageState createState() => _ExpenseHeadPageState();
@@ -14,10 +14,10 @@ class ExpenseHeadPage extends StatefulWidget {
 
 class _ExpenseHeadPageState extends State<ExpenseHeadPage> {
   bool edit = false;
-  int currentListIndex;
-  List currentList;
+ late int currentListIndex;
+ late List currentList;
   var currentValue;
-  TextEditingController expenseHead;
+ late TextEditingController expenseHead;
   @override
   void initState() {
     // TODO: implement initState
@@ -223,7 +223,7 @@ class _ExpenseHeadPageState extends State<ExpenseHeadPage> {
                             child: CircularProgressIndicator(),
                           );
                         }
-                        List data = snapshot.data['expenseHead'];
+                        List data = snapshot.data!['expenseHead'];
                         currentList = data;
                         return SizedBox(
                           width: MediaQuery.of(context).size.width * 0.7,

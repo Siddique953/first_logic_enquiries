@@ -19,16 +19,16 @@ class EmployeeAttendance extends StatefulWidget {
   final double half;
   final double late;
   const EmployeeAttendance(
-      {Key key,
-      this.empId,
-      this.id,
-      this.empName,
-      this.date,
-      this.totalWork,
-      this.holidays,
-      this.leave,
-      this.half,
-      this.late})
+      {Key? key,
+     required this.empId,
+     required this.id,
+     required this.empName,
+     required this.date,
+     required this.totalWork,
+     required this.holidays,
+     required this.leave,
+     required this.half,
+     required this.late})
       : super(key: key);
 
   @override
@@ -50,7 +50,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
         // .orderBy('date', descending: false)
         .snapshots()
         .listen((event) {
-      attendanceDetails = event.data();
+      attendanceDetails = event.data()!;
       attendance = event['attendance'];
 
       if (mounted) {
@@ -65,8 +65,8 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
 
   bool showChart = true;
 
-  DateTime fromDate;
-  DateTime toDate;
+  DateTime? fromDate;
+  DateTime? toDate;
 
   int i = 0;
 
@@ -158,13 +158,13 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
   //     ..click();
   // }
 
-  Map dataMap = <String, double>{
+  Map<String, double> dataMap = {
     "Holidays": 0,
     "Leave": 0,
     "Present": 0,
   };
 
-  Map leaveDataMap = <String, double>{
+  Map <String, double> leaveDataMap ={
     "Full Day": 0,
     "Half Day": 0,
     "Late Cut": 0,
@@ -195,7 +195,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
     print('[[[[[[[[[[[[[[[[[[[[[[[[date]]]]]]]]]]]]]]]]]]]]]]]]');
     print(widget.date);
     fromDate = widget.date;
-    toDate = DateTime(fromDate.year, fromDate.month + 1, 0, 23, 59, 59);
+    toDate = DateTime(fromDate!.year, fromDate!.month + 1, 0, 23, 59, 59);
 
     getPaymentDetails();
   }
@@ -288,27 +288,36 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.all(10.0),
-                                          child: Container(
+                                          child:  empDataById[widget
+                                              .empId]!
+                                              .profile ==
+                                              '' ||
+                                              empDataById[widget
+                                                  .empId]!
+                                                  .profile ==
+                                                  null
+                                              ?Container(
                                             height: 130,
                                             width: 130,
                                             decoration: BoxDecoration(
                                                 color: Colors.grey,
                                                 image: DecorationImage(
-                                                    image: empDataById[widget
-                                                                        .empId]
-                                                                    .profile ==
-                                                                '' ||
-                                                            empDataById[widget
-                                                                        .empId]
-                                                                    .profile ==
-                                                                null
-                                                        ? AssetImage(
+                                                    image: AssetImage(
                                                             'assets/HR Dashboard/emp.png')
-                                                        : NetworkImage(
-                                                            empDataById[widget
-                                                                        .empId]
-                                                                    .profile ??
-                                                                ''))),
+                                                        )),
+                                          )
+                                              :Container(
+                                            height: 130,
+                                            width: 130,
+                                            decoration: BoxDecoration(
+                                                color: Colors.grey,
+                                                image: DecorationImage(
+                                                    image:  NetworkImage(
+                                                empDataById[widget
+                                                    .empId]!
+                                                    .profile ??
+                                                    '')
+                                                        )),
                                           ),
                                         ),
                                         SizedBox(
@@ -321,7 +330,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              empDataById[widget.empId].name,
+                                              empDataById[widget.empId]!.name??'Employee',
                                               style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 15,
@@ -329,8 +338,8 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                               ),
                                             ),
                                             Text(
-                                              empDataById[widget.empId]
-                                                  .designation,
+                                              empDataById[widget.empId]!
+                                                  .designation??'DEVELOPER',
                                               style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 18,
@@ -338,7 +347,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                               ),
                                             ),
                                             Text(
-                                              empDataById[widget.empId].phone,
+                                              empDataById[widget.empId]!.phone??'',
                                               style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 18,
@@ -346,7 +355,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                               ),
                                             ),
                                             Text(
-                                              empDataById[widget.empId].email,
+                                              empDataById[widget.empId]!.email??'',
                                               style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 18,
@@ -521,20 +530,20 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                             String strOut = attendanceDetails['attendance']
                                 [dayIndex]['outTime'];
 
-                            DateTime inTime;
-                            DateTime outTime;
+                           late DateTime inTime;
+                           late DateTime outTime;
 
                             try {
                               hours = int.tryParse(
                                   attendanceDetails['attendance'][dayIndex]
                                           ['totalWorkingHour']
                                       .toString()
-                                      .split(':')[0]);
+                                      .split(':')[0])!;
                               minuit = int.tryParse(
                                   attendanceDetails['attendance'][dayIndex]
                                           ['totalWorkingHour']
                                       .toString()
-                                      .split(':')[1]);
+                                      .split(':')[1])!;
                             } catch (e) {
                               hours = 0;
                               minuit = 0;
@@ -547,16 +556,16 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                 day.year,
                                 day.month,
                                 day.day,
-                                int.tryParse(strIn.split(':')[0]),
-                                int.tryParse(strIn.split(':')[1]),
+                                int.tryParse(strIn.split(':')[0])!,
+                                int.tryParse(strIn.split(':')[1])!,
                               );
 
                               outTime = DateTime(
                                 day.year,
                                 day.month,
                                 day.day,
-                                int.tryParse(strOut.split(':')[0]),
-                                int.tryParse(strOut.split(':')[1]),
+                                int.tryParse(strOut.split(':')[0])!,
+                                int.tryParse(strOut.split(':')[1])!,
                               );
                             }
 

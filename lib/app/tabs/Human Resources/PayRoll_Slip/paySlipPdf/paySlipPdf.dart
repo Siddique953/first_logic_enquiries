@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -182,7 +181,7 @@ class PaySlip {
                                   children: [
                                     pw.Padding(
                                       padding: EdgeInsets.only(left: 1),
-                                      child: Text(invoice.month,
+                                    child: Text(invoice.month!,
                                           style: TextStyle(
                                               fontSize: 8,
                                               fontWeight: FontWeight.bold,
@@ -250,7 +249,7 @@ class PaySlip {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(invoice.name,
+                                    Text(invoice.name!,
                                         style: TextStyle(
                                             fontSize: 7,
                                             color: PdfColors.black))
@@ -360,7 +359,7 @@ class PaySlip {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(invoice.code,
+                                    Text(invoice.code!,
                                         style: TextStyle(
                                             fontSize: 7,
                                             color: PdfColors.black))
@@ -468,7 +467,7 @@ class PaySlip {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(invoice.designation,
+                                    Text(invoice.designation!,
                                         style: TextStyle(
                                             fontSize: 7,
                                             color: PdfColors.black))
@@ -577,7 +576,7 @@ class PaySlip {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(invoice.pan,
+                                    Text(invoice.pan!,
                                         style: TextStyle(
                                             fontSize: 7,
                                             color: PdfColors.black))
@@ -708,7 +707,7 @@ class PaySlip {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(invoice.accNumber,
+                                    Text(invoice.accNumber!,
                                         style: TextStyle(
                                             fontSize: 7,
                                             color: PdfColors.black))
@@ -839,7 +838,7 @@ class PaySlip {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(invoice.bankName,
+                                    Text(invoice.bankName!,
                                         style: TextStyle(
                                             fontSize: 7,
                                             color: PdfColors.black))
@@ -1143,7 +1142,7 @@ class PaySlip {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(invoice.advance,
+                              Text(invoice.advance!,
                                   style: TextStyle(
                                       fontSize: 7, color: PdfColors.black))
                             ]),
@@ -1195,7 +1194,7 @@ class PaySlip {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(right: 3.0),
-                                child: Text(invoice.dearnessAllo,
+                                child: Text(invoice.dearnessAllo!,
                                     style: TextStyle(
                                         fontSize: 7, color: PdfColors.black)),
                               )
@@ -1227,7 +1226,7 @@ class PaySlip {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(invoice.pto,
+                              Text(invoice.pto!,
                                   style: TextStyle(
                                       fontSize: 7, color: PdfColors.black))
                             ]),
@@ -1279,7 +1278,7 @@ class PaySlip {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(right: 3.0),
-                                child: Text(invoice.hra,
+                                child: Text(invoice.hra!,
                                     style: TextStyle(
                                         fontSize: 7, color: PdfColors.black)),
                               )
@@ -1363,7 +1362,7 @@ class PaySlip {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(right: 3.0),
-                                child: Text(invoice.spAllowance,
+                                child: Text(invoice.spAllowance!,
                                     style: TextStyle(
                                         fontSize: 7, color: PdfColors.black)),
                               )
@@ -1447,7 +1446,7 @@ class PaySlip {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(right: 3.0),
-                                child: Text(invoice.cityAllow,
+                                child: Text(invoice.cityAllow!,
                                     style: TextStyle(
                                         fontSize: 7, color: PdfColors.black)),
                               )
@@ -1531,7 +1530,7 @@ class PaySlip {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(left: 3.0),
-                                child: Text(invoice.incentives,
+                                child: Text(invoice.incentives!,
                                     style: TextStyle(
                                         fontSize: 7, color: PdfColors.black)),
                               )
@@ -1618,7 +1617,7 @@ class PaySlip {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(right: 3.0),
-                                child: Text(invoice.medicalAlowance,
+                                child: Text(invoice.medicalAlowance!,
                                     style: TextStyle(
                                         fontSize: 7, color: PdfColors.black)),
                               )
@@ -1737,7 +1736,7 @@ class PaySlip {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(invoice.totalDeduction,
+                              Text(invoice.totalDeduction!,
                                   style: TextStyle(
                                       fontSize: 7, color: PdfColors.black))
                             ]),
@@ -1854,7 +1853,7 @@ class PaySlip {
     // html.document.body.children.remove(anchor);
     // html.Url.revokeObjectUrl(url);
 
-    uploadFileToFireBase(invoice.name, bytes, 'pdf', employeeDetails,
+    uploadFileToFireBase(invoice.name!, bytes, 'pdf', employeeDetails,
         employeeAttendance, empId, lastDay);
 ///
     //android
@@ -2105,7 +2104,7 @@ class PaySlip {
         '</div>'
         '<div class="container">'
         '<p>'
-        'Dear <b>${empDataById[empId].name}</b>,'
+        'Dear <b>${empDataById[empId]!.name}</b>,'
         '</p>'
         '<p>'
         'I hope this email finds you in good health and spirits. I am writing to '
@@ -2123,8 +2122,8 @@ class PaySlip {
         ' <section>'
         ' <h2>Employee Information</h2>'
         ' <ul>'
-        ' <li>Name: ${empDataById[empId].name}</li>'
-        ' <li>Employee ID: ${empDataById[empId].empId}</li>'
+        ' <li>Name: ${empDataById[empId]!.name}</li>'
+        ' <li>Employee ID: ${empDataById[empId]!.empId}</li>'
         ' <li>Total Working Days: ${(30 - (employeeDetails[empId]['offDay'] ?? 0))}</li>'
         '<li>Number of Leaves: ${employeeDetails[empId]['leave']}</li>'
         ' </ul>'
@@ -2133,7 +2132,7 @@ class PaySlip {
     html += '<section>'
         '<h2>Salary Details</h2>'
         '<ul>'
-        '<li>Basic Salary: ₹${empDataById[empId].ctc}</li>'
+        '<li>Basic Salary: ₹${empDataById[empId]!.ctc}</li>'
         '<li>Payable Salary: ₹${employeeDetails[empId]['payable']}</li>';
 
     html += employeeDetails[empId]['incentive'] == 0
@@ -2171,7 +2170,7 @@ class PaySlip {
       'html': html,
       'status': 'Salary Information',
       'att': url,
-      'emailList': [empDataById[empId].email],
+      'emailList': [empDataById[empId]!.email],
     }).then((value) {
       FirebaseFirestore.instance
           .collection('employees')
@@ -2209,7 +2208,7 @@ class PaySlip {
           .set({
         'totalWorkingDays': (lastDay - (employeeDetails[empId]['offDay'] ?? 4)),
         'totalLeave': employeeDetails[empId]['leave'],
-        'basicSalary': empDataById[empId].ctc,
+        'basicSalary': empDataById[empId]!.ctc,
         'payableSalary': employeeDetails[empId]['payable'],
         'incentive': employeeDetails[empId]['incentive'],
         'overTime': employeeDetails[empId]['ot'],

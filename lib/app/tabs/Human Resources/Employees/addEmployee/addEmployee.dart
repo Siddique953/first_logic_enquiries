@@ -16,8 +16,8 @@ import '../../../../pages/home_page/home.dart';
 class AddEmployee extends StatefulWidget {
   final TabController _tabController;
   const AddEmployee({
-    Key key,
-    @required TabController tabController,
+    Key? key,
+    required TabController tabController,
   })  : _tabController = tabController,
         super(key: key);
 
@@ -35,11 +35,11 @@ class _AddEmployeeState extends State<AddEmployee> {
   TextEditingController phone = TextEditingController();
   TextEditingController dateOfJoining = TextEditingController();
   TextEditingController pan = TextEditingController();
-  DateTime joinedDate;
+  DateTime? joinedDate;
 
   //OPTIONAL INFORMATION
   TextEditingController dateOfBirth = TextEditingController();
-  DateTime dob;
+  DateTime? dob;
   String gender = '';
 
   //WORK
@@ -92,8 +92,8 @@ class _AddEmployeeState extends State<AddEmployee> {
   String mError = '';
   String oError = '';
 
-  PlatformFile pickFile;
-  UploadTask uploadTask;
+  PlatformFile? pickFile;
+  UploadTask? uploadTask;
   String profileUrl = '';
 
   Future selectFile() async {
@@ -102,7 +102,7 @@ class _AddEmployeeState extends State<AddEmployee> {
 
     pickFile = result.files.first;
 
-    String ext = pickFile.name.split('.').last;
+    String ext = pickFile!.name.split('.').last;
     final fileBytes = result.files.first.bytes;
 
     showUploadMessage(context, 'Uploading...', showLoading: true);
@@ -121,7 +121,7 @@ class _AddEmployeeState extends State<AddEmployee> {
     uploadTask = FirebaseStorage.instance
         .ref('profiles/employees/ $name.$ext')
         .putData(fileBytes);
-    final snapshot = await uploadTask.whenComplete(() {});
+    final snapshot = await uploadTask!.whenComplete(() {});
     final urlDownlod = await snapshot.ref.getDownloadURL();
 
     profileUrl = urlDownlod;
@@ -157,7 +157,7 @@ class _AddEmployeeState extends State<AddEmployee> {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(20.0),
           child: Theme(
-            data: Theme.of(context).copyWith(accentColor: Colors.white),
+            data: Theme.of(context).copyWith(hintColor: Colors.white),
             child: Padding(
               padding: const EdgeInsets.only(left: 50),
               child: Container(
@@ -494,7 +494,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                                             autovalidateMode: AutovalidateMode
                                                 .onUserInteraction,
                                             validator: (v) {
-                                              if (!phnValidation.hasMatch(v)) {
+                                              if (!phnValidation.hasMatch(v!)) {
                                                 return "Enter valid Phone Number";
                                               } else {
                                                 return null;
@@ -590,14 +590,18 @@ class _AddEmployeeState extends State<AddEmployee> {
                                                                 59,
                                                                 59))
                                                         .then((value) {
-                                                      setState(() {
-                                                        joinedDate = value;
-                                                        dateOfJoining.text =
-                                                            dateTimeFormat(
-                                                                    'dd-MM-yyyy',
-                                                                    value)
-                                                                .toString();
-                                                      });
+                                                          if(value!=null) {
+                                                            setState(() {
+                                                              joinedDate =
+                                                                  value;
+                                                              dateOfJoining
+                                                                  .text =
+                                                                  dateTimeFormat(
+                                                                      'dd-MM-yyyy',
+                                                                      value)
+                                                                      .toString();
+                                                            });
+                                                          }
                                                     });
                                                   },
                                                   onChanged: (v) {
@@ -887,13 +891,17 @@ class _AddEmployeeState extends State<AddEmployee> {
                                                           59,
                                                           59))
                                                   .then((value) {
-                                                setState(() {
-                                                  dob = value;
-                                                  dateOfBirth
-                                                      .text = dateTimeFormat(
-                                                          'dd-MM-yyyy', value)
-                                                      .toString();
-                                                });
+                                                    if(value!=null) {
+                                                      setState(() {
+                                                        dob = value;
+                                                        dateOfBirth
+                                                            .text =
+                                                            dateTimeFormat(
+                                                                'dd-MM-yyyy',
+                                                                value)
+                                                                .toString();
+                                                      });
+                                                    }
                                               });
                                             },
                                             onChanged: (v) {
@@ -1553,7 +1561,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                                               ),
                                             ),
                                             onTap: (x) {
-                                              reportingManager.text = x;
+                                              reportingManager.text = x!;
                                               oError = '';
 
                                               setState(() {
@@ -1626,7 +1634,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                                                 .onUserInteraction,
                                             validator: (v) {
                                               if (!numberValidation
-                                                  .hasMatch(v)) {
+                                                  .hasMatch(v!)) {
                                                 return "Enter valid Phone Number";
                                               } else {
                                                 return null;
@@ -1636,7 +1644,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                                               oError = '';
                                               try {
                                                 probation = int.tryParse(
-                                                    probationPeriod.text);
+                                                    probationPeriod.text)!;
                                               } catch (err) {
                                                 showSnackbar(context,
                                                     'Input is not in a correct format');
@@ -1654,7 +1662,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                                                           probation =
                                                               int.tryParse(
                                                                   probationPeriod
-                                                                      .text);
+                                                                      .text)!;
                                                           probation++;
                                                           probationPeriod.text =
                                                               probation
@@ -1676,7 +1684,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                                                           probation =
                                                               int.tryParse(
                                                                   probationPeriod
-                                                                      .text);
+                                                                      .text)!;
                                                           probation--;
                                                           probationPeriod.text =
                                                               probation
@@ -1790,14 +1798,18 @@ class _AddEmployeeState extends State<AddEmployee> {
                                                                 59,
                                                                 59))
                                                         .then((value) {
-                                                      setState(() {
-                                                        joinedDate = value;
-                                                        dateOfJoining.text =
-                                                            dateTimeFormat(
-                                                                    'dd-MM-yyyy',
-                                                                    value)
-                                                                .toString();
-                                                      });
+                                                          if(value!=null) {
+                                                            setState(() {
+                                                              joinedDate =
+                                                                  value;
+                                                              dateOfJoining
+                                                                  .text =
+                                                                  dateTimeFormat(
+                                                                      'dd-MM-yyyy',
+                                                                      value)
+                                                                      .toString();
+                                                            });
+                                                          }
                                                     });
                                                   },
                                                   onChanged: (v) {
@@ -1933,7 +1945,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                                                 .onUserInteraction,
                                             validator: (v) {
                                               if (!numberValidation
-                                                  .hasMatch(v)) {
+                                                  .hasMatch(v!)) {
                                                 return "Enter valid Phone Number";
                                               } else {
                                                 return null;

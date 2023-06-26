@@ -1,23 +1,21 @@
-//@dart=2.9
 
-import '../../backend/backend.dart';
 
 class paymentDetail {
-  final String name;
-  // final String selectedProjectType;
-  final double totalProjectCost;
-  final double totalDue;
-  final String date;
-  final String paymentMethod;
-  final double totalFee;
-  final double lastPaymentAmount;
-  // final double totalAmountPaid;
-  final String nameOfProject;
-  final String customerName;
-  final String customerPhoneNo;
-  final String desc;
-  final String receiptNo;
-  final String staff;
+  final String? name;
+  // final String? selectedProjectType;
+  final double? totalProjectCost;
+  final double? totalDue;
+  final String? date;
+  final String? paymentMethod;
+  final double? totalFee;
+  final double? lastPaymentAmount;
+  // final double? totalAmountPaid;
+  final String? nameOfProject;
+  final String? customerName;
+  final String? customerPhoneNo;
+  final String? desc;
+  final String? receiptNo;
+  final String? staff;
 
   const paymentDetail({
     this.name,

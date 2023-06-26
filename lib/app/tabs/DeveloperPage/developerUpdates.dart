@@ -5,16 +5,16 @@ import '../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
 
 class UpdatesPage extends StatefulWidget {
-  const UpdatesPage({Key key}) : super(key: key);
+  const UpdatesPage({Key? key}) : super(key: key);
 
   @override
   State<UpdatesPage> createState() => _UpdatesPageState();
 }
 
 class _UpdatesPageState extends State<UpdatesPage> {
-  List currentList;
-  TextEditingController updates;
-  TextEditingController versions;
+ late List currentList;
+ late TextEditingController updates;
+ late TextEditingController versions;
 
 
   getSettings(){

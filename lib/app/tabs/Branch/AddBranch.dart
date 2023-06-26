@@ -15,7 +15,7 @@ String ogUser = '';
 String ogPass = '';
 
 class AddBranchWidget extends StatefulWidget {
-  const AddBranchWidget({Key key}) : super(key: key);
+  const AddBranchWidget({Key? key}) : super(key: key);
 
   @override
   _AddBranchWidgetState createState() => _AddBranchWidgetState();
@@ -23,24 +23,24 @@ class AddBranchWidget extends StatefulWidget {
 
 class _AddBranchWidgetState extends State<AddBranchWidget> {
   bool edit = false;
-  TextEditingController name;
-  TextEditingController address;
-  TextEditingController email;
-  TextEditingController phone;
-  TextEditingController shortName;
-  TextEditingController eshortName;
-  TextEditingController eName;
-  TextEditingController eAddress;
-  TextEditingController eEmail;
-  TextEditingController ePhone;
-  TextEditingController search;
+  TextEditingController name = TextEditingController();
+  TextEditingController address = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController phone = TextEditingController();
+  TextEditingController shortName = TextEditingController();
+  TextEditingController eshortName = TextEditingController();
+  TextEditingController eName = TextEditingController();
+  TextEditingController eAddress = TextEditingController();
+  TextEditingController eEmail = TextEditingController();
+  TextEditingController ePhone = TextEditingController();
+  TextEditingController search = TextEditingController();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<dynamic> admins1 = [];
-  String dropDownValue;
+  String? dropDownValue;
   String currentId = '';
 
   setSearchParam(String caseNumber) {
-    List<String> caseSearchList = List<String>();
+    List<String> caseSearchList = [];
     String temp = "";
 
     List<String> nameSplits = caseNumber.split(" ");
@@ -910,7 +910,7 @@ class _AddBranchWidgetState extends State<AddBranchWidget> {
                             child: CircularProgressIndicator(),
                           );
                         }
-                        var data = snapshot.data.docs;
+                        var data = snapshot.data!.docs;
                         return SizedBox(
                           width: double.infinity,
                           child: DataTable(
@@ -1038,7 +1038,7 @@ class _AddBranchWidgetState extends State<AddBranchWidget> {
                             child: CircularProgressIndicator(),
                           );
                         }
-                        var data = snapshot.data.docs;
+                        var data = snapshot.data!.docs;
                         return data.length == 0
                             ? Center(
                                 child: Text('No Data'),

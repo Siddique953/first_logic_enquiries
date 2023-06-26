@@ -13,12 +13,12 @@ import '../../pages/home_page/home.dart';
 import 'editProjects.dart';
 
 class AddEnquiryWidget extends StatefulWidget {
-  final String name;
-  final String mobile;
-  final String email;
-  final bool lead;
+  final String? name;
+  final String? mobile;
+  final String? email;
+  final bool? lead;
   const AddEnquiryWidget(
-      {Key key, this.name, this.mobile, this.email, this.lead})
+      {Key? key,  this.name,  this.mobile,  this.email,  this.lead})
       : super(key: key);
 
   @override
@@ -27,20 +27,20 @@ class AddEnquiryWidget extends StatefulWidget {
 
 class _AddEnquiryWidgetState extends State<AddEnquiryWidget> {
   String uploadedFileUrl1 = '';
-  String dropDownValue;
-  String uploadedFileUrl2;
-  TextEditingController name;
-  TextEditingController place;
-  TextEditingController mobile;
-  TextEditingController email;
-  TextEditingController description;
-  TextEditingController domain;
-  TextEditingController deliverables;
-  TextEditingController platform;
-  TextEditingController agentName;
-  TextEditingController branch;
-  TextEditingController selectedProjectType;
-  TextEditingController projectName;
+ late String dropDownValue;
+ late String uploadedFileUrl2;
+ late TextEditingController name;
+ late TextEditingController place;
+ late TextEditingController mobile;
+ late TextEditingController email;
+ late TextEditingController description;
+ late TextEditingController domain;
+ late TextEditingController deliverables;
+ late TextEditingController platform;
+ late TextEditingController agentName;
+ late TextEditingController branch;
+ late TextEditingController selectedProjectType;
+ late TextEditingController projectName;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -388,7 +388,7 @@ class _AddEnquiryWidgetState extends State<AddEnquiryWidget> {
                                                         ),
                                                       ),
                                                       onTap: (x) {
-                                                        mobile.text = x;
+                                                        mobile.text = x!;
                                                         name.text =
                                                             customerDetailsByNumber[
                                                                 x]['name'];
@@ -749,7 +749,7 @@ class _AddEnquiryWidgetState extends State<AddEnquiryWidget> {
                                                         ),
                                                       ),
                                                       onTap: (x) {
-                                                        agentName.text = x;
+                                                        agentName.text = x!;
                                                         setState(() {
                                                           print(x);
                                                         });

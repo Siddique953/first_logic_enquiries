@@ -1,10 +1,10 @@
-//@dart=2.9
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime_type/mime_type.dart';
 
+import '../app/pages/home_page/home.dart';
 import '../auth/auth_util.dart';
 
 const allowedFormats = {'image/png', 'image/jpeg', 'video/mp4', 'image/gif'};
@@ -22,9 +22,9 @@ enum MediaSource {
 }
 
 
-Future<SelectedMedia> selectMedia({
-  double maxWidth,
-  double maxHeight,
+Future<SelectedMedia?> selectMedia({
+  double? maxWidth,
+  double? maxHeight,
   bool isVideo = false,
   bool fromCamera = false, mediaSource,
 }) async {
@@ -39,7 +39,7 @@ Future<SelectedMedia> selectMedia({
   if (mediaBytes == null) {
     return null;
   }
-  final path = storagePath(currentUserUid, pickedMedia.path, isVideo);
+  final path = storagePath(currentUserUid, pickedMedia!.path, isVideo);
   return SelectedMedia(path, mediaBytes);
 }
 

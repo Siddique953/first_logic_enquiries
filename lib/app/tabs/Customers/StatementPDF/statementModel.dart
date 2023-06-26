@@ -1,11 +1,10 @@
-//@dart=2.9
 
 class StatementModel {
-  final String customerName;
+  final String? customerName;
   // final String selectedProjectType;
-  final String address;
+  final String? address;
 
-  final String customerPhoneNo;
+  final String? customerPhoneNo;
 
   const StatementModel({
     this.customerName,

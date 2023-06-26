@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:fl_erp/app/app_widget.dart';
@@ -24,7 +23,7 @@ double balanceNumber = 0;
 var format = NumberFormat.simpleCurrency(locale: 'en_in');
 
 class StatementPDF {
-  static Future<File> downloadPdf(StatementModel invoice, List datas,
+  static Future<File?> downloadPdf(StatementModel invoice, List datas,
       double creditTotal, double debitTotal) async {
     print('PDFFFFFFFFFF ');
 
@@ -133,19 +132,19 @@ class StatementPDF {
                           ),
                           pw.SizedBox(height: 5),
                           Text(
-                            invoice.customerName,
+                            invoice.customerName!,
                             style: pw.TextStyle(
                               fontSize: 12,
                             ),
                           ),
                           Text(
-                            invoice.address,
+                            invoice.address!,
                             style: pw.TextStyle(
                               fontSize: 12,
                             ),
                           ),
                           Text(
-                            invoice.customerPhoneNo,
+                            invoice.customerPhoneNo!,
                             style: pw.TextStyle(
                               fontSize: 12,
                             ),
@@ -404,9 +403,9 @@ class StatementPDF {
       ..style.display = 'none'
       ..download = '${invoice.customerName}.pdf';
 
-    html.document.body.children.add(anchor);
+    html.document.body!.children.add(anchor);
     anchor.click();
-    html.document.body.children.remove(anchor);
+    html.document.body!.children.remove(anchor);
     html.Url.revokeObjectUrl(url);
 
     //android

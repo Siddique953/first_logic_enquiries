@@ -9,7 +9,7 @@ import '../../../../flutter_flow/upload_media.dart';
 import '../../../app_widget.dart';
 
 class AgentList extends StatefulWidget {
-  const AgentList({Key key}) : super(key: key);
+  const AgentList({Key? key}) : super(key: key);
 
   @override
   State<AgentList> createState() => _AgentListState();
@@ -44,7 +44,7 @@ class _AgentListState extends State<AgentList> {
     });
   }
 
-  TextEditingController search;
+  TextEditingController search = TextEditingController();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   int firstIndex = 0;
