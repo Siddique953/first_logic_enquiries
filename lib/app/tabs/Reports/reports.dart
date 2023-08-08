@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:excel/excel.dart';
+import 'package:excel/excel.dart' as ex;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
@@ -88,38 +88,38 @@ class _ReportsState extends State<Reports> {
   int i = 0;
 
   Future<void> importData() async {
-    var excel = Excel.createExcel();
+    var excel = ex.Excel.createExcel();
 
-    Sheet sheetObject = excel['sales'];
-    CellStyle cellStyle = CellStyle(
+    ex.Sheet sheetObject = excel['sales'];
+    ex.CellStyle cellStyle = ex.CellStyle(
         // backgroundColorHex: "#1AFF1A",
-        fontFamily: getFontFamily(FontFamily.Calibri));
+        fontFamily: ex.getFontFamily(ex.FontFamily.Calibri));
 
     //HEADINGS
 
     if (payments.length > 0) {
-      var cell1 = sheetObject.cell(CellIndex.indexByString("A1"));
+      var cell1 = sheetObject.cell(ex.CellIndex.indexByString("A1"));
       cell1.value = 'SL NO';
       cell1.cellStyle = cellStyle;
-      var cell2 = sheetObject.cell(CellIndex.indexByString("B1"));
+      var cell2 = sheetObject.cell(ex.CellIndex.indexByString("B1"));
       cell2.value = 'CUSTOMER ID'; // dynamic values support provided;
       cell2.cellStyle = cellStyle;
-      var cell3 = sheetObject.cell(CellIndex.indexByString("C1"));
+      var cell3 = sheetObject.cell(ex.CellIndex.indexByString("C1"));
       cell3.value = 'DATE'; // dynamic values support provided;
       cell3.cellStyle = cellStyle;
-      var cell4 = sheetObject.cell(CellIndex.indexByString("D1"));
+      var cell4 = sheetObject.cell(ex.CellIndex.indexByString("D1"));
       cell4.value = 'NAME'; // dynamic values support provided;
       cell4.cellStyle = cellStyle;
-      var cell5 = sheetObject.cell(CellIndex.indexByString("E1"));
+      var cell5 = sheetObject.cell(ex.CellIndex.indexByString("E1"));
       cell5.value = 'PROJECT NAME'; // dynamic values support provided;
       cell5.cellStyle = cellStyle;
-      var cell6 = sheetObject.cell(CellIndex.indexByString("F1"));
+      var cell6 = sheetObject.cell(ex.CellIndex.indexByString("F1"));
       cell6.value = 'MOBILE'; // dynamic values support provided;
       cell6.cellStyle = cellStyle;
-      var cell7 = sheetObject.cell(CellIndex.indexByString("G1"));
+      var cell7 = sheetObject.cell(ex.CellIndex.indexByString("G1"));
       cell7.value = 'MODE OF PAYMENT'; // dynamic values support provided;
       cell7.cellStyle = cellStyle;
-      var cell8 = sheetObject.cell(CellIndex.indexByString("H1"));
+      var cell8 = sheetObject.cell(ex.CellIndex.indexByString("H1"));
       cell8.value = 'AMOUNT'; // dynamic values support provided;
       cell8.cellStyle = cellStyle;
     }
@@ -129,32 +129,32 @@ class _ReportsState extends State<Reports> {
     //CELL VALUES
 
     for (int i = 0; i < payments.length; i++) {
-      var cell1 = sheetObject.cell(CellIndex.indexByString("A${i + 2}"));
+      var cell1 = sheetObject.cell(ex.CellIndex.indexByString("A${i + 2}"));
       cell1.value = '${i + 1}'; // dynamic values support provided;
       cell1.cellStyle = cellStyle;
-      var cell2 = sheetObject.cell(CellIndex.indexByString("B${i + 2}"));
+      var cell2 = sheetObject.cell(ex.CellIndex.indexByString("B${i + 2}"));
       cell2.value = payments[i]['customerID']
           .toString(); // dynamic values support provided;
       cell2.cellStyle = cellStyle;
-      var cell3 = sheetObject.cell(CellIndex.indexByString("C${i + 2}"));
+      var cell3 = sheetObject.cell(ex.CellIndex.indexByString("C${i + 2}"));
       cell3.value = dateTimeFormat('d-MMM-y',
           payments[i]['paidDate'].toDate()); // dynamic values support provided;
       cell3.cellStyle = cellStyle;
-      var cell4 = sheetObject.cell(CellIndex.indexByString("D${i + 2}"));
+      var cell4 = sheetObject.cell(ex.CellIndex.indexByString("D${i + 2}"));
       cell4.value = payments[i]['name']; // dynamic values support provided;
       cell4.cellStyle = cellStyle;
-      var cell5 = sheetObject.cell(CellIndex.indexByString("E${i + 2}"));
+      var cell5 = sheetObject.cell(ex.CellIndex.indexByString("E${i + 2}"));
       cell5.value =
           payments[i]['projectName']; // dynamic values support provided;
       cell5.cellStyle = cellStyle;
-      var cell6 = sheetObject.cell(CellIndex.indexByString("F${i + 2}"));
+      var cell6 = sheetObject.cell(ex.CellIndex.indexByString("F${i + 2}"));
       cell6.value = payments[i]['mobile']; // dynamic values support provided;
       cell6.cellStyle = cellStyle;
-      var cell7 = sheetObject.cell(CellIndex.indexByString("G${i + 2}"));
+      var cell7 = sheetObject.cell(ex.CellIndex.indexByString("G${i + 2}"));
       cell7.value = payments[i]['modeOfPayment']
           .toString(); // dynamic values support provided;
       cell7.cellStyle = cellStyle;
-      var cell8 = sheetObject.cell(CellIndex.indexByString("H${i + 2}"));
+      var cell8 = sheetObject.cell(ex.CellIndex.indexByString("H${i + 2}"));
       cell8.value =
           payments[i]['amount'].toString(); // dynamic values support provided;
       cell8.cellStyle = cellStyle;

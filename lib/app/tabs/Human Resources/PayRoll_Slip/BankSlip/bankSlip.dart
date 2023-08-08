@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:excel/excel.dart';
+import 'package:excel/excel.dart' as ex;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -30,17 +30,23 @@ class _BankSlipPageState extends State<BankSlipPage> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   List slipNames = [];
+  List empNamesList = [];
 
   // listOfCustomers
   @override
   void initState() {
+    empNamesList=employeeList.where((element) => element['delete']==false).toList();
     super.initState();
 
-    for (int i = 0; i < employeeList.length; i++) {
+    for (int i = 0; i < empNamesList.length; i++) {
       print("[[[[[[[[[employeeList[i]['empId']]]]]]]]]]");
-      print(employeeList[i]['empId']);
-      if (widget.paySlip[employeeList[i]['empId']]['takeHome'] != 0) {
-        slipNames.add(employeeList[i]);
+      print(empNamesList[i]['empId']);
+      if(widget.paySlip[empNamesList[i]['empId']]==null){
+        continue;
+        // widget.paySlip[empNamesList[i]['empId']]['takeHome']=0;
+      }
+      if (widget.paySlip[empNamesList[i]['empId']]['takeHome'] != 0) {
+        slipNames.add(empNamesList[i]);
       }
     }
 
@@ -617,100 +623,100 @@ class _BankSlipPageState extends State<BankSlipPage> {
   Future<void> importData() async {
     print(slipNames.length);
 
-    var excel = Excel.createExcel();
+    var excel = ex.Excel.createExcel();
 
-    Sheet sheetObject = excel['Bank Slip'];
-    CellStyle cellStyle = CellStyle(
+    ex.Sheet sheetObject = excel['Bank Slip'];
+    ex.CellStyle cellStyle = ex.CellStyle(
       fontSize: 10,
-      fontFamily: getFontFamily(FontFamily.Calibri),
+      fontFamily: ex.getFontFamily(ex.FontFamily.Calibri),
 
       // textWrapping: TextWrapping.WrapText,
     );
 
-    CellStyle fromAndToStyle = CellStyle(
+    ex.CellStyle fromAndToStyle = ex.CellStyle(
       fontSize: 13,
-      fontFamily: getFontFamily(FontFamily.Calibri),
+      fontFamily: ex.getFontFamily(ex.FontFamily.Calibri),
 
       // textWrapping: TextWrapping.WrapText,
     );
 
-    var cell1 = sheetObject.cell(CellIndex.indexByString("B5"));
+    var cell1 = sheetObject.cell(ex.CellIndex.indexByString("B5"));
     cell1.value = 'To,';
     cell1.cellStyle = fromAndToStyle;
 
-    var cell2 = sheetObject.cell(CellIndex.indexByString("B6"));
+    var cell2 = sheetObject.cell(ex.CellIndex.indexByString("B6"));
     cell2.value = 'The Manager,';
     cell2.cellStyle = fromAndToStyle;
 
-    var cell3 = sheetObject.cell(CellIndex.indexByString("B7"));
+    var cell3 = sheetObject.cell(ex.CellIndex.indexByString("B7"));
     cell3.value = 'HDFC Bank';
     cell3.cellStyle = fromAndToStyle;
 
-    var cell4 = sheetObject.cell(CellIndex.indexByString("B8"));
+    var cell4 = sheetObject.cell(ex.CellIndex.indexByString("B8"));
     cell4.value = 'Perinthalmanna II';
     cell4.cellStyle = fromAndToStyle;
 
     sheetObject.merge(
-        CellIndex.indexByString("B10"), CellIndex.indexByString("F10"));
+        ex.CellIndex.indexByString("B10"), ex.CellIndex.indexByString("F10"));
 
     sheetObject.merge(
-        CellIndex.indexByString("B12"), CellIndex.indexByString("G13"));
+        ex.CellIndex.indexByString("B12"), ex.CellIndex.indexByString("G13"));
 
     sheetObject.merge(
-        CellIndex.indexByString("B14"), CellIndex.indexByString("G16"));
+        ex.CellIndex.indexByString("B14"), ex.CellIndex.indexByString("G16"));
 
     sheetObject.setColWidth(2, 25);
     sheetObject.setColWidth(3, 20);
     sheetObject.setColWidth(4, 15);
 
-    var sub = sheetObject.cell(CellIndex.indexByString("B10"));
+    var sub = sheetObject.cell(ex.CellIndex.indexByString("B10"));
     sub.value = 'Sub : Staff details for Salary credit.';
-    sub.cellStyle = CellStyle(
+    sub.cellStyle = ex.CellStyle(
         bold: true,
         fontSize: 17,
-        fontFamily: getFontFamily(FontFamily.Calibri));
+        fontFamily: ex.getFontFamily(ex.FontFamily.Calibri));
 
-    var desc1 = sheetObject.cell(CellIndex.indexByString("B12"));
+    var desc1 = sheetObject.cell(ex.CellIndex.indexByString("B12"));
     desc1.value =
         'Please find attached Chq.No. ${chequeNumber.text} Dated:${dateTimeFormat('dd/mm/yyyy', DateTime.now())} amounted to Rs. '
         ' ${total.toStringAsFixed(2)}/-';
 
-    desc1.cellStyle = CellStyle(
+    desc1.cellStyle = ex.CellStyle(
       fontSize: 12,
-      fontFamily: getFontFamily(FontFamily.Calibri),
-      textWrapping: TextWrapping.WrapText,
-      horizontalAlign: HorizontalAlign.Center,
-      verticalAlign: VerticalAlign.Center,
+      fontFamily: ex.getFontFamily(ex.FontFamily.Calibri),
+      textWrapping: ex.TextWrapping.WrapText,
+      horizontalAlign: ex.HorizontalAlign.Center,
+      verticalAlign: ex.VerticalAlign.Center,
     );
 
-    var desc2 = sheetObject.cell(CellIndex.indexByString("B14"));
+    var desc2 = sheetObject.cell(ex.CellIndex.indexByString("B14"));
     desc2.value =
         'Request you to Transfer Salary for the month ${dateTimeFormat('MMMM y', DateTime(
               DateTime.now().year,
               DateTime.now().month - 1,
               DateTime.now().day,
             ))} of Rupees ${NumberToWord().convert('en-in', total.round())} only.';
-    desc2.cellStyle = CellStyle(
+    desc2.cellStyle = ex.CellStyle(
       fontSize: 12,
-      fontFamily: getFontFamily(FontFamily.Calibri),
-      textWrapping: TextWrapping.WrapText,
-      horizontalAlign: HorizontalAlign.Center,
-      verticalAlign: VerticalAlign.Center,
+      fontFamily: ex.getFontFamily(ex.FontFamily.Calibri),
+      textWrapping: ex.TextWrapping.WrapText,
+      horizontalAlign: ex.HorizontalAlign.Center,
+      verticalAlign: ex.VerticalAlign.Center,
     );
 
     //HEADINGS
 
     if (slipNames.length > 0) {
-      var cell1 = sheetObject.cell(CellIndex.indexByString("B18"));
+      var cell1 = sheetObject.cell(ex.CellIndex.indexByString("B18"));
       cell1.value = 'SL NO';
       cell1.cellStyle = cellStyle;
-      var cell2 = sheetObject.cell(CellIndex.indexByString("C18"));
+      var cell2 = sheetObject.cell(ex.CellIndex.indexByString("C18"));
       cell2.value = 'EMPLOYEE NAME'; // dynamic values support provided;
       cell2.cellStyle = cellStyle;
-      var cell3 = sheetObject.cell(CellIndex.indexByString("D18"));
+      var cell3 = sheetObject.cell(ex.CellIndex.indexByString("D18"));
       cell3.value = 'ACCOUNT NUMBER'; // dynamic values support provided;
       cell3.cellStyle = cellStyle;
-      var cell4 = sheetObject.cell(CellIndex.indexByString("E18"));
+      var cell4 = sheetObject.cell(ex.CellIndex.indexByString("E18"));
       cell4.value = 'AMOUNT'; // dynamic values support provided;
       cell4.cellStyle = cellStyle;
     }
@@ -725,96 +731,96 @@ class _BankSlipPageState extends State<BankSlipPage> {
 
       if (num == slipNames.length) {
         num += 1;
-        var cell1 = sheetObject.cell(CellIndex.indexByString("B${i + 2}"));
+        var cell1 = sheetObject.cell(ex.CellIndex.indexByString("B${i + 2}"));
         cell1.value = ''; // dynamic values support provided;
         cell1.cellStyle = cellStyle;
-        var cell2 = sheetObject.cell(CellIndex.indexByString("C${i + 2}"));
+        var cell2 = sheetObject.cell(ex.CellIndex.indexByString("C${i + 2}"));
         cell2.value = ''; // dynamic values support provided;
         cell2.cellStyle = cellStyle;
-        var cell3 = sheetObject.cell(CellIndex.indexByString("D${i + 2}"));
+        var cell3 = sheetObject.cell(ex.CellIndex.indexByString("D${i + 2}"));
         cell3.value = ''; // dynamic values support provided;
         cell3.cellStyle = cellStyle;
-        var cell4 = sheetObject.cell(CellIndex.indexByString("E${i + 2}"));
+        var cell4 = sheetObject.cell(ex.CellIndex.indexByString("E${i + 2}"));
         cell4.value = ''; // dynamic values support provided;
         cell4.cellStyle = cellStyle;
       } else if (num > slipNames.length) {
-        var cell1 = sheetObject.cell(CellIndex.indexByString("B${i + 2}"));
+        var cell1 = sheetObject.cell(ex.CellIndex.indexByString("B${i + 2}"));
         cell1.value = ''; // dynamic values support provided;
         cell1.cellStyle = cellStyle;
-        var cell2 = sheetObject.cell(CellIndex.indexByString("C${i + 2}"));
+        var cell2 = sheetObject.cell(ex.CellIndex.indexByString("C${i + 2}"));
         cell2.value = 'Total '; // dynamic values support provided;
         cell2.cellStyle = cellStyle;
-        var cell3 = sheetObject.cell(CellIndex.indexByString("D${i + 2}"));
+        var cell3 = sheetObject.cell(ex.CellIndex.indexByString("D${i + 2}"));
         cell3.value = ''; // dynamic values support provided;
         cell3.cellStyle = cellStyle;
-        var cell4 = sheetObject.cell(CellIndex.indexByString("E${i + 2}"));
+        var cell4 = sheetObject.cell(ex.CellIndex.indexByString("E${i + 2}"));
         cell4.value =
             total.toStringAsFixed(2); // dynamic values support provided;
-        cell4.cellStyle = CellStyle(
+        cell4.cellStyle = ex.CellStyle(
           fontSize: 10,
-          fontFamily: getFontFamily(FontFamily.Calibri),
-          horizontalAlign: HorizontalAlign.Right,
-          verticalAlign: VerticalAlign.Center,
+          fontFamily: ex.getFontFamily(ex.FontFamily.Calibri),
+          horizontalAlign: ex.HorizontalAlign.Right,
+          verticalAlign: ex.VerticalAlign.Center,
         );
       } else {
         print(i);
         print(num);
-        var cell1 = sheetObject.cell(CellIndex.indexByString("B${i + 2}"));
+        var cell1 = sheetObject.cell(ex.CellIndex.indexByString("B${i + 2}"));
         cell1.value = '${num + 1}'; // dynamic values support provided;
-        cell1.cellStyle = CellStyle(
+        cell1.cellStyle = ex.CellStyle(
           fontSize: 10,
-          fontFamily: getFontFamily(FontFamily.Calibri),
-          horizontalAlign: HorizontalAlign.Center,
-          verticalAlign: VerticalAlign.Center,
+          fontFamily: ex.getFontFamily(ex.FontFamily.Calibri),
+          horizontalAlign: ex.HorizontalAlign.Center,
+          verticalAlign: ex.VerticalAlign.Center,
         );
 
-        var cell2 = sheetObject.cell(CellIndex.indexByString("C${i + 2}"));
+        var cell2 = sheetObject.cell(ex.CellIndex.indexByString("C${i + 2}"));
         cell2.value = empDataById[slipNames[num]['empId']]!
             .name
             .toString(); // dynamic values support provided;
         cell2.cellStyle = cellStyle;
-        var cell3 = sheetObject.cell(CellIndex.indexByString("D${i + 2}"));
+        var cell3 = sheetObject.cell(ex.CellIndex.indexByString("D${i + 2}"));
         cell3.value = empDataById[slipNames[num]['empId']]!
             .accountNumber; // dynamic values support provided;
-        cell3.cellStyle = CellStyle(
+        cell3.cellStyle = ex.CellStyle(
           fontSize: 10,
-          fontFamily: getFontFamily(FontFamily.Calibri),
-          horizontalAlign: HorizontalAlign.Right,
-          verticalAlign: VerticalAlign.Center,
+          fontFamily: ex.getFontFamily(ex.FontFamily.Calibri),
+          horizontalAlign: ex.HorizontalAlign.Right,
+          verticalAlign: ex.VerticalAlign.Center,
         );
-        var cell4 = sheetObject.cell(CellIndex.indexByString("E${i + 2}"));
+        var cell4 = sheetObject.cell(ex.CellIndex.indexByString("E${i + 2}"));
         cell4.value = (widget.paySlip[slipNames[num]['empId']] == null
                 ? 0
                 : (widget.paySlip[slipNames[num]['empId']]['takeHome'] ?? 0))
             .round()
             .toString(); // dynamic values support provided;
-        cell4.cellStyle = CellStyle(
+        cell4.cellStyle = ex.CellStyle(
           fontSize: 10,
-          fontFamily: getFontFamily(FontFamily.Calibri),
-          horizontalAlign: HorizontalAlign.Right,
-          verticalAlign: VerticalAlign.Center,
+          fontFamily: ex.getFontFamily(ex.FontFamily.Calibri),
+          horizontalAlign: ex.HorizontalAlign.Right,
+          verticalAlign: ex.VerticalAlign.Center,
         );
         num += 1;
       }
     }
 
     var thanks =
-        sheetObject.cell(CellIndex.indexByString("B${currentIndex + 5}"));
+        sheetObject.cell(ex.CellIndex.indexByString("B${currentIndex + 5}"));
     thanks.value = 'Thanking you,';
     thanks.cellStyle = fromAndToStyle;
 
     var name =
-        sheetObject.cell(CellIndex.indexByString("B${currentIndex + 6}"));
+        sheetObject.cell(ex.CellIndex.indexByString("B${currentIndex + 6}"));
     name.value = 'Muhammed Shabeeb';
     name.cellStyle = fromAndToStyle;
 
     var position =
-        sheetObject.cell(CellIndex.indexByString("B${currentIndex + 7}"));
+        sheetObject.cell(ex.CellIndex.indexByString("B${currentIndex + 7}"));
     position.value = 'Director';
     position.cellStyle = fromAndToStyle;
 
     var company =
-        sheetObject.cell(CellIndex.indexByString("B${currentIndex + 8}"));
+        sheetObject.cell(ex.CellIndex.indexByString("B${currentIndex + 8}"));
     company.value = 'First Logic Meta Lab Pvt. Ltd';
     company.cellStyle = fromAndToStyle;
 

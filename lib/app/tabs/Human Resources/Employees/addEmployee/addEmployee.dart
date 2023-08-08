@@ -130,6 +130,18 @@ class _AddEmployeeState extends State<AddEmployee> {
     setState(() {});
   }
 
+  List<SearchFieldListItem<String>> empNamesLocal=[];
+
+  @override
+  void initState() {
+    empNames.forEach((element) {
+      empNamesLocal.add(
+          SearchFieldListItem(element,)
+      );
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
@@ -1515,7 +1527,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                                           padding:
                                               EdgeInsets.fromLTRB(16, 0, 0, 0),
                                           child: SearchField(
-                                            suggestions: empNames,
+                                            suggestions: empNamesLocal,
                                             controller: reportingManager,
                                             searchStyle: TextStyle(
                                               fontSize: 18,
@@ -1560,8 +1572,8 @@ class _AddEmployeeState extends State<AddEmployee> {
                                                 ),
                                               ),
                                             ),
-                                            onTap: (x) {
-                                              reportingManager.text = x!;
+                                            onSuggestionTap: (x) {
+                                              reportingManager.text = x.searchKey;
                                               oError = '';
 
                                               setState(() {

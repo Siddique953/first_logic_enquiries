@@ -15,7 +15,7 @@ import '../../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../../flutter_flow/upload_media.dart';
 import '../../../app_widget.dart';
 import '../../../pages/home_page/home.dart';
-import 'package:excel/excel.dart';
+import 'package:excel/excel.dart' as ex;
 import 'dart:typed_data';
 
 import 'BankSlip/bankSlip.dart';
@@ -1228,47 +1228,47 @@ class _AddAttendanceState extends State<AddAttendance> {
   }
 
   Future<void> importData() async {
-    var excel = Excel.createExcel();
+    var excel = ex.Excel.createExcel();
 
-    Sheet sheetObject = excel['Pay Slip'];
-    CellStyle cellStyle = CellStyle(
+    ex.Sheet sheetObject = excel['Pay Slip'];
+    ex.CellStyle cellStyle = ex.CellStyle(
         // backgroundColorHex: "#1AFF1A",
-        fontFamily: getFontFamily(FontFamily.Calibri));
+        fontFamily: ex.getFontFamily(ex.FontFamily.Calibri));
 
     //HEADINGS
 
     if (employeeDetails.keys.toList().length > 0) {
-      var cell1 = sheetObject.cell(CellIndex.indexByString("A1"));
+      var cell1 = sheetObject.cell(ex.CellIndex.indexByString("A1"));
       cell1.value = 'SL NO';
       cell1.cellStyle = cellStyle;
-      var cell2 = sheetObject.cell(CellIndex.indexByString("B1"));
+      var cell2 = sheetObject.cell(ex.CellIndex.indexByString("B1"));
       cell2.value = 'EMPLOYEE ID'; // dynamic values support provided;
       cell2.cellStyle = cellStyle;
-      var cell3 = sheetObject.cell(CellIndex.indexByString("C1"));
+      var cell3 = sheetObject.cell(ex.CellIndex.indexByString("C1"));
       cell3.value = 'NAME'; // dynamic values support provided;
       cell3.cellStyle = cellStyle;
-      var cell4 = sheetObject.cell(CellIndex.indexByString("D1"));
+      var cell4 = sheetObject.cell(ex.CellIndex.indexByString("D1"));
       cell4.value = 'TOTAL WORKING DAYS'; // dynamic values support provided;
       cell4.cellStyle = cellStyle;
-      var cell5 = sheetObject.cell(CellIndex.indexByString("E1"));
+      var cell5 = sheetObject.cell(ex.CellIndex.indexByString("E1"));
       cell5.value = 'TOTAL LEAVE'; // dynamic values support provided;
       cell5.cellStyle = cellStyle;
-      var cell6 = sheetObject.cell(CellIndex.indexByString("F1"));
+      var cell6 = sheetObject.cell(ex.CellIndex.indexByString("F1"));
       cell6.value = 'BASIC SALARY'; // dynamic values support provided;
       cell6.cellStyle = cellStyle;
-      var cell7 = sheetObject.cell(CellIndex.indexByString("G1"));
+      var cell7 = sheetObject.cell(ex.CellIndex.indexByString("G1"));
       cell7.value = 'PAYABLE SALARY'; // dynamic values support provided;
       cell7.cellStyle = cellStyle;
-      var cell8 = sheetObject.cell(CellIndex.indexByString("H1"));
+      var cell8 = sheetObject.cell(ex.CellIndex.indexByString("H1"));
       cell8.value = 'INCENTIVE'; // dynamic values support provided;
       cell8.cellStyle = cellStyle;
-      var cell9 = sheetObject.cell(CellIndex.indexByString("I1"));
+      var cell9 = sheetObject.cell(ex.CellIndex.indexByString("I1"));
       cell9.value = 'OVER TIME'; // dynamic values support provided;
       cell9.cellStyle = cellStyle;
-      var cell10 = sheetObject.cell(CellIndex.indexByString("J1"));
+      var cell10 = sheetObject.cell(ex.CellIndex.indexByString("J1"));
       cell10.value = 'ADVANCE'; // dynamic values support provided;
       cell10.cellStyle = cellStyle;
-      var cell11 = sheetObject.cell(CellIndex.indexByString("K1"));
+      var cell11 = sheetObject.cell(ex.CellIndex.indexByString("K1"));
       cell11.value = 'TAKE HOME'; // dynamic values support provided;
       cell11.cellStyle = cellStyle;
     }
@@ -1278,44 +1278,44 @@ class _AddAttendanceState extends State<AddAttendance> {
     for (int i = 0; i < employeeList.length; i++) {
       String id = employeeList[i]['empId'];
 
-      var cell1 = sheetObject.cell(CellIndex.indexByString("A${i + 2}"));
+      var cell1 = sheetObject.cell(ex.CellIndex.indexByString("A${i + 2}"));
       cell1.value = '${i + 1}'; // dynamic values support provided;
       cell1.cellStyle = cellStyle;
-      var cell2 = sheetObject.cell(CellIndex.indexByString("B${i + 2}"));
+      var cell2 = sheetObject.cell(ex.CellIndex.indexByString("B${i + 2}"));
       cell2.value = id.toString(); // dynamic values support provided;
       cell2.cellStyle = cellStyle;
-      var cell3 = sheetObject.cell(CellIndex.indexByString("C${i + 2}"));
+      var cell3 = sheetObject.cell(ex.CellIndex.indexByString("C${i + 2}"));
       cell3.value = empDataById[id]!.name; // dynamic values support provided;
       cell3.cellStyle = cellStyle;
-      var cell4 = sheetObject.cell(CellIndex.indexByString("D${i + 2}"));
+      var cell4 = sheetObject.cell(ex.CellIndex.indexByString("D${i + 2}"));
       cell4.value = (30 -
           employeeDetails[id]['offDay']); // dynamic values support provided;
       cell4.cellStyle = cellStyle;
-      var cell5 = sheetObject.cell(CellIndex.indexByString("E${i + 2}"));
+      var cell5 = sheetObject.cell(ex.CellIndex.indexByString("E${i + 2}"));
       cell5.value =
           employeeDetails[id]['leave']; // dynamic values support provided;
       cell5.cellStyle = cellStyle;
-      var cell6 = sheetObject.cell(CellIndex.indexByString("F${i + 2}"));
+      var cell6 = sheetObject.cell(ex.CellIndex.indexByString("F${i + 2}"));
       cell6.value = double.tryParse(empDataById[id]!.ctc.toString())!
           .toString(); // dynamic values support provided;
       cell6.cellStyle = cellStyle;
-      var cell7 = sheetObject.cell(CellIndex.indexByString("G${i + 2}"));
+      var cell7 = sheetObject.cell(ex.CellIndex.indexByString("G${i + 2}"));
       cell7.value =
           employeeDetails[id]['payable']; // dynamic values support provided;
       cell7.cellStyle = cellStyle;
-      var cell8 = sheetObject.cell(CellIndex.indexByString("H${i + 2}"));
+      var cell8 = sheetObject.cell(ex.CellIndex.indexByString("H${i + 2}"));
       cell8.value =
           employeeDetails[id]['incentive']; // dynamic values support provided;
       cell8.cellStyle = cellStyle;
-      var cell9 = sheetObject.cell(CellIndex.indexByString("I${i + 2}"));
+      var cell9 = sheetObject.cell(ex.CellIndex.indexByString("I${i + 2}"));
       cell9.value =
           employeeDetails[id]['ot']; // dynamic values support provided;
       cell9.cellStyle = cellStyle;
-      var cell10 = sheetObject.cell(CellIndex.indexByString("J${i + 2}"));
+      var cell10 = sheetObject.cell(ex.CellIndex.indexByString("J${i + 2}"));
       cell10.value =
           employeeDetails[id]['deduction']; // dynamic values support provided;
       cell10.cellStyle = cellStyle;
-      var cell11 = sheetObject.cell(CellIndex.indexByString("K${i + 2}"));
+      var cell11 = sheetObject.cell(ex.CellIndex.indexByString("K${i + 2}"));
       cell11.value =
           employeeDetails[id]['takeHome']; // dynamic values support provided;
       cell11.cellStyle = cellStyle;
@@ -1396,7 +1396,7 @@ class _AddAttendanceState extends State<AddAttendance> {
             employeeDetails[employeeList[i]['empId']]['deduction'].toString(),
         accNumber: empDataById[employeeList[i]['empId']]!.accountNumber,
         total: (employeeDetails[employeeList[i]['empId']]['incentive'] +
-                int.tryParse(empDataById[employeeList[i]['empId']]!.ctc.toString())!)
+                double.tryParse(empDataById[employeeList[i]['empId']]!.ctc.toString())!)
             .toString(),
         name: empDataById[employeeList[i]['empId']]!.name,
         bankName: empDataById[employeeList[i]['empId']]!.bankName,
@@ -1735,13 +1735,19 @@ class MyData extends DataTableSource {
                     try {
 
 
-                      int oldLeave=employeeDetails[data]['leave'];
-                      int workDay=employeeDetails[data]['workDay'];
+                      double oldLeave=employeeDetails[data]['leave'];
+                      double workDay=employeeDetails[data]['workDay'];
 
-                      int newLeave=int.tryParse(leave.text)!;
+                      double newLeave=double.tryParse(leave.text)??0;
 
                       employeeDetails[data]['leave'] =newLeave;
+                      print(1);
+                      print(workDay);
+                      print(newLeave);
+                      print(oldLeave);
+                      print(workDay-(newLeave-oldLeave));
                       employeeDetails[data]['workDay'] =workDay-(newLeave-oldLeave) ;
+                      print(2);
 
 
 
@@ -1756,7 +1762,10 @@ class MyData extends DataTableSource {
                       // }
 
                       if ((employeeDetails[data]['leave']-(employeeDetails[data]['casualLeave']??0)) > 5) {
+                        print(3);
+                        print(employeeDetails[data]['workDay']);
                         salary = (basicSalary / 30) * (  employeeDetails[data]['workDay']);
+                        print(4);
                       } else {
 
                         salary =
@@ -1787,6 +1796,7 @@ class MyData extends DataTableSource {
 
                       refresh();
                     } catch (err) {
+                      print('"""""""err"""""""');
                       print(err);
                       showUploadMessage(context,
                           'Unexpected error occurred!!!');
@@ -1826,7 +1836,7 @@ class MyData extends DataTableSource {
                       employeeDetails[data]
                       ['casualLeave'] =
 
-                          int.tryParse(
+                          double.tryParse(
                               casualLeave
                                   .text);
 

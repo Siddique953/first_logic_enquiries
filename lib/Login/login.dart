@@ -1,6 +1,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_erp/app/pages/home_page/home.dart';
+import 'package:fl_erp/flutter_flow/upload_media.dart';
 import 'package:lottie/lottie.dart';
 
 import '../app/tabs/Branch/AddBranch.dart';
@@ -169,6 +170,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                           Center(
                             child: FFButtonWidget(
                               onPressed: () async {
+                                try{
                                 ogPass=passwordTextController!.text;
                                 ogUser=emailTextController!.text;
                                 final user = await FirebaseAuth.instance
@@ -186,10 +188,14 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                   );
                                 });
 
-
-
-
-
+                                }catch(e){
+                                  if(e is FirebaseAuthException) {
+                                    // if(e.message=='An unknown error occurred: FirebaseError: Firebase: The email address is badly formatted. (auth/invalid-email).'){
+                                    //   return showUploadMessage(context, e.message??'Please Check Your Credential Again');
+                                    // }
+                                    showUploadMessage(context, e.message??'Please Check Your Credential Again');
+                                  }
+                                }
                               },
                               text: 'Sign In',
                               loading: false,

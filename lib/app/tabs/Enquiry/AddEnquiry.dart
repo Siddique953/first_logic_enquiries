@@ -53,8 +53,23 @@ class _AddEnquiryWidgetState extends State<AddEnquiryWidget> {
 
   String customerId = '';
 
+  List<SearchFieldListItem<String>> agentNumberListLocal=[];
+  List<SearchFieldListItem<String>> numberListLocal=[];
+
+
   @override
   void initState() {
+    agentNumberList.forEach((element) {
+      agentNumberListLocal.add(
+          SearchFieldListItem(element,)
+      );
+    });
+    phnNumbers.forEach((element) {
+      numberListLocal.add(
+          SearchFieldListItem(element,)
+      );
+    });
+
     super.initState();
     name = TextEditingController(text: widget.name ?? "");
     place = TextEditingController();
@@ -305,7 +320,7 @@ class _AddEnquiryWidgetState extends State<AddEnquiryWidget> {
                                                         EdgeInsets.fromLTRB(
                                                             16, 0, 0, 0),
                                                     child: SearchField(
-                                                      suggestions: phnNumbers,
+                                                      suggestions: numberListLocal,
                                                       controller: mobile,
                                                       hint:
                                                           'Please Enter Mobile Number',
@@ -387,33 +402,33 @@ class _AddEnquiryWidgetState extends State<AddEnquiryWidget> {
                                                           ),
                                                         ),
                                                       ),
-                                                      onTap: (x) {
-                                                        mobile.text = x!;
+                                                      onSuggestionTap: (x) {
+                                                        mobile.text = x.searchKey;
                                                         name.text =
                                                             customerDetailsByNumber[
-                                                                x]['name'];
+                                                                x.searchKey]['name'];
                                                         place.text =
                                                             customerDetailsByNumber[
-                                                                x]['place'];
+                                                                x.searchKey]['place'];
                                                         email.text =
                                                             customerDetailsByNumber[
-                                                                x]['email'];
+                                                                x.searchKey]['email'];
 
                                                         customerId =
                                                             customerDetailsByNumber[
-                                                                    x]
+                                                                    x.searchKey]
                                                                 ['customerID'];
 
                                                         agentName
                                                             .text = customerDetailsByNumber[
-                                                                        x]
+                                                                        x.searchKey]
                                                                     [
                                                                     'agentId'] ==
                                                                 ''
                                                             ? ''
                                                             : agentDataById[
                                                                         customerDetailsByNumber[
-                                                                                x]
+                                                                                x.searchKey]
                                                                             [
                                                                             'agentId']]
                                                                     [
@@ -666,7 +681,7 @@ class _AddEnquiryWidgetState extends State<AddEnquiryWidget> {
                                                             16, 0, 0, 0),
                                                     child: SearchField(
                                                       suggestions:
-                                                          agentNumberList,
+                                                          agentNumberListLocal,
                                                       controller: agentName,
                                                       hint:
                                                           'Please Enter Agent Name',
@@ -748,8 +763,8 @@ class _AddEnquiryWidgetState extends State<AddEnquiryWidget> {
                                                           ),
                                                         ),
                                                       ),
-                                                      onTap: (x) {
-                                                        agentName.text = x!;
+                                                      onSuggestionTap: (x) {
+                                                        agentName.text = x.searchKey;
                                                         setState(() {
                                                           print(x);
                                                         });

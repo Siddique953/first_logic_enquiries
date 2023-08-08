@@ -31,8 +31,8 @@ Future<SelectedMedia?> selectMedia({
   final picker = ImagePicker();
   final source = fromCamera ? ImageSource.camera : ImageSource.gallery;
   final pickedMediaFuture = isVideo
-      ? picker.getVideo(source: source)
-      : picker.getImage(
+      ? picker.pickVideo(source: source)
+      : picker.pickImage(
       maxWidth: maxWidth, maxHeight: maxHeight, source: source);
   final pickedMedia = await pickedMediaFuture;
   final mediaBytes = await pickedMedia?.readAsBytes();

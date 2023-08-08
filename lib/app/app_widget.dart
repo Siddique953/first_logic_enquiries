@@ -68,6 +68,8 @@ class _MyAppState extends State<MyApp> {
 
 
             if (snapshot.hasData) {
+              currentUserUid= snapshot.data!.uid;
+            currentUserEmail=snapshot.data!.email??'';
               return const BranchesWidget();
             }
             return const LoginPageWidget();

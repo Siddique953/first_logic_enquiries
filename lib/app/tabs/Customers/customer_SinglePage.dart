@@ -8,10 +8,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:fl_erp/app/tabs/Customers/serviceInvoicePDF/Print/printFunction.dart';
 import 'package:fl_erp/app/tabs/Customers/serviceInvoicePDF/downloadServicePdf.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 import 'package:lottie/lottie.dart';
 import 'package:searchfield/searchfield.dart';
-import 'package:excel/excel.dart';
+import 'package:excel/excel.dart' as ex;
 import '../../../paymentReport/report/Invoice.dart';
 import '../../../paymentReport/report/generatePdf.dart';
 import '../../../paymentReport/report/generatePrintFunction.dart';
@@ -54,6 +55,8 @@ class CustomerSinglePage extends StatefulWidget {
 
 class _CustomerSinglePageState extends State<CustomerSinglePage> {
   static const _locale = 'HI';
+
+  String countryShortName='IND';
   String _formatNumber(String s) =>
       NumberFormat.decimalPattern(_locale).format(int.parse(s));
   String get _currency =>
@@ -1037,41 +1040,41 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
   }
 
   Future<void> importData(String customer) async {
-    var excel = Excel.createExcel();
+    var excel = ex.Excel.createExcel();
 
-    Sheet sheetObject = excel[customer];
-    CellStyle cellStyle = CellStyle(
-        verticalAlign: VerticalAlign.Center,
-        horizontalAlign: HorizontalAlign.Center,
+    ex.Sheet sheetObject = excel[customer];
+    ex.CellStyle cellStyle = ex.CellStyle(
+        verticalAlign: ex.VerticalAlign.Center,
+        horizontalAlign: ex.HorizontalAlign.Center,
         // backgroundColorHex: "#1AFF1A",
-        fontFamily: getFontFamily(FontFamily.Calibri));
-    CellStyle totalStyle = CellStyle(
-        fontFamily: getFontFamily(FontFamily.Calibri),
+        fontFamily: ex.getFontFamily(ex.FontFamily.Calibri));
+    ex.CellStyle totalStyle = ex.CellStyle(
+        fontFamily: ex.getFontFamily(ex.FontFamily.Calibri),
         fontSize: 16,
         bold: true);
 
     //HEADINGS
 
     if (payments.length > 0) {
-      var cell1 = sheetObject.cell(CellIndex.indexByString("A1"));
+      var cell1 = sheetObject.cell(ex.CellIndex.indexByString("A1"));
       cell1.value = 'SL NO';
       cell1.cellStyle = cellStyle;
-      var cell2 = sheetObject.cell(CellIndex.indexByString("B1"));
+      var cell2 = sheetObject.cell(ex.CellIndex.indexByString("B1"));
       cell2.value = 'Date'; // dynamic values support provided;
       cell2.cellStyle = cellStyle;
-      var cell3 = sheetObject.cell(CellIndex.indexByString("C1"));
+      var cell3 = sheetObject.cell(ex.CellIndex.indexByString("C1"));
       cell3.value = 'Project Name'; // dynamic values support provided;
       cell3.cellStyle = cellStyle;
-      var cell4 = sheetObject.cell(CellIndex.indexByString("D1"));
+      var cell4 = sheetObject.cell(ex.CellIndex.indexByString("D1"));
       cell4.value = 'Amount'; // dynamic values support provided;
       cell4.cellStyle = cellStyle;
-      var cell5 = sheetObject.cell(CellIndex.indexByString("E1"));
+      var cell5 = sheetObject.cell(ex.CellIndex.indexByString("E1"));
       cell5.value = 'Description'; // dynamic values support provided;
       cell5.cellStyle = cellStyle;
-      var cell6 = sheetObject.cell(CellIndex.indexByString("F1"));
+      var cell6 = sheetObject.cell(ex.CellIndex.indexByString("F1"));
       cell6.value = 'Payment Methode'; // dynamic values support provided;
       cell6.cellStyle = cellStyle;
-      var cell7 = sheetObject.cell(CellIndex.indexByString("G1"));
+      var cell7 = sheetObject.cell(ex.CellIndex.indexByString("G1"));
       cell7.value = 'Staff Name'; // dynamic values support provided;
       cell7.cellStyle = cellStyle;
     }
@@ -1080,39 +1083,39 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
     for (int i = 0; i <= payments.length; i++) {
       if (i == payments.length) {
-        var cell6 = sheetObject.cell(CellIndex.indexByString("C${i + 3}"));
+        var cell6 = sheetObject.cell(ex.CellIndex.indexByString("C${i + 3}"));
         cell6.value = 'Total Expenses '; // dynamic values support provided;
         cell6.cellStyle = totalStyle;
 
-        var cell7 = sheetObject.cell(CellIndex.indexByString("D${i + 3}"));
+        var cell7 = sheetObject.cell(ex.CellIndex.indexByString("D${i + 3}"));
         cell7.value = totalExp; // dynamic values support provided;
         cell7.cellStyle = totalStyle;
       } else {
-        var cell1 = sheetObject.cell(CellIndex.indexByString("A${i + 2}"));
+        var cell1 = sheetObject.cell(ex.CellIndex.indexByString("A${i + 2}"));
         cell1.value = '${i + 1}'; // dynamic values support provided;
         cell1.cellStyle = cellStyle;
-        var cell2 = sheetObject.cell(CellIndex.indexByString("B${i + 2}"));
+        var cell2 = sheetObject.cell(ex.CellIndex.indexByString("B${i + 2}"));
         cell2.value = dateTimeFormat(
             'd-MMM-y',
             payments[i]['paidDate']
                 .toDate()); // dynamic values support provided;
         cell2.cellStyle = cellStyle;
-        var cell3 = sheetObject.cell(CellIndex.indexByString("C${i + 2}"));
+        var cell3 = sheetObject.cell(ex.CellIndex.indexByString("C${i + 2}"));
         cell3.value = projectDataById[payments[i]['projectId']]
             ['projectName']; // dynamic values support provided;
         cell3.cellStyle = cellStyle;
-        var cell4 = sheetObject.cell(CellIndex.indexByString("D${i + 2}"));
+        var cell4 = sheetObject.cell(ex.CellIndex.indexByString("D${i + 2}"));
         cell4.value = payments[i]['amount']; // dynamic values support provided;
         cell4.cellStyle = cellStyle;
-        var cell5 = sheetObject.cell(CellIndex.indexByString("E${i + 2}"));
+        var cell5 = sheetObject.cell(ex.CellIndex.indexByString("E${i + 2}"));
         cell5.value =
             payments[i]['description']; // dynamic values support provided;
         cell5.cellStyle = cellStyle;
-        var cell6 = sheetObject.cell(CellIndex.indexByString("F${i + 2}"));
+        var cell6 = sheetObject.cell(ex.CellIndex.indexByString("F${i + 2}"));
         cell6.value =
             payments[i]['paymentMethode']; // dynamic values support provided;
         cell6.cellStyle = cellStyle;
-        var cell7 = sheetObject.cell(CellIndex.indexByString("G${i + 2}"));
+        var cell7 = sheetObject.cell(ex.CellIndex.indexByString("G${i + 2}"));
         cell7.value =
             payments[i]['staffName']; // dynamic values support provided;
         cell7.cellStyle = cellStyle;
@@ -1141,9 +1144,16 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
   RegExp phnValidation = RegExp(r'^[0-9]{10}$');
 
+  List<SearchFieldListItem<String>> agentNumberListLocal=[];
+
+
   @override
   void initState() {
-
+    agentNumberList.forEach((element) {
+      agentNumberListLocal.add(
+          SearchFieldListItem(element,)
+      );
+    });
     super.initState();
 
     customerServiceAndProjectNames = [''];
@@ -1774,130 +1784,174 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                           child: Padding(
                                             padding: EdgeInsets.fromLTRB(
                                                 16, 0, 0, 0),
-                                            child: Row(
-                                              children: [
-                                                CountryPickerDropdown(
-                                                  initialValue:
-                                                      countryCode ?? 'IN',
-                                                  itemBuilder:
-                                                      _buildDropdownItem,
-                                                  // itemFilter:  ['AR', 'DE', 'GB', 'CN'].contains(c.isoCode),
-                                                  priorityList: [
-                                                    CountryPickerUtils
-                                                        .getCountryByIsoCode(
-                                                            'GB'),
-                                                    CountryPickerUtils
-                                                        .getCountryByIsoCode(
-                                                            'CN'),
-                                                  ],
-                                                  sortComparator: (Country a,
-                                                          Country b) =>
-                                                      a.isoCode
-                                                          .compareTo(b.isoCode),
-                                                  onValuePicked:
-                                                      (Country country) {
-                                                    countryCode =
-                                                        country.isoCode;
-                                                    phoneCode =
-                                                        '+' + country.phoneCode;
-
-                                                    setState(() {});
-                                                  },
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Expanded(
-                                                  child: TextFormField(
-                                                    controller: mobile,
-                                                    obscureText: false,
-                                                    autovalidateMode:
-                                                        AutovalidateMode
-                                                            .onUserInteraction,
-                                                    validator: (v) {
-                                                      if (!phnValidation
-                                                          .hasMatch(v!)) {
-                                                        return "Enter valid Phone Number";
-                                                      } else {
-                                                        return null;
-                                                      }
-                                                    },
-                                                    maxLength: 10,
-                                                    keyboardType:
-                                                        TextInputType.number,
-                                                    decoration: InputDecoration(
-                                                      labelText: 'Mobile',
-                                                      labelStyle:
-                                                          FlutterFlowTheme
-                                                              .bodyText2
-                                                              .override(
-                                                        fontFamily:
-                                                            'Montserrat',
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
-                                                      hintText:
-                                                          'Please Enter Mobile',
-                                                      hintStyle:
-                                                          FlutterFlowTheme
-                                                              .bodyText2
-                                                              .override(
-                                                        fontFamily:
-                                                            'Montserrat',
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
-                                                      enabledBorder:
-                                                          UnderlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                          color: Colors
-                                                              .transparent,
-                                                          width: 1,
-                                                        ),
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .only(
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  4.0),
-                                                          topRight:
-                                                              Radius.circular(
-                                                                  4.0),
-                                                        ),
-                                                      ),
-                                                      focusedBorder:
-                                                          UnderlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                          color: Colors
-                                                              .transparent,
-                                                          width: 1,
-                                                        ),
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .only(
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  4.0),
-                                                          topRight:
-                                                              Radius.circular(
-                                                                  4.0),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    style: FlutterFlowTheme
-                                                        .bodyText2
-                                                        .override(
-                                                      fontFamily: 'Montserrat',
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
+                                            child: IntlPhoneField(
+                                              controller: mobile,
+                                              onCountryChanged: (value) {
+                                                countryCode = value.dialCode;
+                                                countryShortName = value.code;
+                                                print(value.code);
+                                              },
+                                              decoration: InputDecoration(
+                                                labelText: 'Phone Number',
+                                                labelStyle: FlutterFlowTheme.bodyText2.override(
+                                                    fontFamily: 'Montserrat',
+                                                    color: Color(0xFF8B97A2),
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 11),
+                                                hintText: 'Please Enter Phone Number',
+                                                hintStyle: FlutterFlowTheme.bodyText2.override(
+                                                    fontFamily: 'Montserrat',
+                                                    color: Color(0xFF8B97A2),
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 11),
+                                                enabledBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.transparent,
+                                                    width: 1,
+                                                  ),
+                                                  borderRadius: const BorderRadius.only(
+                                                    topLeft: Radius.circular(4.0),
+                                                    topRight: Radius.circular(4.0),
                                                   ),
                                                 ),
-                                              ],
-                                            ),
+                                                focusedBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.transparent,
+                                                    width: 1,
+                                                  ),
+                                                  borderRadius: const BorderRadius.only(
+                                                    topLeft: Radius.circular(4.0),
+                                                    topRight: Radius.circular(4.0),
+                                                  ),
+                                                ),
+                                              ),
+                                              initialCountryCode: 'IN',
+                                            )
+
+                                            //     Row(
+                                            //   children: [
+                                            //     CountryPickerDropdown(
+                                            //       initialValue:
+                                            //           countryCode ?? 'IN',
+                                            //       itemBuilder:
+                                            //           _buildDropdownItem,
+                                            //       // itemFilter:  ['AR', 'DE', 'GB', 'CN'].contains(c.isoCode),
+                                            //       priorityList: [
+                                            //         CountryPickerUtils
+                                            //             .getCountryByIsoCode(
+                                            //                 'GB'),
+                                            //         CountryPickerUtils
+                                            //             .getCountryByIsoCode(
+                                            //                 'CN'),
+                                            //       ],
+                                            //       sortComparator: (Country a,
+                                            //               Country b) =>
+                                            //           a.isoCode
+                                            //               .compareTo(b.isoCode),
+                                            //       onValuePicked:
+                                            //           (Country country) {
+                                            //         countryCode =
+                                            //             country.isoCode;
+                                            //         phoneCode =
+                                            //             '+' + country.phoneCode;
+                                            //
+                                            //         setState(() {});
+                                            //       },
+                                            //     ),
+                                            //     SizedBox(
+                                            //       width: 10,
+                                            //     ),
+                                            //     Expanded(
+                                            //       child: TextFormField(
+                                            //         controller: mobile,
+                                            //         obscureText: false,
+                                            //         autovalidateMode:
+                                            //             AutovalidateMode
+                                            //                 .onUserInteraction,
+                                            //         validator: (v) {
+                                            //           if (!phnValidation
+                                            //               .hasMatch(v!)) {
+                                            //             return "Enter valid Phone Number";
+                                            //           } else {
+                                            //             return null;
+                                            //           }
+                                            //         },
+                                            //         maxLength: 10,
+                                            //         keyboardType:
+                                            //             TextInputType.number,
+                                            //         decoration: InputDecoration(
+                                            //           labelText: 'Mobile',
+                                            //           labelStyle:
+                                            //               FlutterFlowTheme
+                                            //                   .bodyText2
+                                            //                   .override(
+                                            //             fontFamily:
+                                            //                 'Montserrat',
+                                            //             color: Colors.black,
+                                            //             fontWeight:
+                                            //                 FontWeight.w500,
+                                            //           ),
+                                            //           hintText:
+                                            //               'Please Enter Mobile',
+                                            //           hintStyle:
+                                            //               FlutterFlowTheme
+                                            //                   .bodyText2
+                                            //                   .override(
+                                            //             fontFamily:
+                                            //                 'Montserrat',
+                                            //             color: Colors.black,
+                                            //             fontWeight:
+                                            //                 FontWeight.w500,
+                                            //           ),
+                                            //           enabledBorder:
+                                            //               UnderlineInputBorder(
+                                            //             borderSide: BorderSide(
+                                            //               color: Colors
+                                            //                   .transparent,
+                                            //               width: 1,
+                                            //             ),
+                                            //             borderRadius:
+                                            //                 const BorderRadius
+                                            //                     .only(
+                                            //               topLeft:
+                                            //                   Radius.circular(
+                                            //                       4.0),
+                                            //               topRight:
+                                            //                   Radius.circular(
+                                            //                       4.0),
+                                            //             ),
+                                            //           ),
+                                            //           focusedBorder:
+                                            //               UnderlineInputBorder(
+                                            //             borderSide: BorderSide(
+                                            //               color: Colors
+                                            //                   .transparent,
+                                            //               width: 1,
+                                            //             ),
+                                            //             borderRadius:
+                                            //                 const BorderRadius
+                                            //                     .only(
+                                            //               topLeft:
+                                            //                   Radius.circular(
+                                            //                       4.0),
+                                            //               topRight:
+                                            //                   Radius.circular(
+                                            //                       4.0),
+                                            //             ),
+                                            //           ),
+                                            //         ),
+                                            //         style: FlutterFlowTheme
+                                            //             .bodyText2
+                                            //             .override(
+                                            //           fontFamily: 'Montserrat',
+                                            //           color: Colors.black,
+                                            //           fontWeight:
+                                            //               FontWeight.w500,
+                                            //         ),
+                                            //       ),
+                                            //     ),
+                                            //   ],
+                                            // ),
                                           ),
                                         ),
                                       ),
@@ -2446,7 +2500,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                             padding: EdgeInsets.fromLTRB(
                                                 16, 0, 0, 0),
                                             child: SearchField(
-                                              suggestions: agentNumberList,
+                                              suggestions: agentNumberListLocal,
                                               controller: agentName,
                                               hint:
                                                   'Please Enter c/o Agent Number',
@@ -2503,8 +2557,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                   ),
                                                 ),
                                               ),
-                                              onTap: (x) {
-                                                agentName.text = x!;
+                                              onSuggestionTap: (x) {
+                                                agentName.text = x.searchKey;
                                                 setState(() {});
                                               },
                                             ),
@@ -8174,7 +8228,10 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                         'projectName': projectname.text,
                                         'description': topic.text,
                                         'projectCost':
-                                            double.tryParse(projectCost.text),
+                                            double.tryParse(projectCost.text)??0,
+                                        'totalCost':
+                                            double.tryParse(projectCost.text)??0,
+
                                       });
                                       setState(() {});
 
@@ -8688,29 +8745,29 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
   ///
 
   Future<void> createStatement(String customerName) async {
-    var excel = Excel.createExcel();
+    var excel = ex.Excel.createExcel();
 
-    Sheet sheetObject = excel[customerName];
-    CellStyle cellStyle = CellStyle(
+    ex.Sheet sheetObject = excel[customerName];
+    ex.CellStyle cellStyle = ex.CellStyle(
         // backgroundColorHex: "#1AFF1A",
-        fontFamily: getFontFamily(FontFamily.Calibri));
+        fontFamily: ex.getFontFamily(ex.FontFamily.Calibri));
 
     //HEADINGS
 
     if (statementDataSort.length > 0) {
-      var cell1 = sheetObject.cell(CellIndex.indexByString("A1"));
+      var cell1 = sheetObject.cell(ex.CellIndex.indexByString("A1"));
       cell1.value = 'DATE';
       cell1.cellStyle = cellStyle;
-      var cell2 = sheetObject.cell(CellIndex.indexByString("B1"));
+      var cell2 = sheetObject.cell(ex.CellIndex.indexByString("B1"));
       cell2.value = 'PARTICULARS'; // dynamic values support provided;
       cell2.cellStyle = cellStyle;
-      var cell3 = sheetObject.cell(CellIndex.indexByString("C1"));
+      var cell3 = sheetObject.cell(ex.CellIndex.indexByString("C1"));
       cell3.value = 'DEBIT'; // dynamic values support provided;
       cell3.cellStyle = cellStyle;
-      var cell4 = sheetObject.cell(CellIndex.indexByString("D1"));
+      var cell4 = sheetObject.cell(ex.CellIndex.indexByString("D1"));
       cell4.value = 'CREDIT'; // dynamic values support provided;
       cell4.cellStyle = cellStyle;
-      var cell5 = sheetObject.cell(CellIndex.indexByString("D1"));
+      var cell5 = sheetObject.cell(ex.CellIndex.indexByString("D1"));
       cell5.value = 'BALANCE'; // dynamic values support provided;
       cell5.cellStyle = cellStyle;
     }
@@ -8729,46 +8786,46 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
           balanceAmt -= statementDataSort[i]['debit'];
         }
 
-        var cell1 = sheetObject.cell(CellIndex.indexByString("A${i + 2}"));
+        var cell1 = sheetObject.cell(ex.CellIndex.indexByString("A${i + 2}"));
         cell1.value = dateTimeFormat(
             'dd MMM, yyyy',
             statementDataSort[i]['date']
                 .toDate()); // dynamic values support provided;
         cell1.cellStyle = cellStyle;
-        var cell2 = sheetObject.cell(CellIndex.indexByString("B${i + 2}"));
+        var cell2 = sheetObject.cell(ex.CellIndex.indexByString("B${i + 2}"));
         cell2.value = statementDataSort[i]['particular']
             .toString(); // dynamic values support provided;
         cell2.cellStyle = cellStyle;
-        var cell3 = sheetObject.cell(CellIndex.indexByString("C${i + 2}"));
+        var cell3 = sheetObject.cell(ex.CellIndex.indexByString("C${i + 2}"));
         cell3.value =
             statementDataSort[i]['debit']; // dynamic values support provided;
         cell3.cellStyle = cellStyle;
-        var cell4 = sheetObject.cell(CellIndex.indexByString("D${i + 2}"));
+        var cell4 = sheetObject.cell(ex.CellIndex.indexByString("D${i + 2}"));
         cell4.value =
             statementDataSort[i]['credit']; // dynamic values support provided;
         cell4.cellStyle = cellStyle;
-        var cell5 = sheetObject.cell(CellIndex.indexByString("E${i + 2}"));
+        var cell5 = sheetObject.cell(ex.CellIndex.indexByString("E${i + 2}"));
         cell5.value = balanceAmt;
         // statementData[i]['credit']; // dynamic values support provided;
         cell5.cellStyle = cellStyle;
       } else {
-        var cell1 = sheetObject.cell(CellIndex.indexByString("A${i + 2}"));
+        var cell1 = sheetObject.cell(ex.CellIndex.indexByString("A${i + 2}"));
         cell1.value = ''; // dynamic values support provided;
         cell1.cellStyle = cellStyle;
-        var cell2 = sheetObject.cell(CellIndex.indexByString("B${i + 2}"));
+        var cell2 = sheetObject.cell(ex.CellIndex.indexByString("B${i + 2}"));
         cell2.value = ''; // dynamic values support provided;
         cell2.cellStyle = cellStyle;
-        var cell3 = sheetObject.cell(CellIndex.indexByString("C${i + 2}"));
+        var cell3 = sheetObject.cell(ex.CellIndex.indexByString("C${i + 2}"));
         cell3.value = debitTotal > creditTotal
             ? debitTotal
             : creditTotal; // dynamic values support provided;
         cell3.cellStyle = cellStyle;
-        var cell4 = sheetObject.cell(CellIndex.indexByString("D${i + 2}"));
+        var cell4 = sheetObject.cell(ex.CellIndex.indexByString("D${i + 2}"));
         cell4.value = debitTotal > creditTotal
             ? debitTotal
             : creditTotal; // dynamic values support provided;
         cell4.cellStyle = cellStyle;
-        var cell5 = sheetObject.cell(CellIndex.indexByString("E${i + 2}"));
+        var cell5 = sheetObject.cell(ex.CellIndex.indexByString("E${i + 2}"));
         cell5.value = ''; // dynamic values support provided;
         cell5.cellStyle = cellStyle;
       }

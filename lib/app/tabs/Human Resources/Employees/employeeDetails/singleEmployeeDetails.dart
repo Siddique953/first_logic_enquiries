@@ -205,8 +205,19 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
     });
   }
 
+  List<SearchFieldListItem<String>> empNamesLocal=[];
+
   @override
   void initState() {
+
+
+    empNames.forEach((element) {
+      empNamesLocal.add(
+          SearchFieldListItem(element,)
+      );
+    });
+
+
     super.initState();
     getEmployee();
   }
@@ -1852,7 +1863,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                         EdgeInsets.fromLTRB(
                                                             16, 0, 0, 0),
                                                     child: SearchField(
-                                                      suggestions: empNames,
+                                                      suggestions: empNamesLocal,
                                                       controller:
                                                           reportingManager,
                                                       searchStyle: TextStyle(
@@ -1912,9 +1923,9 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                           ),
                                                         ),
                                                       ),
-                                                      onTap: (x) {
+                                                      onSuggestionTap: (x) {
                                                         reportingManager.text =
-                                                            x!;
+                                                            x.searchKey;
                                                         oError = '';
 
                                                         setState(() {
@@ -1936,7 +1947,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                         EdgeInsets.fromLTRB(
                                                             16, 0, 0, 0),
                                                     child: SearchField(
-                                                      suggestions: empNames,
+                                                      suggestions: empNamesLocal,
                                                       controller: teamLead,
                                                       searchStyle: TextStyle(
                                                         fontSize: 18,
@@ -1995,8 +2006,8 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                           ),
                                                         ),
                                                       ),
-                                                      onTap: (x) {
-                                                        teamLead.text = x!;
+                                                      onSuggestionTap: (x) {
+                                                        teamLead.text = x.searchKey;
                                                         oError = '';
 
                                                         setState(() {

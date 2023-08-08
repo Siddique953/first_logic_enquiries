@@ -31,6 +31,9 @@ class _BranchesWidgetState extends State<BranchesWidget> {
         .where('staff', arrayContains: currentUserEmail)
         .snapshots()
         .listen((event) async {
+          print(currentUserEmail);
+          print("''''''''''''''''BRANCHES");
+          print(event.docs.length);
       branches = event.docs;
 
       if (event.docs.length == 1) {

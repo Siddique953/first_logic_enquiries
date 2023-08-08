@@ -1,6 +1,7 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../../auth/auth_util.dart';
 import '../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
@@ -31,8 +32,8 @@ class _CreateProjectState extends State<CreateProject> {
 
   List projectDetails = [];
 
- late Timestamp datePicked;
-  DateTime selectedDate = DateTime.now();
+  // DateTime datePicked;
+  DateTime? selectedDate ;
 
   @override
   void initState() {
@@ -75,16 +76,18 @@ class _CreateProjectState extends State<CreateProject> {
                       onTap: () {
                         showDatePicker(
                                 context: context,
-                                initialDate: selectedDate,
+                                initialDate: selectedDate ?? DateTime.now(),
                                 locale: Locale('en', 'IN'),
                                 firstDate: DateTime(1901, 1),
                                 lastDate: DateTime(2100, 1))
                             .then((value) {
                               if(value!=null) {
                                 setState(() {
-                                  datePicked = Timestamp.fromDate(DateTime(
-                                      value.year, value.month, value.day, 0, 0,
-                                      0));
+                                  // datePicked = value;
+
+                                      // Timestamp.fromDate(DateTime(
+                                      // value.year, value.month, value.day, 0, 0,
+                                      // 0));
 
                                   selectedDate = value;
                                 });
@@ -109,12 +112,13 @@ class _CreateProjectState extends State<CreateProject> {
                                 Padding(
                                     padding: const EdgeInsets.only(left: 10),
                                     child: Text(
-                                      datePicked == null
+                                      selectedDate == null
                                           ? 'Choose Project Date'
-                                          : datePicked
-                                              .toDate()
-                                              .toString()
-                                              .substring(0, 10),
+                                          : DateFormat('dd MMM yyyy').format(selectedDate!),
+                                      // datePicked
+                                      //         .toDate()
+                                      //         .toString()
+                                      //         .substring(0, 10),
                                       style: TextStyle(
                                         fontFamily: 'Poppins',
                                         color: Colors.blue,
@@ -629,9 +633,9 @@ class _CreateProjectState extends State<CreateProject> {
                                 currentbranchShortName +
                                 projectNo.toString())
                             .set({
-                          'date': datePicked == null
+                          'date': selectedDate == null
                               ? DateTime.now()
-                              : datePicked.toDate(),
+                              : selectedDate,
                           'status': 'Pending',
                           'branchId': currentBranchId,
                           'branch': currentbranchName,

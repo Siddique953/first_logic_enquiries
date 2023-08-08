@@ -1,6 +1,6 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:excel/excel.dart';
+import 'package:excel/excel.dart' as ex;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
@@ -78,32 +78,32 @@ class _ContraReportState extends State<ContraReport> {
   int i = 0;
 
   Future<void> importData() async {
-    var excel = Excel.createExcel();
+    var excel = ex.Excel.createExcel();
 
-    Sheet sheetObject = excel['Expenses'];
-    CellStyle cellStyle = CellStyle(
-        verticalAlign: VerticalAlign.Center,
-        horizontalAlign: HorizontalAlign.Center,
+    ex.Sheet sheetObject = excel['Expenses'];
+    ex.CellStyle cellStyle = ex.CellStyle(
+        verticalAlign: ex.VerticalAlign.Center,
+        horizontalAlign: ex.HorizontalAlign.Center,
         // backgroundColorHex: "#1AFF1A",
-        fontFamily: getFontFamily(FontFamily.Calibri));
-    CellStyle totalStyle = CellStyle(
-        fontFamily: getFontFamily(FontFamily.Calibri),
+        fontFamily: ex.getFontFamily(ex.FontFamily.Calibri));
+    ex.CellStyle totalStyle = ex.CellStyle(
+        fontFamily: ex.getFontFamily(ex.FontFamily.Calibri),
         fontSize: 16,
         bold: true);
 
     //HEADINGS
 
     if (expenses.length > 0) {
-      var cell1 = sheetObject.cell(CellIndex.indexByString("A1"));
+      var cell1 = sheetObject.cell(ex.CellIndex.indexByString("A1"));
       cell1.value = 'SL NO';
       cell1.cellStyle = cellStyle;
-      var cell2 = sheetObject.cell(CellIndex.indexByString("B1"));
+      var cell2 = sheetObject.cell(ex.CellIndex.indexByString("B1"));
       cell2.value = 'Date'; // dynamic values support provided;
       cell2.cellStyle = cellStyle;
-      var cell3 = sheetObject.cell(CellIndex.indexByString("C1"));
+      var cell3 = sheetObject.cell(ex.CellIndex.indexByString("C1"));
       cell3.value = 'Particular'; // dynamic values support provided;
       cell3.cellStyle = cellStyle;
-      var cell4 = sheetObject.cell(CellIndex.indexByString("D1"));
+      var cell4 = sheetObject.cell(ex.CellIndex.indexByString("D1"));
       cell4.value = 'Amount'; // dynamic values support provided;
       cell4.cellStyle = cellStyle;
     }
@@ -114,26 +114,26 @@ class _ContraReportState extends State<ContraReport> {
 
     for (int i = 0; i <= expenses.length; i++) {
       if (i == expenses.length) {
-        var cell3 = sheetObject.cell(CellIndex.indexByString("C${i + 3}"));
+        var cell3 = sheetObject.cell(ex.CellIndex.indexByString("C${i + 3}"));
         cell3.value = 'Total Expenses '; // dynamic values support provided;
         cell3.cellStyle = totalStyle;
 
-        var cell4 = sheetObject.cell(CellIndex.indexByString("D${i + 3}"));
+        var cell4 = sheetObject.cell(ex.CellIndex.indexByString("D${i + 3}"));
         cell4.value = totalExp; // dynamic values support provided;
         cell4.cellStyle = totalStyle;
       } else {
-        var cell1 = sheetObject.cell(CellIndex.indexByString("A${i + 2}"));
+        var cell1 = sheetObject.cell(ex.CellIndex.indexByString("A${i + 2}"));
         cell1.value = '${i + 1}'; // dynamic values support provided;
         cell1.cellStyle = cellStyle;
-        var cell2 = sheetObject.cell(CellIndex.indexByString("B${i + 2}"));
+        var cell2 = sheetObject.cell(ex.CellIndex.indexByString("B${i + 2}"));
         cell2.value = dateTimeFormat('d-MMM-y',
             expenses[i]['date'].toDate()); // dynamic values support provided;
         cell2.cellStyle = cellStyle;
-        var cell3 = sheetObject.cell(CellIndex.indexByString("C${i + 2}"));
+        var cell3 = sheetObject.cell(ex.CellIndex.indexByString("C${i + 2}"));
         cell3.value =
             expenses[i]['particular']; // dynamic values support provided;
         cell3.cellStyle = cellStyle;
-        var cell4 = sheetObject.cell(CellIndex.indexByString("D${i + 2}"));
+        var cell4 = sheetObject.cell(ex.CellIndex.indexByString("D${i + 2}"));
         cell4.value = expenses[i]['amount']; // dynamic values support provided;
         cell4.cellStyle = cellStyle;
         // var cell5 = sheetObject.cell(CellIndex.indexByString("E${i + 2}"));

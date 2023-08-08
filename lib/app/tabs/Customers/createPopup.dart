@@ -34,10 +34,15 @@ class _CreateNewPopupState extends State<CreateNewPopup> {
   String selectedCountry = '';
   String countryDialCode = '';
   String countryShortName = '';
+  List<SearchFieldListItem<String>> agentNumberListLocal=[];
 
   @override
   void initState() {
-    // TODO: implement initState
+    agentNumberList.forEach((element) {
+      agentNumberListLocal.add(
+        SearchFieldListItem(element,)
+      );
+    });
     super.initState();
     fullName = TextEditingController();
     mobile = TextEditingController();
@@ -371,7 +376,7 @@ class _CreateNewPopupState extends State<CreateNewPopup> {
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
                           child: SearchField(
-                            suggestions: agentNumberList,
+                            suggestions: agentNumberListLocal,
                             controller: careOf,
                             hint: 'Please Enter c/o Agent Number',
                             searchStyle: TextStyle(
@@ -414,14 +419,13 @@ class _CreateNewPopupState extends State<CreateNewPopup> {
                                 ),
                               ),
                             ),
-                            onTap: (x) {
 
-                              if(x!=null) {
-                                careOf.text = x;
-                                setState(() {
-                                  print(x);
-                                });
-                              }
+                            onSuggestionTap: (x) {
+
+                              careOf.text = x.searchKey;
+                              setState(() {
+                                print(x);
+                              });
                             },
                           ),
                         ),
