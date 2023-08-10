@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
@@ -1147,6 +1149,14 @@ class _AddAttendanceState extends State<AddAttendance> {
                                             ),
                                             DataColumn(
                                               label: Flexible(
+                                                child: Text("Total Attended Days",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 12)),
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Flexible(
                                                 child: Text("Number Of Leave",
                                                     style: TextStyle(
                                                         fontWeight: FontWeight.bold,
@@ -1254,29 +1264,36 @@ class _AddAttendanceState extends State<AddAttendance> {
       cell5.value = 'TOTAL LEAVE'; // dynamic values support provided;
       cell5.cellStyle = cellStyle;
       var cell6 = sheetObject.cell(ex.CellIndex.indexByString("F1"));
-      cell6.value = 'BASIC SALARY'; // dynamic values support provided;
+      cell6.value = 'TOTAL CASUAL LEAVE'; // dynamic values support provided;
       cell6.cellStyle = cellStyle;
+
       var cell7 = sheetObject.cell(ex.CellIndex.indexByString("G1"));
-      cell7.value = 'PAYABLE SALARY'; // dynamic values support provided;
+      cell7.value = 'BASIC SALARY'; // dynamic values support provided;
       cell7.cellStyle = cellStyle;
       var cell8 = sheetObject.cell(ex.CellIndex.indexByString("H1"));
-      cell8.value = 'INCENTIVE'; // dynamic values support provided;
+      cell8.value = 'PAYABLE SALARY'; // dynamic values support provided;
       cell8.cellStyle = cellStyle;
       var cell9 = sheetObject.cell(ex.CellIndex.indexByString("I1"));
-      cell9.value = 'OVER TIME'; // dynamic values support provided;
+      cell9.value = 'INCENTIVE'; // dynamic values support provided;
       cell9.cellStyle = cellStyle;
       var cell10 = sheetObject.cell(ex.CellIndex.indexByString("J1"));
-      cell10.value = 'ADVANCE'; // dynamic values support provided;
+      cell10.value = 'OVER TIME'; // dynamic values support provided;
       cell10.cellStyle = cellStyle;
       var cell11 = sheetObject.cell(ex.CellIndex.indexByString("K1"));
-      cell11.value = 'TAKE HOME'; // dynamic values support provided;
+      cell11.value = 'ADVANCE'; // dynamic values support provided;
       cell11.cellStyle = cellStyle;
+      var cell12 = sheetObject.cell(ex.CellIndex.indexByString("L1"));
+      cell12.value = 'TAKE HOME'; // dynamic values support provided;
+      cell12.cellStyle = cellStyle;
     }
 
     //CELL VALUES
 
-    for (int i = 0; i < employeeList.length; i++) {
-      String id = employeeList[i]['empId'];
+    List employeeListActive=employeeList.where((element) => element['delete']==false).toList();;
+
+
+    for (int i = 0; i < employeeListActive.length; i++) {
+      String id = employeeListActive[i]['empId'];
 
       var cell1 = sheetObject.cell(ex.CellIndex.indexByString("A${i + 2}"));
       cell1.value = '${i + 1}'; // dynamic values support provided;
@@ -1289,36 +1306,41 @@ class _AddAttendanceState extends State<AddAttendance> {
       cell3.cellStyle = cellStyle;
       var cell4 = sheetObject.cell(ex.CellIndex.indexByString("D${i + 2}"));
       cell4.value = (30 -
-          employeeDetails[id]['offDay']); // dynamic values support provided;
+          (employeeDetails[id]==null?30:employeeDetails[id]['offDay'])); // dynamic values support provided;
       cell4.cellStyle = cellStyle;
       var cell5 = sheetObject.cell(ex.CellIndex.indexByString("E${i + 2}"));
       cell5.value =
-          employeeDetails[id]['leave']; // dynamic values support provided;
+      employeeDetails[id]==null?'':employeeDetails[id]['leave']; // dynamic values support provided;
       cell5.cellStyle = cellStyle;
       var cell6 = sheetObject.cell(ex.CellIndex.indexByString("F${i + 2}"));
-      cell6.value = double.tryParse(empDataById[id]!.ctc.toString())!
-          .toString(); // dynamic values support provided;
+      cell6.value =
+      employeeDetails[id]==null?'':employeeDetails[id]['casualLeave']; // dynamic values support provided;
       cell6.cellStyle = cellStyle;
+
       var cell7 = sheetObject.cell(ex.CellIndex.indexByString("G${i + 2}"));
-      cell7.value =
-          employeeDetails[id]['payable']; // dynamic values support provided;
+      cell7.value = double.tryParse(empDataById[id]!.ctc.toString())!
+          .toString(); // dynamic values support provided;
       cell7.cellStyle = cellStyle;
       var cell8 = sheetObject.cell(ex.CellIndex.indexByString("H${i + 2}"));
       cell8.value =
-          employeeDetails[id]['incentive']; // dynamic values support provided;
+      employeeDetails[id]==null?'': employeeDetails[id]['payable']; // dynamic values support provided;
       cell8.cellStyle = cellStyle;
       var cell9 = sheetObject.cell(ex.CellIndex.indexByString("I${i + 2}"));
       cell9.value =
-          employeeDetails[id]['ot']; // dynamic values support provided;
+      employeeDetails[id]==null?'':employeeDetails[id]['incentive']; // dynamic values support provided;
       cell9.cellStyle = cellStyle;
       var cell10 = sheetObject.cell(ex.CellIndex.indexByString("J${i + 2}"));
       cell10.value =
-          employeeDetails[id]['deduction']; // dynamic values support provided;
+      employeeDetails[id]==null?'': employeeDetails[id]['ot']; // dynamic values support provided;
       cell10.cellStyle = cellStyle;
       var cell11 = sheetObject.cell(ex.CellIndex.indexByString("K${i + 2}"));
       cell11.value =
-          employeeDetails[id]['takeHome']; // dynamic values support provided;
+      employeeDetails[id]==null?'': employeeDetails[id]['deduction']; // dynamic values support provided;
       cell11.cellStyle = cellStyle;
+      var cell12 = sheetObject.cell(ex.CellIndex.indexByString("L${i + 2}"));
+      cell12.value =
+      employeeDetails[id]==null?'': employeeDetails[id]['takeHome']; // dynamic values support provided;
+      cell12.cellStyle = cellStyle;
     }
 
     excel.setDefaultSheet('Pay Slip');
@@ -1493,6 +1515,21 @@ class MyData extends DataTableSource {
                           .toString()
                       : '');
 
+          TextEditingController attendedDays =
+          TextEditingController(
+              text: employeeDetails[data] !=
+                  null &&
+                  employeeDetails[data]
+                  ['workDay'] !=
+                      null
+                  ? (
+                  (employeeDetails[
+                  data][
+                  'workDay'] ??
+                      0))
+                  .toString()
+                  : '');
+
           TextEditingController incentive =
               TextEditingController(
                   text: employeeDetails[data] !=
@@ -1652,7 +1689,7 @@ class MyData extends DataTableSource {
                         fontSize: 12)),
               ),
 
-              //EDIT TOTAL WORKING DAYS TO CHANGE
+              /// EDIT TOTAL WORKING DAYS TO CHANGE
 
               DataCell(
                 TextFormField(
@@ -1676,6 +1713,70 @@ class MyData extends DataTableSource {
                               (30 -
                                   int.tryParse(
                                       workingDays
+                                          .text)!);
+
+                      // for (var id
+                      //     in employeeDetails.keys
+                      //         .toList()) {
+                      //   if (30 -
+                      //           (employeeDetails[
+                      //                       id][
+                      //                   'offDay'] ??
+                      //               0) ==
+                      //       30) {
+                      //     employeeDetails[id]
+                      //             ['offDay'] =
+                      //         (30 -
+                      //             int.tryParse(
+                      //                 workingDays
+                      //                     .text));
+                      //   }
+                      // }
+
+
+                    } catch (err) {
+                      print(err);
+                      showUploadMessage(context,
+                          'Unexpected error occurred!!!');
+                    }
+                  },
+
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                  ),
+                  style: FlutterFlowTheme
+                      .bodyText2
+                      .override(
+                    fontFamily: 'Montserrat',
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+
+              /// EDIT ATTENDED DAYS
+              DataCell(
+                TextFormField(
+                  readOnly: closed,
+                  controller: attendedDays,
+                  obscureText: false,
+
+                  //ADD VALUE TO TAKE VALUE
+
+                  // onTap: () {
+                  //   if (payable.text == '0') {
+                  //     payable.text = '';
+                  //   }
+                  // },
+
+                  onFieldSubmitted: (s) {
+                    try {
+
+                      employeeDetails[data]
+                                  ['workDay'] =
+                              (
+                                  int.tryParse(
+                                      attendedDays
                                           .text)!);
 
                       // for (var id
@@ -1764,7 +1865,8 @@ class MyData extends DataTableSource {
                       if ((employeeDetails[data]['leave']-(employeeDetails[data]['casualLeave']??0)) > 5) {
                         print(3);
                         print(employeeDetails[data]['workDay']);
-                        salary = (basicSalary / 30) * (  employeeDetails[data]['workDay']);
+                        double bp=basicSalary / 30;
+                        salary = (bp) * ( (employeeDetails[data]['workDay']+(employeeDetails[data]['casualLeave']??0)));
                         print(4);
                       } else {
 
@@ -1853,7 +1955,8 @@ class MyData extends DataTableSource {
                       // }
 
                       if ((employeeDetails[data]['leave']-(employeeDetails[data]['casualLeave']??0)) > 5) {
-                        salary = (basicSalary / 30) * (  employeeDetails[data]['workDay']);
+                        double bp=basicSalary / 30;
+                        salary = (bp) * ( (employeeDetails[data]['workDay']+(employeeDetails[data]['casualLeave']??0)));
                       } else {
 
                         salary =
@@ -1919,7 +2022,7 @@ class MyData extends DataTableSource {
                         fontSize: 12)),
               ),
 
-              //TEXT FORM FIELD TO INSERT Payable
+              /// TEXT FORM FIELD TO INSERT Payable
 
               DataCell(
                 TextFormField(
@@ -2035,7 +2138,7 @@ class MyData extends DataTableSource {
                 ),
               ),
 
-              //TEXT FORM FIELD TO INSERT INCENTIVE
+              /// TEXT FORM FIELD TO INSERT INCENTIVE
 
               DataCell(
                 TextFormField(
@@ -2143,7 +2246,7 @@ class MyData extends DataTableSource {
                 ),
               ),
 
-              //TEXT FORM FIELD TO INSERT OT
+              /// TEXT FORM FIELD TO INSERT OT
 
               DataCell(
                 TextFormField(
@@ -2236,7 +2339,7 @@ class MyData extends DataTableSource {
                 ),
               ),
 
-              //TEXT FORM FIELD TO INSERT DEDUCTION
+              /// TEXT FORM FIELD TO INSERT DEDUCTION
 
               DataCell(
                 TextFormField(

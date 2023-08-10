@@ -18,6 +18,7 @@ void main() async {
         appId: "1:1006994680466:web:e0a6260b5a8a502e40d44b",
         measurementId: "G-58TS14550F"
     ));
+
     runApp(MyApp());
   } else {
     WidgetsFlutterBinding.ensureInitialized();

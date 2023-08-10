@@ -530,8 +530,8 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                             String strOut = attendanceDetails['attendance']
                                 [dayIndex]['outTime'];
 
-                           late DateTime inTime;
-                           late DateTime outTime;
+                            DateTime? inTime;
+                            DateTime? outTime;
 
                             try {
                               hours = int.tryParse(
@@ -592,7 +592,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                   ),
                                 ),
                                 DataCell(
-                                  Text(
+                                  Text( inTime==null? '--:--':
                                     attendanceDetails['attendance'][dayIndex]
                                                 ['inTime'] ==
                                             '--:--'
@@ -607,7 +607,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                   ),
                                 ),
                                 DataCell(
-                                  Text(
+                                  Text(outTime==null? '--:--':
                                     attendanceDetails['attendance'][dayIndex]
                                                 ['outTime'] ==
                                             '--:--'
