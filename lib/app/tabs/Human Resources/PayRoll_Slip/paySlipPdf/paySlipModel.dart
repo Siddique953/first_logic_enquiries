@@ -6,9 +6,9 @@ class PaySlipModel {
   String? accNumber;
   String? bankName;
   int? workingDays;
-  int? attended;
+  double? attended;
   String? leaves;
-  int? leavesTaken;
+  double? leavesTaken;
   int? balanceLeaves;
   String? basicPay;
   String? dearnessAllo;

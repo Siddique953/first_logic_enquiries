@@ -1,38 +1,39 @@
 
+import 'dart:convert';
+
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_pickers/country.dart';
+import 'package:country_pickers/country_pickers.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
+import 'package:excel/excel.dart' as ex;
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:fl_erp/app/tabs/Customers/serviceInvoicePDF/Print/printFunction.dart';
 import 'package:fl_erp/app/tabs/Customers/serviceInvoicePDF/downloadServicePdf.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-
 import 'package:lottie/lottie.dart';
 import 'package:searchfield/searchfield.dart';
-import 'package:excel/excel.dart' as ex;
+import 'package:universal_html/html.dart' as html;
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../../flutter_flow/flutter_flow_icon_button.dart';
+import '../../../flutter_flow/flutter_flow_theme.dart';
+import '../../../flutter_flow/flutter_flow_util.dart';
+import '../../../flutter_flow/flutter_flow_widgets.dart';
+import '../../../flutter_flow/upload_media.dart';
 import '../../../paymentReport/report/Invoice.dart';
 import '../../../paymentReport/report/generatePdf.dart';
 import '../../../paymentReport/report/generatePrintFunction.dart';
 import '../../../paymentReport/report/printingFunction.dart';
-import '../../pages/home_page/home.dart';
-import '../../../flutter_flow/flutter_flow_util.dart';
-import 'package:url_launcher/url_launcher.dart';
-import '../../../flutter_flow/flutter_flow_icon_button.dart';
-import '../../../flutter_flow/flutter_flow_theme.dart';
-import 'package:flutter/material.dart';
-import '../../../flutter_flow/flutter_flow_widgets.dart';
-import '../../../flutter_flow/upload_media.dart';
 import '../../app_widget.dart';
-import 'package:country_pickers/country_pickers.dart';
+import '../../pages/home_page/home.dart';
 import 'StatementPDF/generateStatement.dart';
 import 'StatementPDF/statementModel.dart';
 import 'createProjectPopUp.dart';
-import 'dart:convert';
-import 'package:intl/intl.dart';
-import 'package:universal_html/html.dart' as html;
 
 bool subTabView = false;
 
@@ -7120,8 +7121,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
                                                                                 final invoice =
                                                                                 paymentDetail(
-                                                                                  nameOfProject: projectDataById[feeDetail['project']]['projectName'],
-                                                                                  name: feeDetail['serviceName'],
+                                                                                  nameOfProject: projectDataById[feeDetail['project']]['projectName'].toString(),
+                                                                                  name: feeDetail['serviceName'].toString(),
                                                                                   // selectedProjectType: projectDataById[payments[index]['projectId']]['projectType'],
 
                                                                                   lastPaymentAmount:
@@ -7129,19 +7130,21 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                   // totalAmountPaid: payments[index]['totalPaid'],
 
                                                                                   date: DateFormat('dd - MM - yyyy').format(feeDetail['createdDate']
-                                                                                      .toDate()),
+                                                                                      .toDate()).toString(),
 
                                                                                   customerName:
-                                                                                  cust['name'],
+                                                                                  cust['name'].toString(),
                                                                                   customerPhoneNo:
-                                                                                  cust['mobile'],
+                                                                                  cust['mobile'].toString(),
                                                                                   desc: feeDetail[
-                                                                                  'description'],
+                                                                                  'description'].toString(),
                                                                                   // staff: feeDetail[
                                                                                   // 'staffName'],
                                                                                   receiptNo:
-                                                                                  feeDetail['invoice'],
+                                                                                  feeDetail['invoice'].toString(),
                                                                                 );
+
+                                                                                print(1);
 
                                                                                 await GenerateInvoice
                                                                                     .downloadPdf(

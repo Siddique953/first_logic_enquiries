@@ -1,40 +1,1 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
-admin.initializeApp(functions.config().firebase);
-
-exports.sendEmailFromWeb =
-functions.firestore.document("/mail/{uid}").onCreate((event, context) =>{
-  console.log("==========================================");
-  const html =event.data().html;
-  const status =event.data().status;
-  const emailList =event.data().emailList;
-  const attachmentUrl =event.data().att;
-  console.log(" ============ transporter function =====================");
-  const nodemailer =require("nodemailer");
-  const transporter = nodemailer.createTransport({
-    host: "dedi.firstlogicmetalab.com",
-    port: 465,
-    ssl: true,
-    auth: {
-      user: "hr@firstlogicmetalab.com",
-      pass: "FLHr@1234",
-    },
-  }
-  );
-  console.log(transporter);
-  emailList.forEach(function(element) {
-    const rslt = transporter.sendMail({
-      from: '"HR-First Logic Meta Lab Pvt. Ltd" <hr@firstlogicmetalab.com>',
-      to: element,
-      subject: status,
-      html: html,
-      attachments: [{
-        filename: 'PaySlip.pdf',
-        path: attachmentUrl
-      }],
-    });
-    console.log("**");
-    console.log(rslt);
-    return rslt;
-  });
-});
+const functions = require("firebase-functions");const admin = require("firebase-admin");admin.initializeApp(functions.config().firebase);exports.sendEmailFromWeb =functions.firestore.document("/mail/{uid}").onCreate((event, context) =>{  console.log("==========================================");  const html =event.data().html;  const status =event.data().status;  const emailList =event.data().emailList;  const attachmentUrl =event.data().att;  console.log(" ============ transporter function =====================");  const nodemailer =require("nodemailer");  const transporter = nodemailer.createTransport({//    host: "firstlogicmetalab.com",    host: "mail.firstlogicmetalab.com",    port: 465,//    port: 587,    ssl: true,    auth: {      user: "hr@firstlogicmetalab.com",      pass: "FirstLogic@1123",    },  }  );  console.log(transporter);  console.log("*FIRST CONDITION*");  console.log(Array.isArray(attachmentUrl));  console.log("*SECOND*");  console.log(attachmentUrl.length > 0);  if(Array.isArray(attachmentUrl) && attachmentUrl.length > 0)  {    console.log("******* FIRST IF ********");    emailList.forEach(function(element) {        console.log("******* LIST OF ATTACHMENT ********");        console.log(element);        const attachments = attachmentUrl.map(url => {            return {              filename: 'Attachment.pdf', // You can adjust the filename as needed              path: url            };          });        const rslt = transporter.sendMail({          from: '"HR-First Logic Meta Lab Pvt. Ltd" <hr@firstlogicmetalab.com>',          to: element,          subject: status,          html: html,          attachments: attachments,          // attachments: [{          //   filename: 'PaySlip.pdf',          //   path: attachmentUrl          // }],        });        console.log("**");        console.log(rslt);        return rslt;      });  } else if(attachmentUrl === "" || attachmentUrl.length === 0)  {    console.log("******* SECOND IF ********");    emailList.forEach(function(element) {        console.log("******* No attachment ********");        console.log("******* OR ********");        console.log("******* EMPTY ATTACHMENTS ********");        console.log(element);        const rslt = transporter.sendMail({          from: '"HR-First Logic Meta Lab Pvt. Ltd" <hr@firstlogicmetalab.com>',          to: element,          subject: status,          html: html,          // attachments: [{          //   filename: 'PaySlip.pdf',          //   path: attachmentUrl          // }],        });        console.log("**");        console.log(rslt);        return rslt;      });  } else {    console.log("******* ELSE ********");    emailList.forEach(function(element) {        console.log("******* With attachment ********");        console.log(element);        const rslt = transporter.sendMail({          from: '"HR-First Logic Meta Lab Pvt. Ltd" <hr@firstlogicmetalab.com>',          to: element,          subject: status,          html: html,           attachments: [{             filename: 'PaySlip.pdf',             path: attachmentUrl           }],        });        console.log("**");        console.log(rslt);        return rslt;      });  }});

@@ -1,14 +1,14 @@
-import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fl_erp/app/tabs/Human%20Resources/PayRoll_Slip/paySlipPdf/paySlipModel.dart';
-import 'package:universal_html/html.dart' as html;
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart';
+
 import '../../../../../flutter_flow/flutter_flow_util.dart';
 import '../../../../pages/home_page/home.dart';
 
@@ -19,6 +19,15 @@ var image;
 class PaySlip {
   static downloadPdf(PaySlipModel invoice, Map employeeDetails,
       Map employeeAttendance, String empId, int lastDay) async {
+
+    // print('""""invoice.attended""""');
+    // print(empId);
+    // print(invoice.attended);
+    //
+    // String attendedDays =  invoice.attended.toString().split('.')[1]=='0'
+    //     ? (invoice.attended??0.0).truncate().toString()
+    //     :invoice.attended.toString();
+
     const _locale = 'HI';
     String _formatNumber(String s) =>
         NumberFormat.decimalPattern(_locale).format(int.parse(s));
@@ -2171,6 +2180,7 @@ class PaySlip {
       'status': 'Salary Information',
       'att': url,
       'emailList': [empDataById[empId]!.email],
+      'date':FieldValue.serverTimestamp(),
     }).then((value) {
       FirebaseFirestore.instance
           .collection('employees')
@@ -2222,6 +2232,20 @@ class PaySlip {
               DateTime.now().month - 1,
               DateTime.now().day,
             )),
+      });
+
+      /// Update PAYSLIPS with this PDF FILE
+      FirebaseFirestore.instance
+          .collection('paySlips')
+          .doc(dateTimeFormat(
+          'MMMM y',
+          DateTime(
+            DateTime.now().year,
+            DateTime.now().month - 1,
+            DateTime.now().day,
+          )))
+          .update({
+        'paySlipFiles.$empId': url,
       });
     });
   }

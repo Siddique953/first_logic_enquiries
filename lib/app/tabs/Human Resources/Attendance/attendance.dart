@@ -8,7 +8,6 @@ import '../../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../../flutter_flow/flutter_flow_util.dart';
 import '../../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../../flutter_flow/upload_media.dart';
-import '../../../app_widget.dart';
 import '../../../pages/home_page/home.dart';
 import 'employeeAttendance.dart';
 
@@ -26,6 +25,9 @@ class HrAttendance extends StatefulWidget {
 
 class _HrAttendanceState extends State<HrAttendance> {
   Map employeeDetails = {};
+  Map employeeAttendanceDetails = {};
+
+  List localEmployeeList = [];
 
   DateTime fromDate = DateTime(
       DateTime.now().year, DateTime.now().month - 1, DateTime.now().day);
@@ -42,18 +44,17 @@ class _HrAttendanceState extends State<HrAttendance> {
     ));
 
     employeeDetails = {};
+    employeeAttendanceDetails = {};
 
     FirebaseFirestore.instance
         .collection('paySlipInfo')
         .doc(
-          dateTimeFormat(
-            'MMMM y',
-            date,
-          ),
+          dateTimeFormat('MMMM y', date)
         )
         .get()
         .then((value) {
       employeeDetails = value['salaryInfo'];
+      employeeAttendanceDetails = value['attendanceInfo'];
 
       setState(() {});
     }).onError((StateError error, stackTrace) {
@@ -63,7 +64,7 @@ class _HrAttendanceState extends State<HrAttendance> {
               'field does not exist within the DocumentSnapshotPlatform' ||
           error.message ==
               'cannot get a field on a DocumentSnapshotPlatform which does not exist') {
-        showUploadMessage(context, 'Datas are not saved yet');
+        showUploadMessage(context, "Data's are not saved yet");
       }
     });
   }
@@ -79,6 +80,9 @@ class _HrAttendanceState extends State<HrAttendance> {
     ));
 
     // getPaymentDetails(fromDate, toDate);
+
+    localEmployeeList =
+        employeeList.where((element) => element['delete'] == false).toList();
   }
 
   @override
@@ -303,7 +307,7 @@ class _HrAttendanceState extends State<HrAttendance> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    employeeList.isEmpty
+                    localEmployeeList.isEmpty
                         ? Center(
                             child: LottieBuilder.network(
                               'https://assets9.lottiefiles.com/packages/lf20_HpFqiS.json',
@@ -379,10 +383,10 @@ class _HrAttendanceState extends State<HrAttendance> {
                                       ),
                                     ],
                                     rows: List.generate(
-                                      employeeList.length,
+                                      localEmployeeList.length,
                                       (index) {
                                         final data =
-                                            employeeList[index]['empId'];
+                                            localEmployeeList[index]['empId'];
 
                                         String name =
                                             empDataById[data]?.name ?? '';
@@ -518,6 +522,9 @@ class _HrAttendanceState extends State<HrAttendance> {
                                                                     data ?? '',
                                                                 empName:
                                                                     name ?? '',
+                                                                empAttendanceDetails:
+                                                                    employeeAttendanceDetails[
+                                                                        data],
                                                                 half: employeeDetails[
                                                                             data]
                                                                         [

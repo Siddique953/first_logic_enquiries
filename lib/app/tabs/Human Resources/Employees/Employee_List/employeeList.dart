@@ -1,16 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:fl_erp/app/tabs/Human%20Resources/Employees/deletedEmployees/deletedEmployees.dart';
-import 'package:intl/intl.dart';
-import 'package:universal_html/html.dart' as html;
+
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:universal_html/html.dart' as html;
 
 import '../../../../../flutter_flow/flutter_flow_theme.dart';
-import '../../../../../flutter_flow/flutter_flow_util.dart';
 import '../../../../../flutter_flow/flutter_flow_widgets.dart';
-import '../../../../models/Employee/EmployeeModel.dart';
 import '../../../../pages/home_page/home.dart';
 
 String employeeId = '';
@@ -332,6 +330,7 @@ class _EmployeeListState extends State<EmployeeList> {
                     child: InkWell(
                       onTap: (){
 
+                        // sortList();
                         importData();
                         /// EXCEL DOWNLOAD
                       },
@@ -944,6 +943,8 @@ class _EmployeeListState extends State<EmployeeList> {
     );
   }
 
+  /// ORIGINAL
+
   Future<void> importData() async {
     var excel = Excel.createExcel();
 
@@ -1164,6 +1165,127 @@ class _EmployeeListState extends State<EmployeeList> {
           "download", "${DateTime.now().toString().substring(0, 10)}.xlsx")
       ..click();
   }
+
+  ///
+  // sortList() {
+  //   List months = <String>[ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', ];
+  //   List dynamicList = listOfCustomers;
+  //
+  //   int lengthOfArray = dynamicList.length;
+  //   for (int i = 0; i < lengthOfArray - 1; i++) {
+  //     for (int j = 0; j < lengthOfArray - i - 1; j++) {
+  //
+  //       final k=months.indexOf(DateFormat('MMM').format(dynamicList[j]['dob'].toDate()));
+  //       final z=months.indexOf(DateFormat('MMM').format(dynamicList[j+1]['dob'].toDate()));
+  //
+  //       // if (listOfCustomers[j] > listOfCustomers[j + 1]) {
+  //       if (k > z) {
+  //         // Swapping using temporary variable
+  //         var temp = dynamicList[j];
+  //         dynamicList[j] = dynamicList[j + 1];
+  //         dynamicList[j + 1] = temp;
+  //       }
+  //     }
+  //   }
+  //
+  //   importData(dynamicList);
+  // }
+  ///
+
+  // Future<void> importData(List listOfCustomers) async {
+  //   var excel = Excel.createExcel();
+  //
+  //
+  //
+  //   Sheet sheetObject = excel['Employee'];
+  //   CellStyle cellStyle = CellStyle(
+  //       verticalAlign: VerticalAlign.Center,
+  //       horizontalAlign: HorizontalAlign.Center,
+  //
+  //       // backgroundColorHex: "#1AFF1A",
+  //       fontFamily: getFontFamily(FontFamily.Calibri));
+  //   CellStyle totalStyle = CellStyle(
+  //       fontFamily: getFontFamily(FontFamily.Calibri),
+  //       fontSize: 16,
+  //       bold: true);
+  //
+  //   //HEADINGS
+  //
+  //   if (listOfCustomers.length > 0) {
+  //     var cell1 = sheetObject.cell(CellIndex.indexByString("A2"));
+  //     cell1.value = 'SL NO';
+  //     cell1.cellStyle = cellStyle;
+  //
+  //
+  //
+  //     var cell3 = sheetObject.cell(CellIndex.indexByString("B2"));
+  //     cell3.value = 'Name'; // dynamic values support provided;
+  //     cell3.cellStyle = cellStyle;
+  //
+  //
+  //
+  //     var cell5 = sheetObject.cell(CellIndex.indexByString("C2"));
+  //     cell5.value = 'Phone Number'; // dynamic values support provided;
+  //     cell5.cellStyle = cellStyle;
+  //
+  //     var cell6 = sheetObject.cell(CellIndex.indexByString("D2"));
+  //     cell6.value = 'DoB'; // dynamic values support provided;
+  //     cell6.cellStyle = cellStyle;
+  //
+  //     ///
+  //     var cell7 = sheetObject.cell(CellIndex.indexByString("E2"));
+  //     cell7.value = 'Gender'; // dynamic values support provided;
+  //     cell7.cellStyle = cellStyle;
+  //
+  //
+  //   }
+  //
+  //   //CELL VALUES
+  //
+  //   for (int i = 0; i < listOfCustomers.length; i++) {
+  //
+  //
+  //
+  //     var cell1 = sheetObject.cell(CellIndex.indexByString("A${i+4}"));
+  //     cell1.value = i+1;
+  //     cell1.cellStyle = cellStyle;
+  //
+  //     var cell2 = sheetObject.cell(CellIndex.indexByString("B${i+4}"));
+  //     cell2.value = listOfCustomers[i]['empId']; // dynamic values support provided;
+  //     cell2.cellStyle = cellStyle;
+  //
+  //     var cell3 = sheetObject.cell(CellIndex.indexByString("C${i+4}"));
+  //     cell3.value = listOfCustomers[i]['name']; // dynamic values support provided;
+  //     cell3.cellStyle = cellStyle;
+  //
+  //
+  //
+  //     var cell5 = sheetObject.cell(CellIndex.indexByString("D${i+4}"));
+  //     cell5.value = listOfCustomers[i]['phone']; // dynamic values support provided;
+  //     cell5.cellStyle = cellStyle;
+  //
+  //     var cell6 = sheetObject.cell(CellIndex.indexByString("E${i+4}"));
+  //     cell6.value = DateFormat('dd - MMM - yyyy').format(listOfCustomers[i]['dob'].toDate()); // dynamic values support provided;
+  //     cell6.cellStyle = cellStyle;
+  //
+  //
+  //
+  //   }
+  //
+  //   excel.setDefaultSheet('Employee');
+  //   var fileBytes = excel.encode();
+  //   File file;
+  //
+  //   final content = base64Encode(fileBytes!);
+  //   final anchor = html.AnchorElement(
+  //       href: "data:application/octet-stream;charset=utf-16le;base64,$content")
+  //     ..setAttribute(
+  //         "download", "${DateTime.now().toString().substring(0, 10)}.xlsx")
+  //     ..click();
+  // }
+
+  ///
+
 }
 
 

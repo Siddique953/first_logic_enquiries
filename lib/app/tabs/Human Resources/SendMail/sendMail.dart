@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../flutter_flow/flutter_flow_theme.dart';
@@ -33,6 +33,7 @@ class _SendMailToEmployeesState extends State<SendMailToEmployees> {
 
   TextEditingController subject = TextEditingController();
   TextEditingController bodyOfMail = TextEditingController();
+  final HtmlEditorController controller = HtmlEditorController();
   List attachments = [];
 
   double width = 0;
@@ -233,91 +234,202 @@ class _SendMailToEmployeesState extends State<SendMailToEmployees> {
                                       padding:
                                       EdgeInsets.fromLTRB(
                                           16, 0, 0, 0),
-                                      child: TextFormField(
-                                        controller: bodyOfMail,
-                                        obscureText: false,
-                                        maxLines: 100,
-                                        textAlign: TextAlign.start,
+                                      child:
 
-                                        decoration:
-                                        InputDecoration(
-                                          labelText:
-                                          'Body',
-                                          labelStyle: FlutterFlowTheme
-                                              .bodyText2
-                                              .override(
-                                              fontFamily:
-                                              'Montserrat',
-                                              color: Colors
-                                                  .black,
-                                              fontWeight:
-                                              FontWeight
-                                                  .w500,
-                                              fontSize: 12),
-                                          hintText:
-                                          'Enter Body of your E-Mail',
-                                          hintStyle: FlutterFlowTheme
-                                              .bodyText2
-                                              .override(
-                                              fontFamily:
-                                              'Montserrat',
-                                              color: Colors
-                                                  .black,
-                                              fontWeight:
-                                              FontWeight
-                                                  .w500,
-                                              fontSize: 12),
-                                          enabledBorder:
-                                          UnderlineInputBorder(
-                                            borderSide:
-                                            BorderSide(
-                                              color: Colors
-                                                  .transparent,
-                                              width: 1,
-                                            ),
-                                            borderRadius:
-                                            const BorderRadius
-                                                .only(
-                                              topLeft: Radius
-                                                  .circular(
-                                                  4.0),
-                                              topRight: Radius
-                                                  .circular(
-                                                  4.0),
-                                            ),
-                                          ),
-                                          focusedBorder:
-                                          UnderlineInputBorder(
-                                            borderSide:
-                                            BorderSide(
-                                              color: Colors
-                                                  .transparent,
-                                              width: 1,
-                                            ),
-                                            borderRadius:
-                                            const BorderRadius
-                                                .only(
-                                              topLeft: Radius
-                                                  .circular(
-                                                  4.0),
-                                              topRight: Radius
-                                                  .circular(
-                                                  4.0),
-                                            ),
-                                          ),
+                                      HtmlEditor(
+                                        controller: controller,
+                                        htmlEditorOptions: HtmlEditorOptions(
+                                            hint: 'Your text here...',
+                                            shouldEnsureVisible: true,
+                                            darkMode: false
+                                          //initialText: "<p>text content initial, if any</p>",
                                         ),
-                                        style: FlutterFlowTheme
-                                            .bodyText2
-                                            .override(
-                                            fontFamily:
-                                            'Montserrat',
-                                            color: Color(
-                                                0xFF8B97A2),
-                                            fontWeight:
-                                            FontWeight
-                                                .w500,
-                                            fontSize: 13),
+                                        htmlToolbarOptions: HtmlToolbarOptions(
+                                          toolbarPosition: ToolbarPosition.aboveEditor, //by default
+                                          toolbarType: ToolbarType.nativeScrollable, //by default
+                                          onButtonPressed:
+                                              (ButtonType type, bool? status, Function? updateStatus) {
+                                            return true;
+                                          },
+                                          onDropdownChanged: (DropdownType type, dynamic changed,
+                                              Function(dynamic)? updateSelectedItem) {
+                                            return true;
+                                          },
+                                          mediaLinkInsertInterceptor:
+                                              (String url, InsertFileType type) {
+                                            print(url);
+                                            return true;
+                                          },
+                                          mediaUploadInterceptor:
+                                              (PlatformFile file, InsertFileType type) async {
+                                            print(file.name); //filename
+                                            print(file.size); //size in bytes
+                                            print(file.extension); //file extension (eg jpeg or mp4)
+                                            return true;
+                                          },
+                                        ),
+                                        otherOptions: OtherOptions(height: 550),
+                                        // callbacks: Callbacks(onBeforeCommand: (String? currentHtml) {
+                                        //   print('html before change is $currentHtml');
+                                        // }, onChangeContent: (String? changed) {
+                                        //   print('content changed to $changed');
+                                        // }, onChangeCodeview: (String? changed) {
+                                        //   print('code changed to $changed');
+                                        // }, onChangeSelection: (EditorSettings settings) {
+                                        //   print('parent element is ${settings.parentElement}');
+                                        //   print('font name is ${settings.fontName}');
+                                        // }, onDialogShown: () {
+                                        //   print('dialog shown');
+                                        // }, onEnter: () {
+                                        //   print('enter/return pressed');
+                                        // }, onFocus: () {
+                                        //   print('editor focused');
+                                        // }, onBlur: () {
+                                        //   print('editor unfocused');
+                                        // }, onBlurCodeview: () {
+                                        //   print('codeview either focused or unfocused');
+                                        // }, onInit: () {
+                                        //   print('init');
+                                        // },
+                                        //     //this is commented because it overrides the default Summernote handlers
+                                        //     /*onImageLinkInsert: (String? url) {
+                                        //     print(url ?? "unknown url");
+                                        //   },
+                                        //   onImageUpload: (FileUpload file) async {
+                                        //     print(file.name);
+                                        //     print(file.size);
+                                        //     print(file.type);
+                                        //     print(file.base64);
+                                        //   },*/
+                                        //     onImageUploadError: (FileUpload? file, String? base64Str,
+                                        //         UploadError error) {
+                                        //       print(describeEnum(error));
+                                        //       print(base64Str ?? '');
+                                        //       if (file != null) {
+                                        //         print(file.name);
+                                        //         print(file.size);
+                                        //         print(file.type);
+                                        //       }
+                                        //     }, onKeyDown: (int? keyCode) {
+                                        //       print('$keyCode key downed');
+                                        //       print(
+                                        //           'current character count: ${controller.characterCount}');
+                                        //     }, onKeyUp: (int? keyCode) {
+                                        //       print('$keyCode key released');
+                                        //     }, onMouseDown: () {
+                                        //       print('mouse downed');
+                                        //     }, onMouseUp: () {
+                                        //       print('mouse released');
+                                        //     }, onNavigationRequestMobile: (String url) {
+                                        //       print(url);
+                                        //       return NavigationActionPolicy.ALLOW;
+                                        //     }, onPaste: () {
+                                        //       print('pasted into editor');
+                                        //     }, onScroll: () {
+                                        //       print('editor scrolled');
+                                        //     }),
+                                        plugins: [
+                                          SummernoteAtMention(
+                                              getSuggestionsMobile: (String value) {
+                                                var mentions = <String>['test1', 'test2', 'test3'];
+                                                return mentions
+                                                    .where((element) => element.contains(value))
+                                                    .toList();
+                                              },
+                                              mentionsWeb: ['test1', 'test2', 'test3'],
+                                              onSelect: (String value) {
+                                                print(value);
+                                              }),
+                                        ],
                                       ),
+
+                                      ///
+
+                                      // TextFormField(
+                                      //   controller: bodyOfMail,
+                                      //   obscureText: false,
+                                      //   maxLines: 100,
+                                      //   textAlign: TextAlign.start,
+                                      //
+                                      //   decoration:
+                                      //   InputDecoration(
+                                      //     labelText:
+                                      //     'Body',
+                                      //     labelStyle: FlutterFlowTheme
+                                      //         .bodyText2
+                                      //         .override(
+                                      //         fontFamily:
+                                      //         'Montserrat',
+                                      //         color: Colors
+                                      //             .black,
+                                      //         fontWeight:
+                                      //         FontWeight
+                                      //             .w500,
+                                      //         fontSize: 12),
+                                      //     hintText:
+                                      //     'Enter Body of your E-Mail',
+                                      //     hintStyle: FlutterFlowTheme
+                                      //         .bodyText2
+                                      //         .override(
+                                      //         fontFamily:
+                                      //         'Montserrat',
+                                      //         color: Colors
+                                      //             .black,
+                                      //         fontWeight:
+                                      //         FontWeight
+                                      //             .w500,
+                                      //         fontSize: 12),
+                                      //     enabledBorder:
+                                      //     UnderlineInputBorder(
+                                      //       borderSide:
+                                      //       BorderSide(
+                                      //         color: Colors
+                                      //             .transparent,
+                                      //         width: 1,
+                                      //       ),
+                                      //       borderRadius:
+                                      //       const BorderRadius
+                                      //           .only(
+                                      //         topLeft: Radius
+                                      //             .circular(
+                                      //             4.0),
+                                      //         topRight: Radius
+                                      //             .circular(
+                                      //             4.0),
+                                      //       ),
+                                      //     ),
+                                      //     focusedBorder:
+                                      //     UnderlineInputBorder(
+                                      //       borderSide:
+                                      //       BorderSide(
+                                      //         color: Colors
+                                      //             .transparent,
+                                      //         width: 1,
+                                      //       ),
+                                      //       borderRadius:
+                                      //       const BorderRadius
+                                      //           .only(
+                                      //         topLeft: Radius
+                                      //             .circular(
+                                      //             4.0),
+                                      //         topRight: Radius
+                                      //             .circular(
+                                      //             4.0),
+                                      //       ),
+                                      //     ),
+                                      //   ),
+                                      //   style: FlutterFlowTheme
+                                      //       .bodyText2
+                                      //       .override(
+                                      //       fontFamily:
+                                      //       'Montserrat',
+                                      //       color: Color(
+                                      //           0xFF8B97A2),
+                                      //       fontWeight:
+                                      //       FontWeight
+                                      //           .w500,
+                                      //       fontSize: 13),
+                                      // ),
                                     ),
                                   ),
                                 ),
@@ -445,7 +557,7 @@ class _SendMailToEmployeesState extends State<SendMailToEmployees> {
                                 children: [
 
                                   GestureDetector(
-                                    onTap: () {
+                                    onTap: () async {
                                       // String html = '<html>'
                                       //     '<head>'
                                       //     '<meta name="viewport" content="width=device-width, initial-scale=1">'
@@ -517,6 +629,9 @@ class _SendMailToEmployeesState extends State<SendMailToEmployees> {
                                       //   // 'emailList': [employeeDetails.email],
                                       //   'date':FieldValue.serverTimestamp()
                                       // });
+
+
+                                      bodyOfMail.text= await controller.getText();
 
                                       if(bodyOfMail.text.isNotEmpty&&subject.text.isNotEmpty){
                                         mailBody=bodyOfMail.text;

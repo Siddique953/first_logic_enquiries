@@ -1,25 +1,24 @@
-import 'dart:js_interop';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
+import 'package:excel/excel.dart' as ex;
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fl_erp/app/tabs/Human%20Resources/PayRoll_Slip/paySlipPdf/paySlipModel.dart';
+import 'package:fl_erp/app/tabs/Human%20Resources/PayRoll_Slip/paySlipPdf/paySlipPdf.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
+
 // import 'package:month_picker_dialog_2/month_picker_dialog_2.dart';
 import '../../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../../flutter_flow/flutter_flow_util.dart';
-import 'package:fl_erp/app/tabs/Human%20Resources/PayRoll_Slip/paySlipPdf/paySlipModel.dart';
-import 'package:fl_erp/app/tabs/Human%20Resources/PayRoll_Slip/paySlipPdf/paySlipPdf.dart';
 import '../../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../../flutter_flow/upload_media.dart';
 import '../../../app_widget.dart';
 import '../../../pages/home_page/home.dart';
-import 'package:excel/excel.dart' as ex;
-import 'dart:typed_data';
-
 import 'BankSlip/bankSlip.dart';
 
 late DataTableSource _dataSemi;
@@ -93,6 +92,9 @@ class _AddAttendanceState extends State<AddAttendance> {
 
         double basicSalary = 0;
 
+        int totalWorkingDays=0;
+        int totalDays=0;
+
         if (empDataById[empCode] == null) {
           basicSalary = double.tryParse('0')!;
         } else {
@@ -115,10 +117,14 @@ class _AddAttendanceState extends State<AddAttendance> {
               ? toDay = rowDetail[j][0].toString().split('/')
               : toDay = rowDetail[j][0].toString().split('-');
 
+
+
           // List toDayList = toDay;
           bool off = false;
           bool half = false;
           bool fullDayLeave = false;
+          totalWorkingDays++;
+          totalDays++;
           DateTime day = DateTime.tryParse(toDay[2] + toDay[1] + toDay[0])!;
 
           String inTime = rowDetail[j][2].toString();
@@ -158,10 +164,13 @@ class _AddAttendanceState extends State<AddAttendance> {
           if (cfData.contains('CF')) {
             cf++;
             off = true;
+            totalWorkingDays--;
           } else if (workHour < 3.5) {
+
             leave++;
             fullDayLeave = true;
           } else if (workHour >= 3.5 && workHour < 7) {
+
             halfDay++;
             half = true;
           }
@@ -214,10 +223,26 @@ class _AddAttendanceState extends State<AddAttendance> {
         if ((leave + ((halfDay + lateCut) * 0.5)) > 5) {
           payable = (basicSalary / 30) * (totalWork - (0.5 * lateCut));
         } else {
+
+
           payable =
-              (basicSalary / 30) * (30 - (leave - ((halfDay + lateCut) * 0.5)));
+              (basicSalary / 30) * (30 - (leave + ((halfDay + lateCut) * 0.5)));
+
+          if(empCode=='FL108'){
+            print('hellooooo');
+            print(basicSalary);
+            print(basicSalary/30);
+            print(leave);
+            print(halfDay);
+            print(lateCut);
+            print((leave - ((halfDay + lateCut) * 0.5)));
+            print(payable);
+          }
+
         }
 
+        employeeDetails[empCode]['totalDays'] = totalDays;
+        employeeDetails[empCode]['totalWorkDays'] = totalWorkingDays;
         employeeDetails[empCode]['workDay'] = totalWork - (0.5 * lateCut);
         employeeDetails[empCode]['offDay'] = cf;
         employeeDetails[empCode]['lateCut'] = lateCut;
@@ -235,6 +260,7 @@ class _AddAttendanceState extends State<AddAttendance> {
       }
     }
 
+    print('111111');
     uploadFileToFireBase(
         dateTimeFormat(
             'MMM y',
@@ -246,7 +272,8 @@ class _AddAttendanceState extends State<AddAttendance> {
         bytes,
         'csv');
 
-    setState(() {});
+    setState(() {
+    });
   }
 
   Future uploadFileToFireBase(String name, fileBytes, String ext) async {
@@ -256,28 +283,28 @@ class _AddAttendanceState extends State<AddAttendance> {
     // final ref=FirebaseStorage.instance.ref().child(path);
     // uploadTask = ref.putFile(file);
     ///
-    // var uploadTask = FirebaseStorage.instance
-    //     .ref('Pay Slips/${dateTimeFormat('MMMM y', DateTime(
-    //           DateTime.now().year,
-    //           DateTime.now().month - 1,
-    //           DateTime.now().day,
-    //         ))}/attendanceFile--$name.$ext')
-    //     .putData(fileBytes);
-    // final snapshot = await uploadTask.whenComplete(() {});
-    // final urlDownload = await snapshot.ref.getDownloadURL();
-    //
-    // FirebaseFirestore.instance
-    //     .collection('paySlips')
-    //     .doc(dateTimeFormat(
-    //         'MMMM y',
-    //         DateTime(
-    //           DateTime.now().year,
-    //           DateTime.now().month - 1,
-    //           DateTime.now().day,
-    //         )))
-    //     .set({
-    //   'attendanceFile': urlDownload,
-    // });
+        var uploadTask = FirebaseStorage.instance
+        .ref('Pay Slips/${dateTimeFormat('MMMM y', DateTime(
+              DateTime.now().year,
+              DateTime.now().month - 1,
+              DateTime.now().day,
+            ))}/attendanceFile--$name.$ext')
+        .putData(fileBytes);
+    final snapshot = await uploadTask.whenComplete(() {});
+    final urlDownload = await snapshot.ref.getDownloadURL();
+
+    FirebaseFirestore.instance
+        .collection('paySlips')
+        .doc(dateTimeFormat(
+            'MMMM y',
+            DateTime(
+              DateTime.now().year,
+              DateTime.now().month - 1,
+              DateTime.now().day,
+            )))
+        .set({
+      'attendanceFile': urlDownload,
+    });
   }
 
   Future updateFileInFireBase(String name, fileBytes, String ext) async {
@@ -1289,7 +1316,7 @@ class _AddAttendanceState extends State<AddAttendance> {
 
     //CELL VALUES
 
-    List employeeListActive=employeeList.where((element) => element['delete']==false).toList();;
+    List employeeListActive=employeeList.where((element) => element['delete']==false).toList();
 
 
     for (int i = 0; i < employeeListActive.length; i++) {
@@ -1347,7 +1374,13 @@ class _AddAttendanceState extends State<AddAttendance> {
     // var fileBytes = excel.encode();
     var data = excel.save(
         fileName:
-            "PaySlip-${dateTimeFormat('dd MMM yyyy', DateTime.now())}.xlsx");
+            "PaySlip-${dateTimeFormat('dd MMM yyyy', (DateTime(
+              DateTime.now().year,
+              DateTime.now()
+                  .month -
+                  1,
+              DateTime.now().day,
+            )))}.xlsx");
 
     Uint8List bytes = Uint8List.fromList(data!);
 
@@ -1371,29 +1404,36 @@ class _AddAttendanceState extends State<AddAttendance> {
   }
 
   sendMail() {
+
+    List availableEmployees = employeeList.where((element) => element['delete']==false).toList();
     DateTime monthDay = DateTime(DateTime.now().year, DateTime.now().month, 0);
     int lastDay = monthDay.day;
-    for (int i = 0; i < employeeList.length; i++) {
-      if (employeeDetails[employeeList[i]['empId']]['takeHome'] == 0) {
+    for (int i = 0; i < availableEmployees.length; i++) {
+      if (employeeDetails[availableEmployees[i]['empId']]['takeHome'] == 0) {
         continue;
       }
 
+      // if(kDebugMode) {
+      //   print('"""""""""empId"""""""""');
+      //   print(availableEmployees[i]['empId']);
+      // }
+
       int offDays = int.tryParse(
-          (employeeDetails[employeeList[i]['empId']]['offDay'] ?? 4)
+          (employeeDetails[availableEmployees[i]['empId']]['offDay'] ?? 4)
               .toString())!;
       int workingDays = int.tryParse((30 - offDays).toString())!;
+      double payable =double.tryParse(empDataById[availableEmployees[i]['empId']]!.ctc??'0')!;
+      double leaveCut = payable- employeeDetails[availableEmployees[i]['empId']]['takeHome'];
 
-      double payable =double.tryParse(empDataById[employeeList[i]['empId']]!.ctc??'0')!;
-      double leaveCut = payable- employeeDetails[employeeList[i]['empId']]['takeHome'];
       PaySlipModel data = PaySlipModel(
         workingDays: workingDays,
         pto: leaveCut.toString(),
         totalDeduction:
-            ((employeeDetails[employeeList[i]['empId']]['deduction'])+leaveCut).toString(),
+            ((employeeDetails[availableEmployees[i]['empId']]['deduction'])+leaveCut).toString(),
         spAllowance: '',
-        pan: empDataById[employeeList[i]['empId']]?.pan ?? '',
+        pan: empDataById[availableEmployees[i]['empId']]?.pan ?? '',
         netSalary:
-            employeeDetails[employeeList[i]['empId']]['takeHome'].toString(),
+            employeeDetails[availableEmployees[i]['empId']]['takeHome'].toString(),
         month: dateTimeFormat(
             'MMM y',
             DateTime(
@@ -1403,30 +1443,29 @@ class _AddAttendanceState extends State<AddAttendance> {
             )),
         medicalAlowance: '',
         leaves: '',
-        leavesTaken: employeeDetails[employeeList[i]['empId']]['leave'],
-        incentives: employeeDetails[employeeList[i]['empId']]['incentive'] == 0
+        leavesTaken: employeeDetails[availableEmployees[i]['empId']]['leave'],
+        incentives: employeeDetails[availableEmployees[i]['empId']]['incentive'] == 0
             ? ''
-            : employeeDetails[employeeList[i]['empId']]['incentive'].toString(),
+            : employeeDetails[availableEmployees[i]['empId']]['incentive'].toString(),
         hra: '',
         dearnessAllo: '',
-        code: employeeList[i]['empId'],
+        code: availableEmployees[i]['empId'],
         cityAllow: '',
         balanceLeaves: 0,
-        basicPay: empDataById[employeeList[i]['empId']]!.ctc ?? '',
-        attended: employeeDetails[employeeList[i]['empId']]['workDay'],
+        basicPay: empDataById[availableEmployees[i]['empId']]!.ctc ?? '',
+        attended: employeeDetails[availableEmployees[i]['empId']]['workDay'],
         advance:
-            employeeDetails[employeeList[i]['empId']]['deduction'].toString(),
-        accNumber: empDataById[employeeList[i]['empId']]!.accountNumber,
-        total: (employeeDetails[employeeList[i]['empId']]['incentive'] +
-                double.tryParse(empDataById[employeeList[i]['empId']]!.ctc.toString())!)
+            employeeDetails[availableEmployees[i]['empId']]['deduction'].toString(),
+        accNumber: empDataById[availableEmployees[i]['empId']]!.accountNumber,
+        total: (employeeDetails[availableEmployees[i]['empId']]['incentive'] +
+                double.tryParse(empDataById[availableEmployees[i]['empId']]!.ctc.toString())!)
             .toString(),
-        name: empDataById[employeeList[i]['empId']]!.name,
-        bankName: empDataById[employeeList[i]['empId']]!.bankName,
-        designation: empDataById[employeeList[i]['empId']]!.designation,
+        name: empDataById[availableEmployees[i]['empId']]!.name,
+        bankName: empDataById[availableEmployees[i]['empId']]!.bankName,
+        designation: empDataById[availableEmployees[i]['empId']]!.designation,
       );
-
       PaySlip.downloadPdf(data, employeeDetails, employeeAttendance,
-          employeeList[i]['empId'], lastDay);
+          availableEmployees[i]['empId'], lastDay);
     }
     showUploadMessage(context, 'Pay Slip Successfully Shared..');
   }
@@ -1496,6 +1535,8 @@ class MyData extends DataTableSource {
                 "ot": 0,
                 "deduction": 0,
                 "takeHome": 0,
+                "totalWorkDays": 0,
+                "totalDays": 0,
               };
             }
           }
@@ -1505,12 +1546,12 @@ class MyData extends DataTableSource {
                   text: employeeDetails[data] !=
                               null &&
                           employeeDetails[data]
-                                  ['offDay'] !=
+                                  ['totalWorkDays'] !=
                               null
-                      ? (30 -
+                      ? (
                               (employeeDetails[
                                           data][
-                                      'offDay'] ??
+                                      'totalWorkDays'] ??
                                   0))
                           .toString()
                       : '');
@@ -1682,7 +1723,7 @@ class MyData extends DataTableSource {
               ),
 
               DataCell(
-                Text(name.toString() ?? '',
+                Text(name.toString(),
                     style: TextStyle(
                         fontWeight:
                             FontWeight.bold,
@@ -1709,8 +1750,8 @@ class MyData extends DataTableSource {
                     try {
 
                       employeeDetails[data]
-                                  ['offDay'] =
-                              (30 -
+                                  ['totalWorkDays'] =
+                              (
                                   int.tryParse(
                                       workingDays
                                           .text)!);
@@ -1778,6 +1819,8 @@ class MyData extends DataTableSource {
                                   int.tryParse(
                                       attendedDays
                                           .text)!);
+
+                      
 
                       // for (var id
                       //     in employeeDetails.keys
@@ -1961,6 +2004,7 @@ class MyData extends DataTableSource {
 
                         salary =
                             (basicSalary / 30) * (30 - (employeeDetails[data]['leave']-(employeeDetails[data]['casualLeave']??0)));
+
                       }
                       employeeDetails[data]['payable']=salary.round();
                       employeeDetails[data]['takeHome']=(employeeDetails[data]['payable']-employeeDetails[data]['deduction'])+(employeeDetails[data]['incentive']+employeeDetails[data]['ot']);
@@ -2187,12 +2231,10 @@ class MyData extends DataTableSource {
                                         employeeDetails[
                                                 data]
                                             [
-                                            'ot'] ??
-                                    0) -
+                                            'ot']) -
                                 employeeDetails[
                                         data][
-                                    'deduction'] ??
-                            0;
+                                    'deduction'];
 
                         employeeDetails[data]
                                 ['incentive'] =
@@ -2213,12 +2255,10 @@ class MyData extends DataTableSource {
                                         employeeDetails[
                                                 data]
                                             [
-                                            'ot'] ??
-                                    0) -
+                                            'ot']) -
                                 employeeDetails[
                                         data][
-                                    'deduction'] ??
-                            0;
+                                    'deduction'];
 
                         employeeDetails[data]
                                 ['incentive'] =
@@ -2280,12 +2320,10 @@ class MyData extends DataTableSource {
                                         employeeDetails[
                                                 data]
                                             [
-                                            'incentive'] ??
-                                    0) -
+                                            'incentive']) -
                                 employeeDetails[
                                         data][
-                                    'deduction'] ??
-                            0;
+                                    'deduction'] ;
 
                         employeeDetails[data]
                             ['ot'] = otAmount;
@@ -2306,12 +2344,10 @@ class MyData extends DataTableSource {
                                         employeeDetails[
                                                 data]
                                             [
-                                            'incentive'] ??
-                                    0) -
+                                            'incentive']) -
                                 employeeDetails[
                                         data][
-                                    'deduction'] ??
-                            0;
+                                    'deduction'] ;
 
                         employeeDetails[data]
                             ['ot'] = otAmount;
@@ -2412,8 +2448,7 @@ class MyData extends DataTableSource {
                                         employeeDetails[
                                                 data]
                                             [
-                                            'ot'] ??
-                                    0) +
+                                            'ot']) +
                                 (employeeDetails[
                                             data][
                                         'incentive'] ??

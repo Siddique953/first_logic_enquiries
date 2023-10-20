@@ -3,11 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../Login/login.dart';
-import '../../../auth/auth_util.dart';
 import '../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
 import '../../app_widget.dart';
@@ -51,10 +49,13 @@ class _BranchesWidgetState extends State<BranchesWidget> {
         currentbranchShortName = localStorage.getString('shortName')!;
         currentbranchAddress = localStorage.getString('address')!;
         currentbranchphoneNumber = localStorage.getString('phone')!;
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (mainContext) => Home()),
-        );
+
+        if(mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (mainContext) => Home()),
+          );
+        }
       }
 
       if (mounted) {

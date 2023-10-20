@@ -57,7 +57,6 @@ dependencies:
   open_file: ^3.3.2
   chewie:
   video_player:
-  flutter_chat_ui:
 #  dio:
   lottie:
   syncfusion_flutter_pdfviewer:
@@ -78,6 +77,7 @@ dependencies:
   pie_chart:
   shimmer:
   intl: ^0.18.0
+  html_editor_enhanced: ^2.5.1
 
 
 

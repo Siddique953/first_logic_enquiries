@@ -2,17 +2,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_erp/app/pages/home_page/home.dart';
 import 'package:fl_erp/flutter_flow/upload_media.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 import '../app/tabs/Branch/AddBranch.dart';
 import '../app/tabs/Branch/SelectBranches.dart';
-import '../auth/auth_util.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
-import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
-import '../main.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class LoginPageWidget extends StatefulWidget {
   const LoginPageWidget({Key? key}) : super(key: key);
@@ -22,8 +19,8 @@ class LoginPageWidget extends StatefulWidget {
 }
 
 class _LoginPageWidgetState extends State<LoginPageWidget> {
-  TextEditingController? emailTextController;
-  TextEditingController? passwordTextController;
+ late TextEditingController emailTextController;
+  late TextEditingController passwordTextController;
   bool passwordVisibility=false;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -33,6 +30,11 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
     emailTextController = TextEditingController();
     passwordTextController = TextEditingController();
     passwordVisibility = false;
+
+    if(kDebugMode) {
+      emailTextController.text='developer@erp.com';
+      passwordTextController.text='devops';
+    }
     
     // FirebaseAuth.instance.signInWithEmailAndPassword(email: 'admin@gmail.com', password: '123456');
   }

@@ -1,14 +1,12 @@
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_erp/app/app_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../../../../flutter_flow/flutter_flow_drop_down.dart';
 import '../../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../../flutter_flow/flutter_flow_widgets.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
-
 import '../../../../flutter_flow/upload_media.dart';
 import '../../../components/constants/storage.dart';
 
@@ -369,7 +367,7 @@ class _AddPromotersState extends State<AddPromoters> {
                                     onCountryChanged: (value) {
                                       countryDialCode = value.dialCode;
                                       countryShortName = value.code;
-                                      print(value.code);
+
                                     },
                                     decoration: InputDecoration(
                                       labelText: 'Phone Number',
@@ -432,7 +430,7 @@ class _AddPromotersState extends State<AddPromoters> {
                                       alternativeCountryDialCode =
                                           value.dialCode;
                                       alternativeCountryShortName = value.code;
-                                      print(value.dialCode);
+
                                     },
                                     decoration: InputDecoration(
                                       labelText: 'Alternate Phone Number',

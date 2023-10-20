@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pie_chart/pie_chart.dart';
+
 import '../../../../flutter_flow/flutter_flow_icon_button.dart';
-import '../../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../../flutter_flow/flutter_flow_util.dart';
 import '../../../pages/home_page/home.dart';
 
@@ -18,6 +17,7 @@ class EmployeeAttendance extends StatefulWidget {
   final double leave;
   final double half;
   final double late;
+  final Map empAttendanceDetails;
   const EmployeeAttendance(
       {Key? key,
      required this.empId,
@@ -28,7 +28,7 @@ class EmployeeAttendance extends StatefulWidget {
      required this.holidays,
      required this.leave,
      required this.half,
-     required this.late})
+     required this.late, required this.empAttendanceDetails})
       : super(key: key);
 
   @override
@@ -39,29 +39,60 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
   Map<String, dynamic> attendanceDetails = {};
   Map<String, dynamic> attendanceDetailsMap = {};
 
-  getPaymentDetails() {
-    Map attendance = {};
-    FirebaseFirestore.instance
-        .collection('employees')
-        .doc(widget.empId)
-        .collection('attendance')
-        .doc(widget.id)
-        // .where('date', isLessThanOrEqualTo: toDate)
-        // .orderBy('date', descending: false)
-        .snapshots()
-        .listen((event) {
-      attendanceDetails = event.data()!;
-      attendance = event['attendance'];
-
-      if (mounted) {
-        var sortedByKeyMap = Map.fromEntries(attendance.entries.toList()
-          ..sort((e1, e2) => e1.value['date'].compareTo(e2.value['date'])));
-        attendanceDetails['attendance'] = sortedByKeyMap;
-
-        setState(() {});
-      }
-    });
-  }
+  // late StreamSubscription attendanceDoc;
+  // getPaymentDetails() {
+  //   print('"""""""""""""""""""widget.id"""""""""""""""""""');
+  //   print(widget.id);
+  //   Map attendance = {};
+  //  attendanceDoc= FirebaseFirestore.instance
+  //       .collection('employees')
+  //       .doc(widget.empId)
+  //       .collection('attendance')
+  //       .doc(widget.id)
+  //       // .where('date', isLessThanOrEqualTo: toDate)
+  //       // .orderBy('date', descending: false)
+  //       .snapshots()
+  //       .listen((event) {
+  //         if(event.exists){
+  //           print('doc existsssssssssssssss');
+  //           attendanceDetails = event.data()!;
+  //           attendance = event['attendance'];
+  //
+  //           if (mounted) {
+  //             var sortedByKeyMap = Map.fromEntries(attendance.entries.toList()
+  //               ..sort((e1, e2) => e1.value['date'].compareTo(e2.value['date'])));
+  //             attendanceDetails['attendance'] = sortedByKeyMap;
+  //
+  //             setState(() {});
+  //           }
+  //         } else {
+  //
+  //           print('no  SUB COLL DOcccccccccccccccc');
+  //           FirebaseFirestore.instance
+  //               .collection('paySlipInfo')
+  //               .doc(widget.id).get()
+  //               .then((value) {
+  //                 print('here');
+  //                 print(widget.id);
+  //                 if(value.exists){
+  //                   print('PAySLIP INFOOOOOOOOOOOO');
+  //                   attendance = event['attendanceInfo'][widget.empId];
+  //
+  //                   var sortedByKeyMap = Map.fromEntries(attendance.entries.toList()
+  //                     ..sort((e1, e2) => e1.value['date'].compareTo(e2.value['date'])));
+  //                   attendanceDetails['attendance'] = sortedByKeyMap;
+  //
+  //                 }
+  //                 if(mounted) {
+  //                   setState(() {
+  //
+  //                   });
+  //                 }
+  //           });
+  //         }
+  //
+  //   });
+  // }
 
   bool showChart = true;
 
@@ -179,6 +210,10 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
     double half = widget.half;
     double late = widget.late;
 
+    var sortedByKeyMap = Map.fromEntries( widget.empAttendanceDetails.entries.toList()
+      ..sort((e1, e2) => e1.value['date'].compareTo(e2.value['date'])));
+    attendanceDetails['attendance'] = sortedByKeyMap;
+
     dataMap = <String, double>{
       "Holidays": holidays,
       "Leave": leave,
@@ -197,8 +232,14 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
     fromDate = widget.date;
     toDate = DateTime(fromDate!.year, fromDate!.month + 1, 0, 23, 59, 59);
 
-    getPaymentDetails();
+    // getPaymentDetails();
   }
+
+  // @override
+  // void dispose() {
+  //   attendanceDoc.cancel();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -301,23 +342,19 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                             width: 130,
                                             decoration: BoxDecoration(
                                                 color: Colors.grey,
-                                                image: DecorationImage(
-                                                    image: AssetImage(
-                                                            'assets/HR Dashboard/emp.png')
-                                                        )),
+                                                ),
+                                            child: Image.asset('assets/HR Dashboard/emp.png'),
                                           )
                                               :Container(
                                             height: 130,
                                             width: 130,
                                             decoration: BoxDecoration(
                                                 color: Colors.grey,
-                                                image: DecorationImage(
-                                                    image:  NetworkImage(
-                                                empDataById[widget
-                                                    .empId]!
-                                                    .profile ??
-                                                    '')
-                                                        )),
+                                                ),
+                                            child: Image.network(empDataById[widget
+                                                .empId]!
+                                                .profile ??
+                                                ''),
                                           ),
                                         ),
                                         SizedBox(
@@ -474,7 +511,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                 height: 10,
               ),
 
-              attendanceDetails.isEmpty
+              attendanceDetails.entries.isEmpty
                   ? LottieBuilder.network(
                       'https://assets9.lottiefiles.com/packages/lf20_HpFqiS.json',
                       height: 500,

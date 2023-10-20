@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -13,14 +14,14 @@ var image;
 var locationIcon;
 var phoneIcon;
 var mailIcon;
-var globIcon;
+// var globIcon;
 var format = NumberFormat.simpleCurrency(locale: 'en_in');
 
 class GenerateInvoice {
   static Future<File?> downloadPdf(paymentDetail invoice) async {
     final pdf = Document();
-    image = await imageFromAssetBundle('assets/images/fl_new.png');
-    globIcon = await imageFromAssetBundle('assets/images/globeIconPDF.png');
+    image = await imageFromAssetBundle('assets/images/fl_new.jpg');
+    // globIcon = await imageFromAssetBundle('assets/images/globeIconPDF.png');
     print("start");
     pdf.addPage(
       MultiPage(
@@ -58,12 +59,12 @@ class GenerateInvoice {
                                   children: [
                                      pw.Text('www.firstlogicmetalab.com'),
                                     pw.SizedBox(width: 3),
-                                    pw.Image(
-                                      globIcon,
-                                      width: 7,
-                                      height: 7,
-                                      fit: pw.BoxFit.contain,
-                                    ),
+                                    // pw.Image(
+                                    //   globIcon,
+                                    //   width: 7,
+                                    //   height: 7,
+                                    //   fit: pw.BoxFit.contain,
+                                    // ),
                                     pw.SizedBox(width: 5),
                                   ]),
                               pw.SizedBox(height: 5),

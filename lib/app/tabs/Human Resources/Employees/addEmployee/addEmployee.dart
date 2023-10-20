@@ -2597,8 +2597,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            print(currentBranchId);
-                                            print('[[[[[[[[[[[[');
+
                                             if (dob != null &&
                                                 gender != '' &&
                                                 dept.text != '' &&

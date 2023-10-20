@@ -293,10 +293,10 @@ class _SendToMailListState extends State<SendToMailList> {
                   ' <img src="https://firebasestorage.googleapis.com/v0/b/first-logic-erp.appspot.com/o/webicon-01.png?alt=media&token=424afef7-b36f-47e0-aa12-ec5dd178085b" style="width:50px;height:50px;" alt="Company Logo" />'
                   '<h3>First Logic Meta Lab Pvt. Ltd</h3>'
                   '</div>'
-                  '<div class="container">'
-                  '<p>'+
+                  '<div class="container">' +
+                  // '<p>'+
                   mailBody +
-                  '</p>'
+                  // '</p>'
 
                       '</div>'
                       ' </body>'

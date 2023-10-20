@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 import 'package:universal_html/html.dart' as html;
 
-import 'package:responsive_builder/responsive_builder.dart';
-import '../../../auth/auth_util.dart';
 import '../../../flutter_flow/flutter_flow_util.dart';
 import '../../app_widget.dart';
 import '../../models/Employee/EmployeeModel.dart';
@@ -14,9 +13,9 @@ import '../../tabs/Bank Transfer/deposite/withdraw.dart';
 import '../../tabs/Branch/AddBranch.dart';
 import '../../tabs/Customers/Projects/projectListMain.dart';
 import '../../tabs/Customers/customerList.dart';
-import '../../tabs/Customers/customer_SinglePage.dart';
 import '../../tabs/DeveloperPage/developerUpdates.dart';
 import '../../tabs/Enquiry/AddEnquiry.dart';
+import '../../tabs/Enquiry/EnquiryList.dart';
 import '../../tabs/Enquiry/followUp.dart';
 import '../../tabs/Expense/add_expense.dart';
 import '../../tabs/Expense/add_expense_head.dart';
@@ -27,9 +26,6 @@ import '../../tabs/Human Resources/Employees/deletedEmployees/deletedEmployees.d
 import '../../tabs/Human Resources/Employees/employeeDetails/singleEmployeeDetails.dart';
 import '../../tabs/Human Resources/HRSettings/addDept.dart';
 import '../../tabs/Human Resources/Leaves/leaves.dart';
-import '../../tabs/Human Resources/PayRoll_Slip/BankSlip/bankSlip.dart';
-import '../../tabs/Human Resources/PayRoll_Slip/addExcelSheet.dart';
-import '../../tabs/Human Resources/PayRoll_Slip/paySlipPdf/demoPage.dart';
 import '../../tabs/Human Resources/SendMail/sendMail.dart';
 import '../../tabs/Human Resources/SendMail/sendToList.dart';
 import '../../tabs/Human Resources/hrHomePage.dart';
@@ -41,10 +37,8 @@ import '../../tabs/Reports/i&e report.dart';
 import '../../tabs/Reports/projectPaymentReport.dart';
 import '../../tabs/Reports/projectReport.dart';
 import '../../tabs/Reports/reports.dart';
-import '../../tabs/Settings/addService/serviceAdding.dart';
 import '../../tabs/Settings/AddProjectType.dart';
-import '../../tabs/Enquiry/EnquiryList.dart';
-
+import '../../tabs/Settings/addService/serviceAdding.dart';
 import '../../tabs/homeTab.dart';
 import '../../tabs/leadz/addLeadzPage.dart';
 import '../../tabs/leadz/leadList.dart';
@@ -52,7 +46,7 @@ import '../../tabs/users/users/addBranchUser.dart';
 import 'components/side_menu.dart';
 
 /// ERP VERSIONS
-String webVersion = "1.8.9";
+String webVersion = "1.9.3";
 
 ///
 
@@ -269,6 +263,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   }
 
   sendMail() {
+    print('send Maillllllllllllllllllllllllllllllll');
     // String html = '<!DOCTYPE html>'
     //     '<html>'
     //     '<head>'
@@ -536,17 +531,20 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         ' </body>'
         '</html>';
 
-    print('here[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]');
-    print('[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[here]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]');
+
     FirebaseFirestore.instance.collection('mail').add({
       'html': html,
       'status': 'Salary Information',
       'emailList': [
         'siddiquec321@gmail.com',
-        'akkuashkar158@gmail.com',
+        'nithin@firstlogicmetalab.com',
+        'suhaira@firstlogicmetalab.com',
+        'siddique@firstlogicmetalab.com'
+        // 'akkuashkar158@gmail.com',
         // 'mmsharjas@gmail.com',
         // 'snehamp984@gmail.com',
       ],
+      'date':FieldValue.serverTimestamp(),
       'att':'https://firebasestorage.googleapis.com/v0/b/first-logic-erp.appspot.com/o/profiles%2Femployees%2FFL101-MUHAMMED%20SHABEEB-WhatsApp%20Image%202023-04-18%20at%2010.40.55%20PM.jpeg.jpeg?alt=media&token=fdcd5e54-9f64-484c-a452-9fff8b2f5597',
       // 'message': {
       //   'subject': 'Pay Slip',
@@ -723,7 +721,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
     // addFieldToAllDoc();
     //
-    // sendMail();
+    //  sendMail();
 
     getEmployees();
     getCustomers();
@@ -736,7 +734,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     getBranches();
 
     getProjectData();
-    employeeId='FL119';
+    // employeeId='FL119';
 
     _tabController = TabController(vsync: this, length: 37, initialIndex: 0);
 
