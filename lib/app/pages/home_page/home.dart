@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fl_erp/app/tabs/Human%20Resources/add_attendance/add_attendance.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:universal_html/html.dart' as html;
@@ -46,7 +47,7 @@ import '../../tabs/users/users/addBranchUser.dart';
 import 'components/side_menu.dart';
 
 /// ERP VERSIONS
-String webVersion = "1.9.3";
+String webVersion = "1.9.9";
 
 ///
 
@@ -736,7 +737,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     getProjectData();
     // employeeId='FL119';
 
-    _tabController = TabController(vsync: this, length: 37, initialIndex: 0);
+    _tabController = TabController(vsync: this, length: 38, initialIndex: 37);
 
 
     // updateProduct();
@@ -838,6 +839,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
                           SendMailToEmployees(tabController: _tabController!), //35
                           SendToMailList(tabController: _tabController!), //36
+                          AddAttendancePage(tabController: _tabController!), //37
                           ///
                         ],
                       ),

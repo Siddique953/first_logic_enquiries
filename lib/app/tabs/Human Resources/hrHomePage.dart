@@ -1,5 +1,6 @@
 import 'package:fl_erp/flutter_flow/upload_media.dart';
 import 'package:flutter/material.dart';
+
 import 'PayRoll_Slip/addExcelSheet.dart';
 import 'dashbordSingleGridView/grid.dart';
 
@@ -32,10 +33,16 @@ class _HrDashBoardState extends State<HrDashBoard> {
     {
       'name': 'Pay Slip',
       'image': 'assets/HR Dashboard/paySlip.png',
-    },{
+    },
+    {
       'name': 'Send Mail',
       'image': 'assets/HR Dashboard/mail.png',
     },
+    {
+      'name': 'Add Attendance',
+      'image': 'assets/HR Dashboard/add_Attendance.png',
+    },
+
     {
       'name': 'Settings',
       'image': 'assets/HR Dashboard/settings.png',
@@ -65,38 +72,65 @@ class _HrDashBoardState extends State<HrDashBoard> {
                       // setState(() {
                       widget._tabController.animateTo((6));
                       // });
-                    } else if (index == 1) {
+                    }
+
+                    ///
+                    else if (index == 1) {
                       // setState(() {
 
                       widget._tabController.animateTo((9));
                       // });
-                    } else if (index == 2) {
+                    }
+
+                    ///
+                    else if (index == 2) {
                       // setState(() {
 
                       widget._tabController.animateTo((10));
                       // });
-                    } else if (index == 3) {
+                    }
+
+                    ///
+                    else if (index == 3) {
                       // setState(() {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AddAttendance(),
+                            builder: (context) => PaySlipPage(),
                           ));
                       // widget._tabController.animateTo((21));
                       // });
-                    } else if (index == 4) {
+                    }
+
+                    ///
+                    else if (index == 4) {
                       // setState(() {
 
                       widget._tabController.animateTo((35));
                       // });
-                    }else if (index == 5) {
+                    }
+
+                    ///
+                    else if (index == 5) {
+                      // setState(() {
+
+                      widget._tabController.animateTo((37));
+                      // });
+                    }
+
+                    ///
+                    else if (index == 6) {
                       // setState(() {
 
                       widget._tabController.animateTo((11));
                       // });
-                    } else {
+                    }
+
+                    ///
+                    else {
                       showUploadMessage(context, 'Coming Soon...');
                     }
+
                   },
                   child: Container(
                     child: SingleGrid(

@@ -78,6 +78,8 @@ dependencies:
   shimmer:
   intl: ^0.18.0
   html_editor_enhanced: ^2.5.1
+  flutter_rounded_progress_bar: ^0.3.2
+  flutter_svg: ^2.0.9
 
 
 

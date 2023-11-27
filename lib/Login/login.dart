@@ -32,8 +32,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
     passwordVisibility = false;
 
     if(kDebugMode) {
-      emailTextController.text='developer@erp.com';
-      passwordTextController.text='devops';
+      emailTextController.text='siddique@firstlogicmetalab.com';
+      passwordTextController.text='abu@meta953';
     }
     
     // FirebaseAuth.instance.signInWithEmailAndPassword(email: 'admin@gmail.com', password: '123456');

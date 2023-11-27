@@ -53,8 +53,14 @@ class _HrAttendanceState extends State<HrAttendance> {
         )
         .get()
         .then((value) {
-      employeeDetails = value['salaryInfo'];
-      employeeAttendanceDetails = value['attendanceInfo'];
+          employeeDetails = value['salaryInfo'];
+          try{
+
+            employeeAttendanceDetails = value['attendanceInfo'];
+          } catch (e){
+            employeeAttendanceDetails = {};
+          }
+
 
       setState(() {});
     }).onError((StateError error, stackTrace) {
@@ -515,7 +521,7 @@ class _HrAttendanceState extends State<HrAttendance> {
                                                               builder: (context) =>
                                                                   EmployeeAttendance(
                                                                 id: dateTimeFormat(
-                                                                    'yMMM',
+                                                                    'MMMM yyyy',
                                                                     fromDate),
                                                                 date: fromDate,
                                                                 empId:
@@ -524,7 +530,7 @@ class _HrAttendanceState extends State<HrAttendance> {
                                                                     name ?? '',
                                                                 empAttendanceDetails:
                                                                     employeeAttendanceDetails[
-                                                                        data],
+                                                                        data]??{},
                                                                 half: employeeDetails[
                                                                             data]
                                                                         [

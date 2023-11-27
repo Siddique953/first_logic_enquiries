@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
@@ -36,9 +37,9 @@ class EmployeeAttendance extends StatefulWidget {
 }
 
 class _EmployeeAttendanceState extends State<EmployeeAttendance> {
-  Map<String, dynamic> attendanceDetails = {};
-  Map<String, dynamic> attendanceDetailsMap = {};
-
+  Map attendanceDetails = {};
+  // Map attendanceDetailsMap = {};
+///
   // late StreamSubscription attendanceDoc;
   // getPaymentDetails() {
   //   print('"""""""""""""""""""widget.id"""""""""""""""""""');
@@ -56,12 +57,12 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
   //         if(event.exists){
   //           print('doc existsssssssssssssss');
   //           attendanceDetails = event.data()!;
-  //           attendance = event['attendance'];
+  //           attendance = event;
   //
   //           if (mounted) {
   //             var sortedByKeyMap = Map.fromEntries(attendance.entries.toList()
   //               ..sort((e1, e2) => e1.value['date'].compareTo(e2.value['date'])));
-  //             attendanceDetails['attendance'] = sortedByKeyMap;
+  //             attendanceDetails = sortedByKeyMap;
   //
   //             setState(() {});
   //           }
@@ -80,7 +81,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
   //
   //                   var sortedByKeyMap = Map.fromEntries(attendance.entries.toList()
   //                     ..sort((e1, e2) => e1.value['date'].compareTo(e2.value['date'])));
-  //                   attendanceDetails['attendance'] = sortedByKeyMap;
+  //                   attendanceDetails = sortedByKeyMap;
   //
   //                 }
   //                 if(mounted) {
@@ -212,7 +213,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
 
     var sortedByKeyMap = Map.fromEntries( widget.empAttendanceDetails.entries.toList()
       ..sort((e1, e2) => e1.value['date'].compareTo(e2.value['date'])));
-    attendanceDetails['attendance'] = sortedByKeyMap;
+    attendanceDetails = sortedByKeyMap;
 
     dataMap = <String, double>{
       "Holidays": holidays,
@@ -227,12 +228,43 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
     };
 
     super.initState();
-    print('[[[[[[[[[[[[[[[[[[[[[[[[date]]]]]]]]]]]]]]]]]]]]]]]]');
-    print(widget.date);
     fromDate = widget.date;
     toDate = DateTime(fromDate!.year, fromDate!.month + 1, 0, 23, 59, 59);
 
-    // getPaymentDetails();
+    print('""""widget.empAttendanceDetails""""');
+    print(widget.empAttendanceDetails);
+    if(widget.empAttendanceDetails.isEmpty) {
+      print('insideeeeeeeee');
+      getEmpAtt();
+    }
+  }
+
+  getEmpAtt(){
+    print(widget.id);
+    print(widget.empId);
+    FirebaseFirestore.instance
+          .collection('paySlipInfo')
+        .doc(widget.id)
+        .collection('attendanceInfo')
+          .doc(widget.empId)
+        .get().then((value) {
+
+          if(value.exists) {
+            print('hellooooo');
+            Map data = value['attendance'];
+            var sortedByKeyMap = Map.fromEntries(data.entries.toList()
+              ..sort((e1, e2) => e1.value['date'].compareTo(e2.value['date'])));
+            attendanceDetails = sortedByKeyMap;
+
+            if(mounted){
+              setState(() {
+
+              });
+            }
+          }
+    });
+
+
   }
 
   // @override
@@ -550,21 +582,21 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                           ),
                         ],
                         rows: List.generate(
-                          attendanceDetails['attendance'].length,
+                          attendanceDetails.length,
                           (index) {
                             int hours = 0;
                             int minuit = 0;
 
-                            String dayIndex = attendanceDetails['attendance']
+                            String dayIndex = attendanceDetails
                                 .keys
                                 .toList()[index];
 
-                            DateTime day = attendanceDetails['attendance']
+                            DateTime day = attendanceDetails
                                     [dayIndex]['date']
                                 .toDate();
-                            String strIn = attendanceDetails['attendance']
+                            String strIn = attendanceDetails
                                 [dayIndex]['inTime'];
-                            String strOut = attendanceDetails['attendance']
+                            String strOut = attendanceDetails
                                 [dayIndex]['outTime'];
 
                             DateTime? inTime;
@@ -572,12 +604,12 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
 
                             try {
                               hours = int.tryParse(
-                                  attendanceDetails['attendance'][dayIndex]
+                                  attendanceDetails[dayIndex]
                                           ['totalWorkingHour']
                                       .toString()
                                       .split(':')[0])!;
                               minuit = int.tryParse(
-                                  attendanceDetails['attendance'][dayIndex]
+                                  attendanceDetails[dayIndex]
                                           ['totalWorkingHour']
                                       .toString()
                                       .split(':')[1])!;
@@ -588,7 +620,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
 
                             double workHour = hours + minuit / 60.0;
 
-                            if (strIn != '--:--') {
+                            if (strIn != '--:--' && (strOut != '--:--')) {
                               inTime = DateTime(
                                 day.year,
                                 day.month,
@@ -596,6 +628,11 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                 int.tryParse(strIn.split(':')[0])!,
                                 int.tryParse(strIn.split(':')[1])!,
                               );
+
+                              print('"""""""""""dayIndexdayIndex"""""""""""');
+                              print(dayIndex);
+                              print(strOut);
+                              print(strIn);
 
                               outTime = DateTime(
                                 day.year,
@@ -616,7 +653,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                 DataCell(
                                   Text(
                                     DateFormat('d-MMM-y')
-                                        .format(attendanceDetails['attendance']
+                                        .format(attendanceDetails
                                                 [dayIndex]['date']
                                             .toDate())
                                         .toString(),
@@ -630,7 +667,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                 ),
                                 DataCell(
                                   Text( inTime==null? '--:--':
-                                    attendanceDetails['attendance'][dayIndex]
+                                    attendanceDetails[dayIndex]
                                                 ['inTime'] ==
                                             '--:--'
                                         ? '--:--'
@@ -645,7 +682,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                 ),
                                 DataCell(
                                   Text(outTime==null? '--:--':
-                                    attendanceDetails['attendance'][dayIndex]
+                                    attendanceDetails[dayIndex]
                                                 ['outTime'] ==
                                             '--:--'
                                         ? '--:--'
@@ -661,7 +698,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
 
                                 DataCell(
                                   Text(
-                                    attendanceDetails['attendance'][dayIndex]
+                                    attendanceDetails[dayIndex]
                                             ['totalWorkingHour']
                                         // dateTimeFormat(
                                         //         // 'hh:mm',
@@ -680,15 +717,15 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                   ),
                                 ),
                                 DataCell(Text(
-                                  attendanceDetails['attendance'][dayIndex]
+                                  attendanceDetails[dayIndex]
                                               ['halfDay'] ==
                                           true
                                       ? 'HALF DAY'
-                                      : attendanceDetails['attendance']
+                                      : attendanceDetails
                                                   [dayIndex]['leave'] ==
                                               true
                                           ? 'LEAVE'
-                                          : attendanceDetails['attendance']
+                                          : attendanceDetails
                                                       [dayIndex]['offDay'] ==
                                                   true
                                               ? 'HOLIDAY'
@@ -702,15 +739,15 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                                   .toString(),
                                   style: TextStyle(
                                     fontFamily: 'Lexend Deca',
-                                    color: attendanceDetails['attendance']
+                                    color: attendanceDetails
                                                 [dayIndex]['halfDay'] ==
                                             true
                                         ? Colors.black
-                                        : attendanceDetails['attendance']
+                                        : attendanceDetails
                                                     [dayIndex]['leave'] ==
                                                 true
                                             ? Colors.red
-                                            : attendanceDetails['attendance']
+                                            : attendanceDetails
                                                         [dayIndex]['offDay'] ==
                                                     true
                                                 ? Colors.redAccent
