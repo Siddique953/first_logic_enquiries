@@ -1,10 +1,11 @@
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_erp/app/pages/home_page/home.dart';
 import 'package:fl_erp/flutter_flow/upload_media.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app/tabs/Branch/AddBranch.dart';
 import '../app/tabs/Branch/SelectBranches.dart';
@@ -172,32 +173,56 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                           Center(
                             child: FFButtonWidget(
                               onPressed: () async {
-                                try{
-                                ogPass=passwordTextController!.text;
-                                ogUser=emailTextController!.text;
-                                final user = await FirebaseAuth.instance
-                                    .signInWithEmailAndPassword(email:emailTextController!.text,
-                                  password: passwordTextController!.text,).then((value) {
-                                  currentUserEmail=emailTextController!.text;
-                                  currentUserUid=value.user!.uid;
-                                   Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          BranchesWidget(),
-                                    ),
-                                        (r) => false,
-                                  );
-                                });
+                                ogPass = passwordTextController.text;
+                                ogUser = emailTextController.text;
+                                if(ogUser.trim().isEmpty){
+                                  return showUploadMessage(context, 'please Enter Mail Address');
+                                }
+                                if(ogPass.trim().isEmpty){
+                                  return showUploadMessage(context, 'please Enter Password');
+                                }
 
-                                }catch(e){
-                                  if(e is FirebaseAuthException) {
-                                    // if(e.message=='An unknown error occurred: FirebaseError: Firebase: The email address is badly formatted. (auth/invalid-email).'){
-                                    //   return showUploadMessage(context, e.message??'Please Check Your Credential Again');
-                                    // }
-                                    showUploadMessage(context, e.message??'Please Check Your Credential Again');
+                                else {
+                                  try {
+                                    FirebaseFirestore.instance.collection('admin_users')
+                                        .where('email',isEqualTo: ogUser.trim())
+                                        .get()
+                                        .then((value) async {
+                                      if(value.docs.isEmpty) {
+                                        return showUploadMessage(context, 'There is no User Existed');
+                                      } else {
+
+                                        if(value.docs[0]['delete'] == true) {
+                                          return showUploadMessage(context, 'User is Deleted.');
+                                        }
+
+                                        if(value.docs[0]['password'] != ogPass.trim()) {
+                                          return showUploadMessage(context, 'Incorrect Password');
+                                        } else {
+                                          currentUserEmail = ogPass;
+
+                                          currentUserUid = value.docs[0]['uid'];
+                                          final prefs = await SharedPreferences.getInstance();
+                                          prefs.setString('uid', currentUserUid);
+
+                                          Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BranchesWidget(),
+                                            ),
+                                                (r) => false,
+                                          );
+                                        }
+                                      }
+                                    });
+                                  } catch (e) {
+
+                                    showUploadMessage(context, e.toString());
+
                                   }
                                 }
+
                               },
                               text: 'Sign In',
                               loading: false,

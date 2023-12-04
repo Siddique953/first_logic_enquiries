@@ -226,6 +226,7 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
           // int days = int.tryParse(toDay[0])??0;
 
           // DateTime day = DateTime(year , month , days);
+
           late DateTime day;
           try {
             day = DateFormat('dd/MM/yyyy').parse(rowDetail[j][0]);
@@ -440,7 +441,7 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
           savedPaySlipInfo[empCode]={};
         }
 
-        for(var d in singlePayslip.keys){
+        for(var mapKeys in singlePayslip.keys){
           // savedpaySlipInfo[empCode][d]=paySlipInfo[empCode][d];
           // singlePayslip.update(d, (num value) =>
           //   value+paySlipInfo[empCode][d]
@@ -449,26 +450,26 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
           ///
 
 
-          late int a;
-          late int b;
+          late double savedPayslipData;
+          late double currentPaySlipData;
 
-          if(savedPaySlipInfo[empCode][d]==null || savedPaySlipInfo[empCode]==null) {
-            a=0;
+          if(savedPaySlipInfo[empCode][mapKeys]==null || savedPaySlipInfo[empCode]==null) {
+            savedPayslipData=0;
             // b=0;
           }
 
           else {
-            a = savedPaySlipInfo[empCode]?[d] ?? 0;
+            savedPayslipData = savedPaySlipInfo[empCode]?[mapKeys] ?? 0;
 
           }
 
-          if(paySlipInfo[empCode][d]==null || paySlipInfo[empCode]==null) {
-            b=0;
+          if(paySlipInfo[empCode][mapKeys]==null || paySlipInfo[empCode]==null) {
+            currentPaySlipData=0;
           } else {
-            b = paySlipInfo[empCode]?[d] ?? 0;
+            currentPaySlipData = paySlipInfo[empCode]?[mapKeys] ?? 0;
           }
 
-          savedPaySlipInfo[empCode][d]=a+b;
+          savedPaySlipInfo[empCode][mapKeys]=savedPayslipData + currentPaySlipData;
 
 
         }
@@ -476,13 +477,31 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
         final leave = savedPaySlipInfo[empCode]['leave'];
         final halfDay = savedPaySlipInfo[empCode]['halfDay'];
         final lateCut = savedPaySlipInfo[empCode]['lateCut'];
-        final totalWork = savedPaySlipInfo[empCode]['totalWorkDays'];
+        final totalWork = savedPaySlipInfo[empCode]['workDay'];
         final basicSalary = double.tryParse(empDataById[empCode]?.ctc??'0')??0;
 
+        print('"""""""empCode"""""""');
+        print(empCode);
+        print(leave);
+        print(halfDay);
+        print(lateCut);
+        print(totalWork);
+        print(basicSalary);
+
         if ((leave + ((halfDay + lateCut) * 0.5)) > 5) {
-          savedPaySlipInfo[empCode]['payable'] = ((basicSalary / 30) * (totalWork - (0.5 * lateCut))).round();
-          savedPaySlipInfo[empCode]['takeHome'] = ((basicSalary / 30) * (totalWork - (0.5 * lateCut))).round();
+          print('ifffffff');
+          print(((basicSalary / 30) * (totalWork - (0.5 * lateCut))).round());
+          print((totalWork - (0.5 * lateCut)));
+          print(((0.5 * lateCut)));
+          // savedPaySlipInfo[empCode]['payable'] = ((basicSalary / 30) * (totalWork - (0.5 * lateCut))).round();
+          // savedPaySlipInfo[empCode]['takeHome'] = ((basicSalary / 30) * (totalWork - (0.5 * lateCut))).round();
+
+           savedPaySlipInfo[empCode]['payable'] = ((basicSalary / 30) * (totalWork )).round();
+          savedPaySlipInfo[empCode]['takeHome'] = ((basicSalary / 30) * (totalWork )).round();
+
+
         } else {
+          print('elseeeeee');
           savedPaySlipInfo[empCode]['payable'] = ((basicSalary / 30) * (30 - (leave + ((halfDay + lateCut) * 0.5)))).round();
           savedPaySlipInfo[empCode]['takeHome'] = ((basicSalary / 30) * (30 - (leave + ((halfDay + lateCut) * 0.5)))).round();
         }

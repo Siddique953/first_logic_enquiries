@@ -1,20 +1,14 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
-
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../auth/email_auth.dart';
 import '../../../../flutter_flow/flutter_flow_drop_down.dart';
 import '../../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../../flutter_flow/flutter_flow_widgets.dart';
-
-import 'package:flutter/material.dart';
-
 import '../../../../flutter_flow/upload_media.dart';
 import '../../../app_widget.dart';
 import '../../../pages/home_page/home.dart';
@@ -332,12 +326,14 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                                       ? [
                                           'Super Admin',
                                           'Branch Admin',
+                                          'HR',
                                           'Councilor',
                                           'Reception',
                                           'Accounts',
                                         ]
                                       : [
                                           'Branch Admin',
+                                          'HR',
                                           'Councilor',
                                           'Reception',
                                           'Accounts',
@@ -533,33 +529,10 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                                     phone.text != '' &&
                                     userSelectValue != '') {
                                   try {
-                                    print('1');
-                                    UserCredential newUser = await auth
-                                        .createUserWithEmailAndPassword(
-                                            email: email.text,
-                                            password: password.text);
-                                    //     .onError((FirebaseAuthException error,
-                                    //         stackTrace) {
-                                    //   print(
-                                    //       '[[[[[[[[[[[[[[[[[[error]]]]]]]]]]]]]]]]]]');
-                                    //   print(error.message);
-                                    //   showUploadMessage(context, error.message!);
-                                    //   return error;
-                                    //
-                                    // });
-                                    print('2');
-                                    await FirebaseAuth.instance.signOut();
-                                    print('3');
-                                    final user = FirebaseAuth.instance.signInWithEmailAndPassword(email: ogUser,password: ogPass);
 
-                                    print('4');
-                                    print(newUser);
-                                    if (newUser != null) {
-                                      print('ifffffffff');
-                                      FirebaseFirestore.instance
-                                          .collection('admin_users')
-                                          .doc(newUser.user!.uid)
-                                          .set({
+                                    final doc = FirebaseFirestore.instance.collection('admin_users').doc();
+
+                                      doc.set({
                                         'branchName': currentbranchName,
                                         'branchId': currentBranchId,
                                         'createdDate':
@@ -568,9 +541,10 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                                         'email': email.text,
                                         'password': password.text,
                                         'phone': phone.text,
+                                        'delete':false,
                                         'photo_url': uploadedFileUrl,
                                         'role': userSelectValue,
-                                        'uid': newUser.user!.uid,
+                                        'uid': doc.id,
                                         'verified': true,
                                       }).then((value) {
                                         FirebaseFirestore.instance
@@ -589,16 +563,12 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                                         userSelectValue = '';
                                         uploadedFileUrl = '';
                                       });
-                                    }
+
                                   } catch (e) {
-                                    print(e);
-                                    if (e is FirebaseAuthException) {
-                                      print('[[[[[[[[[[[[[[[[[[error]]]]]]]]]]]]]]]]]]');
-                                      print(e.message);
-                                      showUploadMessage(context, e.message!);
+                                      showUploadMessage(context, e.toString());
                                       return null;
                                     }
-                                  }
+
                                 } else {
                                   name.text == ''
                                       ? showUploadMessage(

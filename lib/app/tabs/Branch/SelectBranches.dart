@@ -63,13 +63,33 @@ class _BranchesWidgetState extends State<BranchesWidget> {
       }
     });
   }
+  getUser()  {
+
+    FirebaseFirestore.instance.collection('admin_users').doc(currentUserUid).snapshots().listen((event) {
+
+      currentUserRole=event['role'];
+      currentUserEmail=event['email'];
+      currentUserPermission=event['verified'];
+
+      print(currentUserRole);
+      getBranch();
+      if(mounted){
+        setState(() {
+
+
+        });
+      }
+
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    getBranch();
-  }
+    getUser();
 
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

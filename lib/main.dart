@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import 'app/app_widget.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 const myColors = Color(0xFF4B39EF);
 
@@ -9,7 +11,6 @@ void main() async {
   if(kIsWeb){
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(options: FirebaseOptions(
-
         apiKey: "AIzaSyBNYYjGrcGw9gOFfAg9rr2ACeEofhZC0x0",
         authDomain: "first-logic-erp.firebaseapp.com",
         projectId: "first-logic-erp",
@@ -50,3 +51,28 @@ setSearchParam(String caseNumber) {
 }
 
 //gsutil cors set cors.json gs://flit-6d60d.appspot.com
+
+getBranch() {
+  FirebaseFirestore.instance
+      .collection('branch')
+      .doc('m2AFuusj6HlwmtoiDtvT')
+      .get()
+      .then((event) async {
+
+   List users = event['staff'];
+
+   FirebaseFirestore.instance.collection('admin_users').get().then((event) {
+
+     for(DocumentSnapshot doc in event.docs) {
+       doc.reference.update(
+         {
+           'delete':!(users.contains(doc['email']))
+         }
+       );
+     }
+
+
+   });
+
+  });
+}

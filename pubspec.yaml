@@ -40,7 +40,7 @@ dependencies:
   rxdart:
   google_sign_in:
   built_value:
-  cached_network_image: ^3.2.3
+  cached_network_image: ^3.3.0
   cloud_firestore:
   searchfield:
   month_picker_dialog: ^2.0.2

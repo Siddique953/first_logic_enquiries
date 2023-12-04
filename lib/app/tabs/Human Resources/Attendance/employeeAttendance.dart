@@ -42,8 +42,6 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
 ///
   // late StreamSubscription attendanceDoc;
   // getPaymentDetails() {
-  //   print('"""""""""""""""""""widget.id"""""""""""""""""""');
-  //   print(widget.id);
   //   Map attendance = {};
   //  attendanceDoc= FirebaseFirestore.instance
   //       .collection('employees')
@@ -55,7 +53,6 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
   //       .snapshots()
   //       .listen((event) {
   //         if(event.exists){
-  //           print('doc existsssssssssssssss');
   //           attendanceDetails = event.data()!;
   //           attendance = event;
   //
@@ -68,15 +65,11 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
   //           }
   //         } else {
   //
-  //           print('no  SUB COLL DOcccccccccccccccc');
   //           FirebaseFirestore.instance
   //               .collection('paySlipInfo')
   //               .doc(widget.id).get()
   //               .then((value) {
-  //                 print('here');
-  //                 print(widget.id);
   //                 if(value.exists){
-  //                   print('PAySLIP INFOOOOOOOOOOOO');
   //                   attendance = event['attendanceInfo'][widget.empId];
   //
   //                   var sortedByKeyMap = Map.fromEntries(attendance.entries.toList()
@@ -139,7 +132,6 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
   //     cell8.cellStyle = cellStyle;
   //   }
   //
-  //   print(payments.length);
   //
   //   //CELL VALUES
   //
@@ -174,9 +166,7 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
   //         payments[i]['amount'].toString(); // dynamic values support provided;
   //     cell8.cellStyle = cellStyle;
   //
-  //     print("hereeee");
   //
-  //     print(payments[i]['studentId'].toString());
   //   }
   //
   //   excel.setDefaultSheet('sales');
@@ -231,17 +221,12 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
     fromDate = widget.date;
     toDate = DateTime(fromDate!.year, fromDate!.month + 1, 0, 23, 59, 59);
 
-    print('""""widget.empAttendanceDetails""""');
-    print(widget.empAttendanceDetails);
     if(widget.empAttendanceDetails.isEmpty) {
-      print('insideeeeeeeee');
       getEmpAtt();
     }
   }
 
   getEmpAtt(){
-    print(widget.id);
-    print(widget.empId);
     FirebaseFirestore.instance
           .collection('paySlipInfo')
         .doc(widget.id)
@@ -250,7 +235,6 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
         .get().then((value) {
 
           if(value.exists) {
-            print('hellooooo');
             Map data = value['attendance'];
             var sortedByKeyMap = Map.fromEntries(data.entries.toList()
               ..sort((e1, e2) => e1.value['date'].compareTo(e2.value['date'])));
@@ -629,10 +613,6 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                 int.tryParse(strIn.split(':')[1])!,
                               );
 
-                              print('"""""""""""dayIndexdayIndex"""""""""""');
-                              print(dayIndex);
-                              print(strOut);
-                              print(strIn);
 
                               outTime = DateTime(
                                 day.year,
@@ -666,12 +646,14 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                   ),
                                 ),
                                 DataCell(
-                                  Text( inTime==null? '--:--':
+                                  Text(
+                                    // inTime==null? '--:--':
                                     attendanceDetails[dayIndex]
-                                                ['inTime'] ==
-                                            '--:--'
-                                        ? '--:--'
-                                        : DateFormat.jm().format(inTime),
+                                                ['inTime'] ?? '--:--',
+                                        // ==
+                                        //     '--:--'
+                                        // ? '--:--'
+                                        // : DateFormat.jm().format(inTime),
                                     style: TextStyle(
                                       fontFamily: 'Lexend Deca',
                                       color: Colors.black,
@@ -681,12 +663,14 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
                                   ),
                                 ),
                                 DataCell(
-                                  Text(outTime==null? '--:--':
+                                  Text(
+                                    // outTime==null? '--:--':
                                     attendanceDetails[dayIndex]
-                                                ['outTime'] ==
-                                            '--:--'
-                                        ? '--:--'
-                                        : DateFormat.jm().format(outTime),
+                                                ['outTime']??'--:--' ,
+                            // ==
+                            //                 '--:--'
+                            //             ? '--:--'
+                            //             : DateFormat.jm().format(outTime),
                                     style: TextStyle(
                                       fontFamily: 'Lexend Deca',
                                       color: Colors.black,
@@ -779,7 +763,6 @@ class _EmployeeAttendanceState extends State<EmployeeAttendance> {
               //         try {
               //           importData();
               //         } catch (e) {
-              //           print(e);
               //
               //           return showDialog(
               //               context: context,

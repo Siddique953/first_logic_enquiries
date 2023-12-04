@@ -1,13 +1,10 @@
-import 'package:fl_erp/app/tabs/Branch/SelectBranches.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fl_erp/app/tabs/Human%20Resources/PayRoll_Slip/addExcelSheet.dart';
-import 'package:fl_erp/app/tabs/Human%20Resources/hrHomePage.dart';
+import 'package:fl_erp/app/tabs/Branch/SelectBranches.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Login/login.dart';
-import '../auth/firebase_user_provider.dart';
-import '../flutter_flow/flutter_flow_theme.dart';
 import 'pages/home_page/home.dart';
 
 User? currentUserModel;
@@ -28,10 +25,30 @@ class _MyAppState extends State<MyApp> {
   //
   // Stream<LeadzFirebaseUser>? userStream;
 
+  bool loggedIn = false;
+  bool loading = true;
+
+  checkUser() async {
+    await Future.delayed(Duration(seconds: 3));
+    loading = false;
+    final prefs = await SharedPreferences.getInstance();
+
+    if(prefs.containsKey('uid')) {
+      loggedIn = true;
+      currentUserUid = prefs.getString('uid')??'';
+
+    }
+    setState(() {
+
+    });
+
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
+    checkUser();
     super.initState();
+
     // userStream = leadzFirebaseUserStream()
     //   ..listen((user) => initialUser ?? setState(() => initialUser = user));
     //
@@ -61,20 +78,21 @@ class _MyAppState extends State<MyApp> {
         ),
         debugShowCheckedModeBanner: false,
         title: 'FIRST LOGIC ERP',
-        home:
-        StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-
-
-            if (snapshot.hasData) {
-              currentUserUid= snapshot.data!.uid;
-            currentUserEmail=snapshot.data!.email??'';
-              return const BranchesWidget();
-            }
-            return const LoginPageWidget();
-          },
-        ),
+        home:  loading ? Center(child: CircularProgressIndicator(),) :loggedIn ? BranchesWidget():LoginPageWidget(),
+        // StreamBuilder<User?>(
+        //   stream: FirebaseAuth.instance.authStateChanges(),
+        //   builder: (context, snapshot) {
+        //
+        //
+        //     if (snapshot.hasData) {
+        //       currentUserUid= snapshot.data!.uid;
+        //     currentUserEmail=snapshot.data!.email??'';
+        //       return const BranchesWidget();
+        //     }
+        //     return const LoginPageWidget();
+        //   },
+        // ),
+            ///
             // // AddEmployee()
             // // HrDashBoard()
             // initialUser == null || currentBranchId == null
