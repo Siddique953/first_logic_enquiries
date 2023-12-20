@@ -30,7 +30,7 @@ class _HrAttendanceState extends State<HrAttendance> {
   List localEmployeeList = [];
 
   DateTime fromDate = DateTime(
-      DateTime.now().year, DateTime.now().month - 1, DateTime.now().day);
+      DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
   int i = 0;
 
@@ -174,7 +174,8 @@ class _HrAttendanceState extends State<HrAttendance> {
                               context: context,
                               firstDate: DateTime(DateTime.now().year - 100, 5),
                               lastDate: DateTime(DateTime.now().year,
-                                  DateTime.now().month - 1),
+                                  DateTime.now().month),
+
                               initialDate: fromDate,
 
                               // confirmText: Text(
@@ -237,14 +238,14 @@ class _HrAttendanceState extends State<HrAttendance> {
                               Icons.arrow_forward_ios_outlined,
                               color: DateTime(fromDate.year, fromDate.month) ==
                                       DateTime(DateTime.now().year,
-                                          DateTime.now().month - 1)
+                                          DateTime.now().month)
                                   ? Colors.grey
                                   : Colors.blue,
                             ),
                             onPressed: () async {
                               if (DateTime(fromDate.year, fromDate.month) !=
                                   DateTime(DateTime.now().year,
-                                      DateTime.now().month - 1)) {
+                                      DateTime.now().month )) {
                                 setState(() {
                                   fromDate = DateTime(fromDate.year,
                                       fromDate.month + 1, fromDate.day);

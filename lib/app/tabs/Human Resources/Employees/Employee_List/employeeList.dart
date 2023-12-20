@@ -268,6 +268,7 @@ class _EmployeeListState extends State<EmployeeList> {
                       icon: Icon(
                         Icons.arrow_back_ios_new,
                         size: 20,
+                        color: Colors.black,
                       ),
                       onPressed: () {
                         // setState(() {

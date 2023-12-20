@@ -26,9 +26,13 @@ class AddAttendancePage extends StatefulWidget {
 }
 
 class _AddAttendancePageState extends State<AddAttendancePage> {
-  DateTime selectedDate = DateTime.now();
+  DateTime? selectedDate ;
   Map employeeAttendance = {};
   Map paySlipInfo = {};
+
+  final toolTipKey = new GlobalKey();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -49,45 +53,49 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
                   IconButton(onPressed: (){
                     widget._tabController.animateTo(5);
                   }, icon: Icon(Icons.arrow_back_ios,size: width*0.02,)),
-                  Container(
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap:(){
-                            showMonthPicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime.now()).then((value) {
-                              if(value!=null){
-                                selectedDate=value;
-                                setState(() {
+                  Tooltip(
+                    message: 'Please Choose a Month',
+                    key: toolTipKey,
+                    child: Container(
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap:(){
+                              showMonthPicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime.now()).then((value) {
+                                if(value!=null){
+                                  selectedDate=value;
+                                  setState(() {
 
-                                });
-                              }
-                            });
-                          },
-                          child: Container(
-                            width: 50,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                color: Color(0xffD9D9D9),
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Icon(
-                              Icons.calendar_month_outlined,
-                              size: 25,
+                                  });
+                                }
+                              });
+                            },
+                            child: Container(
+                              width: 50,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  color: Color(0xffD9D9D9),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Icon(
+                                Icons.calendar_month_outlined,
+                                size: 25,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Text(
-                          DateFormat('MMMM yyyy')
-                              .format(selectedDate)
-                              .toUpperCase(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 20,
+                          SizedBox(
+                            width: 15,
                           ),
-                        ),
-                      ],
+                          Text( selectedDate == null?'Please Choose Month':
+                            DateFormat('MMMM yyyy')
+                                .format(selectedDate!)
+                                .toUpperCase(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   )
                 ],
@@ -104,7 +112,15 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      getNewAttendanceFile();
+                      if (selectedDate == null) {
+                         dynamic tooltip = toolTipKey.currentState;
+                        tooltip.ensureTooltipVisible();
+                        return showUploadMessage(
+                            context, 'Please choose a month');
+
+                      } else {
+                        getNewAttendanceFile();
+                      }
                     },
                     child: Container(
                       width: width *0.23,
@@ -360,14 +376,14 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
 
     showUploadMessage(context, 'Saving new attendance data');
     uploadFileToFireBase(bytes,
-        name: dateTimeFormat('dd MMM y', DateTime.now()), ext: 'csv');
+        name: dateTimeFormat('dd MMM y', DateTime.now()), ext: 'csv', fileName: file.name);
 
     createAttendance();
   }
 
   /// Upload Attendance Details
   Future uploadFileToFireBase(fileBytes,
-      {required String name, required String ext}) async {
+      {required String name, required String ext,required String fileName}) async {
     // final path='file/${pickFile.name}';
     // final file=File(pickFile.path);
 
@@ -376,20 +392,20 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
     ///
     var uploadTask = FirebaseStorage.instance
         .ref(
-            'Pay Slips/${dateTimeFormat('MMMM y', selectedDate)}/attendanceFile--$name.$ext')
+            'Pay Slips/${dateTimeFormat('MMMM y', selectedDate!)}/attendanceFile--$name($fileName).$ext')
         .putData(fileBytes);
     final snapshot = await uploadTask.whenComplete(() {});
     final urlDownload = await snapshot.ref.getDownloadURL();
 
     FirebaseFirestore.instance
         .collection('paySlips')
-        .doc(dateTimeFormat('MMMM y', selectedDate))
+        .doc(dateTimeFormat('MMMM y', selectedDate!))
         .update({
       'attendanceFile': FieldValue.arrayUnion([urlDownload]),
     }).onError((error, stackTrace) {
       FirebaseFirestore.instance
           .collection('paySlips')
-          .doc(dateTimeFormat('MMMM y', selectedDate))
+          .doc(dateTimeFormat('MMMM y', selectedDate!))
           .set({
         'attendanceFiles': [urlDownload],
       });
@@ -401,7 +417,7 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
     Map savedAttendanceDetails = {};
     final value = await FirebaseFirestore.instance
         .collection('paySlipInfo')
-        .doc(dateTimeFormat('MMMM y', selectedDate))
+        .doc(dateTimeFormat('MMMM y', selectedDate!))
         .get();
     if (value.exists) {
       savedPaySlipInfo = value['salaryInfo'];
@@ -536,7 +552,7 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
 
     FirebaseFirestore.instance
         .collection('paySlipInfo')
-        .doc(dateTimeFormat('MMMM y', selectedDate))
+        .doc(dateTimeFormat('MMMM y', selectedDate!))
         .set({
       'salaryInfo': paySlip,
 
@@ -545,7 +561,7 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
     for (String i in attendance.keys) {
       FirebaseFirestore.instance
           .collection('paySlipInfo')
-          .doc(dateTimeFormat('MMMM y', selectedDate))
+          .doc(dateTimeFormat('MMMM y', selectedDate!))
           .collection('attendanceInfo')
           .doc(i)
           .set({
@@ -555,16 +571,16 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
           .collection('employees')
           .doc(i)
           .collection('attendance')
-          .doc(dateTimeFormat('MMM y', selectedDate))
+          .doc(dateTimeFormat('MMM y', selectedDate!))
           .set({
         'attendance': attendance[i] ?? {},
-        'month': dateTimeFormat('MMM y', selectedDate),
+        'month': dateTimeFormat('MMM y', selectedDate!),
       });
       FirebaseFirestore.instance
           .collection('employees')
           .doc(i)
           .collection('salaryInfo')
-          .doc(dateTimeFormat('MMM y', selectedDate))
+          .doc(dateTimeFormat('MMM y', selectedDate!))
           .set({
         'totalWorkingDays': (paySlip[i]['totalWorkDays']),
         'totalLeave': paySlip[i]['leave'],
@@ -575,10 +591,20 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
         'deduction': paySlip[i]['deduction'],
         'takeHome': paySlip[i]['takeHome'],
         'document': '',
-        'month': dateTimeFormat('MMM y', selectedDate),
+        'month': dateTimeFormat('MMM y', selectedDate!),
       });
     }
 
     print('hereeeeeeeeeeeeeeeeeee');
   }
+  
+  deleteAttData() {
+    print('"""""deleteing"""""');
+    FirebaseFirestore.instance.collection('employees').get().then((value) {
+      for(DocumentSnapshot doc in value.docs) {
+        doc.reference.collection('attendance').doc('Dec 2023').delete();
+      }
+    });
+  }
+  
 }

@@ -102,6 +102,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
       name.text = employeeDetails!.name!;
       email.text = employeeDetails!.email!;
       phone.text = employeeDetails!.phone!;
+      pan.text = employeeDetails!.pan??'';
       dateOfJoining.text =
           dateTimeFormat('dd-MM-yyyy', employeeDetails!.joinedDate!);
       joinedDate = employeeDetails!.joinedDate!;
@@ -205,11 +206,29 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
     });
   }
 
+  bool mandatoryDataReadOnly= true;
+  bool personalDataReadOnly= true;
+  getEditPermission() async {
+    final doc = await FirebaseFirestore.instance.collection('settings')
+        .doc(currentBranchId)
+        .get();
+
+    mandatoryDataReadOnly = doc['editEmployeeMandatoryInfo']==false;
+    personalDataReadOnly = doc['editEmployeePersonalInfo']==false;
+
+
+
+    if(mounted) {
+      setState(() {});
+    }
+  }
+
   List<SearchFieldListItem<String>> empNamesLocal=[];
 
   @override
   void initState() {
 
+    getEditPermission();
 
     empNames.forEach((element) {
       empNamesLocal.add(
@@ -479,7 +498,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                 child: TextFormField(
                                                   controller: name,
                                                   obscureText: false,
-                                                  readOnly: true,
+                                                  readOnly: mandatoryDataReadOnly,
                                                   onChanged: (v) {
                                                     mError = '';
                                                     setState(() {});
@@ -562,7 +581,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                 child: TextFormField(
                                                   controller: email,
                                                   obscureText: false,
-                                                  readOnly: true,
+                                                  readOnly: mandatoryDataReadOnly,
                                                   onChanged: (v) {
                                                     mError = '';
                                                     setState(() {});
@@ -655,7 +674,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                 child: TextFormField(
                                                   controller: phone,
                                                   obscureText: false,
-                                                  readOnly: true,
+                                                  readOnly: mandatoryDataReadOnly,
                                                   onChanged: (v) {
                                                     mError = '';
                                                     setState(() {});
@@ -752,6 +771,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                         controller:
                                                             dateOfJoining,
                                                         obscureText: false,
+                                                        readOnly: personalDataReadOnly,
                                                         onTap: () {
                                                           showDatePicker(
                                                                   context:
@@ -1126,6 +1146,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                     child: TextFormField(
                                                       controller: dateOfBirth,
                                                       obscureText: false,
+                                                      readOnly: personalDataReadOnly,
                                                       onTap: () {
                                                         showDatePicker(
                                                                 context:
@@ -1479,6 +1500,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                             16, 0, 0, 0),
                                                     child: TextFormField(
                                                       controller: pan,
+                                                      readOnly: personalDataReadOnly,
                                                       obscureText: false,
                                                       decoration:
                                                           InputDecoration(
@@ -1767,6 +1789,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                             16, 0, 0, 0),
                                                     child: TextFormField(
                                                       controller: designation,
+                                                      readOnly: personalDataReadOnly,
                                                       obscureText: false,
                                                       onChanged: (str) {
                                                         oError = '';
@@ -2087,6 +2110,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                     child: TextFormField(
                                                       controller:
                                                           probationPeriod,
+                                                      readOnly: personalDataReadOnly,
                                                       obscureText: false,
                                                       autovalidateMode:
                                                           AutovalidateMode
@@ -2256,6 +2280,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                           child: TextFormField(
                                                             controller:
                                                                 dateOfJoining,
+                                                            readOnly: personalDataReadOnly,
                                                             obscureText: false,
                                                             onTap: () {
                                                               showDatePicker(
@@ -2426,6 +2451,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                     child: TextFormField(
                                                       controller: ctc,
                                                       obscureText: false,
+                                                      readOnly: personalDataReadOnly,
                                                       onChanged: (str) {
                                                         oError = '';
                                                         setState(() {});
@@ -2532,6 +2558,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                             16, 0, 0, 0),
                                                     child: TextFormField(
                                                       controller: holderName,
+                                                      readOnly: personalDataReadOnly,
                                                       obscureText: false,
                                                       onChanged: (str) {
                                                         oError = '';
@@ -2629,6 +2656,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                             16, 0, 0, 0),
                                                     child: TextFormField(
                                                       controller: bankName,
+                                                      readOnly: personalDataReadOnly,
                                                       obscureText: false,
                                                       onChanged: (str) {
                                                         oError = '';
@@ -2719,6 +2747,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                             16, 0, 0, 0),
                                                     child: TextFormField(
                                                       controller: city,
+                                                      readOnly: personalDataReadOnly,
                                                       obscureText: false,
                                                       onChanged: (str) {
                                                         oError = '';
@@ -2809,6 +2838,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                             16, 0, 0, 0),
                                                     child: TextFormField(
                                                       controller: ifsc,
+                                                      readOnly: personalDataReadOnly,
                                                       textCapitalization:
                                                           TextCapitalization
                                                               .characters,
@@ -2918,6 +2948,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                             16, 0, 0, 0),
                                                     child: TextFormField(
                                                       controller: branchName,
+                                                      readOnly: personalDataReadOnly,
                                                       obscureText: false,
                                                       onChanged: (str) {
                                                         oError = '';
@@ -3009,6 +3040,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                             16, 0, 0, 0),
                                                     child: TextFormField(
                                                       controller: accountNumber,
+                                                      readOnly: personalDataReadOnly,
                                                       obscureText: false,
                                                       onChanged: (str) {
                                                         oError = '';
@@ -3101,6 +3133,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                     child: TextFormField(
                                                       controller:
                                                           confirmAccountNumber,
+                                                      readOnly: personalDataReadOnly,
                                                       obscureText: false,
                                                       onChanged: (str) {
                                                         oError = '';
@@ -3297,6 +3330,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                                     .text,
                                                             empType:
                                                                 empType.text,
+
                                                             ifsc: ifsc.text,
                                                             joinedDate:
                                                                 joinedDate,
@@ -3498,6 +3532,7 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                               16, 0, 0, 0),
                                                       child: TextFormField(
                                                         controller: subject,
+                                                        readOnly: personalDataReadOnly,
                                                         obscureText: false,
                                                         decoration:
                                                             InputDecoration(

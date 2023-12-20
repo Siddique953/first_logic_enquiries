@@ -75,6 +75,8 @@ class _MyAppState extends State<MyApp> {
           canvasColor: Colors.transparent,
           // primarySwatch: Colors.blueGrey[900],
           fontFamily: "Montserrat",
+          iconTheme: IconThemeData(color: Colors.white),
+          iconButtonTheme: IconButtonThemeData(style: ButtonStyle(iconColor: MaterialStatePropertyAll<Color>(Colors.white)))
         ),
         debugShowCheckedModeBanner: false,
         title: 'FIRST LOGIC ERP',
