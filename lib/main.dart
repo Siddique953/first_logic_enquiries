@@ -20,6 +20,7 @@ void main() async {
         measurementId: "G-58TS14550F"
     ));
 
+
     runApp(MyApp());
   } else {
     WidgetsFlutterBinding.ensureInitialized();
@@ -54,25 +55,8 @@ setSearchParam(String caseNumber) {
 
 getBranch() {
   FirebaseFirestore.instance
-      .collection('branch')
-      .doc('m2AFuusj6HlwmtoiDtvT')
-      .get()
-      .then((event) async {
-
-   List users = event['staff'];
-
-   FirebaseFirestore.instance.collection('admin_users').get().then((event) {
-
-     for(DocumentSnapshot doc in event.docs) {
-       doc.reference.update(
-         {
-           'delete':!(users.contains(doc['email']))
-         }
-       );
-     }
-
-
-   });
-
+      .collection('sendNotification')
+      .add({
+    'name':'DDEC2023'
   });
 }

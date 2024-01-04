@@ -255,7 +255,45 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
 
           String outTime = rowDetail[j][3].toString();
 
+          late double inT  ;
+          late double outT  ;
+          try {
+           final hours = int.tryParse(inTime.split(':')[0])!;
+            final minuit = int.tryParse(inTime.split(':')[1])!;
+
+            inT = hours + minuit / 60.0;
+
+          } catch (e) {
+            inT = 0;
+
+
+          }
+
+          try {
+           final hours = int.tryParse(outTime.split(':')[0])!;
+            final minuit = int.tryParse(outTime.split(':')[1])!;
+
+            outT = hours + minuit / 60.0;
+
+          } catch (e) {
+            outT = 0;
+
+
+          }
+
+
+
           String totalWorkHour = rowDetail[j][4].toString();
+
+
+          print('======================================');
+          print(DateFormat('dd-MM-yyyy').format(day));
+          print(empCode);
+          print(totalWorkHour);
+          print(inT);
+          print(outT);
+          print(outT-inT);
+          print('======================================');
 
           paySlipInfo[empCode] = {};
 
@@ -375,8 +413,8 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
     showUploadMessage(context, 'Data Reading completed successfully');
 
     showUploadMessage(context, 'Saving new attendance data');
-    uploadFileToFireBase(bytes,
-        name: dateTimeFormat('dd MMM y', DateTime.now()), ext: 'csv', fileName: file.name);
+    // uploadFileToFireBase(bytes,
+    //     name: dateTimeFormat('dd MMM y', DateTime.now()), ext: 'csv', fileName: file.name);
 
     createAttendance();
   }
@@ -496,13 +534,7 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
         final totalWork = savedPaySlipInfo[empCode]['workDay'];
         final basicSalary = double.tryParse(empDataById[empCode]?.ctc??'0')??0;
 
-        print('"""""""empCode"""""""');
-        print(empCode);
-        print(leave);
-        print(halfDay);
-        print(lateCut);
-        print(totalWork);
-        print(basicSalary);
+
 
         if ((leave + ((halfDay + lateCut) * 0.5)) > 5) {
           print('ifffffff');
@@ -530,7 +562,9 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
        // print('\n\n""""""""""""""""""""savedPaySlipInfo""""""""""""""""""""\n\n');
        // print(savedPaySlipInfo);
 
-      uploadAttendance(attendance: savedAttendanceDetails, paySlip: savedPaySlipInfo);
+      ///
+
+      // uploadAttendance(attendance: savedAttendanceDetails, paySlip: savedPaySlipInfo);
       print('hereeeeeeeeeeeeeeeeeee1111111111111111111111111111');
       await Future.delayed(Duration(seconds: 1));
       showUploadMessage(context, 'Attendance File Successfully Saved ');
@@ -538,7 +572,7 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
     }
     ///
     else {
-      uploadAttendance(attendance: employeeAttendance,paySlip: paySlipInfo);
+      // uploadAttendance(attendance: employeeAttendance,paySlip: paySlipInfo);
       await Future.delayed(Duration(seconds: 1));
       showUploadMessage(context, 'Attendance File Successfully Saved ');
     }
@@ -592,6 +626,11 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
         'takeHome': paySlip[i]['takeHome'],
         'document': '',
         'month': dateTimeFormat('MMM y', selectedDate!),
+      }).whenComplete(() {
+        FirebaseFirestore.instance.collection('sendNotification').add({
+          'createdDate':FieldValue.serverTimestamp(),
+          'name':DateFormat('MMM y').format(selectedDate!)
+        });
       });
     }
 
