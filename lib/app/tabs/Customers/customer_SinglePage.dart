@@ -212,15 +212,12 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
   }
 
   getCustomerServices() {
-    print('HEREEEEEEEEEEEEEE');
     FirebaseFirestore.instance
         .collection('customerServices')
         .where('customerId', isEqualTo: widget.id)
         .where('delete', isEqualTo: false)
         .snapshots()
         .listen((event) {
-      print('HEREEEEEEEEEEEEEE');
-      print(event.docs.length);
 
       selectedServicesList = [];
       customerServiceNames = [];
@@ -293,9 +290,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
         // projectAndServicePaymentList=projectAndServicePaymentListSort;
 
         ///
-        print('Project Listen');
-        print(projectData.length);
-        print(serviceData.length);
 
         ///
 
@@ -465,9 +459,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
         statementDataSort = [];
 
         ///
-        print('Project Listen');
-        print(projectData.length);
-        print(serviceData.length);
 
         ///
 
@@ -617,8 +608,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
     data.addAll(projectAndServicePaymentList);
     projectAndServicePaymentListSort=[];
 
-    print('hello');
-    print(data.length);
 
     for (int i = 0; i < data.length; i++) {
       try {
@@ -814,7 +803,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
 
       } catch (er) {
-        print(er);
       }
     }
     setState(() {
@@ -824,14 +812,10 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
   sortStatement(String type) {
 
-    print('''''type''''');
-    print(type);
     List data = [];
     data.addAll(statementData);
     statementDataSort=[];
 
-    print('hello');
-    print(data.length);
 
     for (int i = 0; i < data.length; i++) {
       try {
@@ -1032,7 +1016,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
 
       } catch (er) {
-        print(er);
       }
     }
     setState(() {
@@ -1790,7 +1773,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                               onCountryChanged: (value) {
                                                 countryCode = value.dialCode;
                                                 countryShortName = value.code;
-                                                print(value.code);
                                               },
                                               decoration: InputDecoration(
                                                 labelText: 'Phone Number',
@@ -3045,9 +3027,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                     projectName
                                                                         .text]];
 
-                                                        print(projectName.text);
-                                                        print('""currentProject""');
-                                                        print(currentProject);
                                                         getSortedPayments();
                                                       // } else {
                                                       //   service = true;
@@ -3065,7 +3044,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                       //   };
                                                       // }
                                                       setState(() {
-                                                        print(currentProject);
                                                       });
                                                     },
                                                   ),
@@ -3438,11 +3416,9 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                     offset: string
                                                                         .length),
                                                           );
-                                                          print(string);
                                                           String str =
                                                               string.replaceAll(
                                                                   ',', '');
-                                                          print(str);
                                                         },
                                                         validator: (v) {
                                                           if (
@@ -5229,14 +5205,12 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                     '[[[[[[[[[[[[[[[[[PROOF]]]]]]]]]]]]]]]]]');
                                                                 print(
                                                                     feeDetail);
-                                                                print('here');
                                                                 print(proofs
                                                                     .isNotEmpty);
                                                                 print(
                                                                     'hereasdawds');
                                                                 if (proofs
                                                                     .isNotEmpty) {
-                                                                  print(proofs);
                                                                   List<ImageProvider>
                                                                       images =
                                                                       [];
@@ -5397,7 +5371,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                     print(feeDetail[
                                                                         'billCode']);
                                                                     try {
-                                                                      print(feeDetail);
                                                                       double projectCost = projectAndServicePaymentListSort[index]['projectId'] ==
                                                                               null
                                                                           ? serviceDataById[projectAndServicePaymentListSort[index]['serviceId']]
@@ -5441,7 +5414,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                             feeDetail['billCode'],
                                                                       );
 
-                                                                      print(2);
                                                                       await GeneratePdf
                                                                           .downloadPdf(
                                                                               invoice);
@@ -5454,8 +5426,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                       //     .openFile(
                                                                       //         pdfFile);
                                                                     } catch (e) {
-                                                                      print(e.runtimeType);
-                                                                      print(e);
                                                                       // return showDialog(
                                                                       //     context: context,
                                                                       //     builder: (context) {
@@ -5519,7 +5489,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                               importData(
                                                                   cust['name']);
                                                             } catch (e) {
-                                                              print(e);
 
                                                                showDialog(
                                                                   context:
@@ -7058,7 +7027,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                 () async {
 
                                                                               // try {
-                                                                                print(feeDetail['serviceAmount']);
                                                                                 final invoice =
                                                                                 paymentDetail(
                                                                                   nameOfProject: projectDataById[feeDetail['project']]['projectName'],
@@ -7144,7 +7112,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                   feeDetail['invoice'].toString(),
                                                                                 );
 
-                                                                                print(1);
 
                                                                                 await GenerateInvoice
                                                                                     .downloadPdf(
@@ -7158,8 +7125,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                 //     .openFile(
                                                                                 //         pdfFile);
                                                                               } catch (e) {
-                                                                                print('[[[[[[[[e]]]]]]]]');
-                                                                                print(e);
                                                                                 // return showDialog(
                                                                                 //     context: context,
                                                                                 //     builder: (context) {
@@ -7206,8 +7171,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                                 FirebaseFirestore.instance.collection('customerServices').doc(feeDetail['serviceId']).update({
                                                                                   'delete': true,
                                                                                 }).then((value) {
-                                                                                  print('hereee thennnnn');
-                                                                                  print(feeDetail['project']);
                                                                                   FirebaseFirestore.instance.collection('projects').doc(feeDetail['project']).update({
                                                                                     'totalCost': FieldValue.increment(-1*(feeDetail['serviceAmount'])),
                                                                                   });
@@ -7320,7 +7283,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                         nameController
                                                                             .text);
                                                                   } catch (e) {
-                                                                    print(e);
                                                                     return showDialog(
                                                                         context:
                                                                             context,
@@ -7410,7 +7372,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                                         creditTotal,
                                                                         debitTotal);
                                                                   } catch (e) {
-                                                                    print(e);
                                                                     return showDialog(
                                                                         context:
                                                                         context,
@@ -8159,9 +8120,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                         selection: TextSelection.collapsed(
                                             offset: string.length),
                                       );
-                                      print(string);
                                       String str = string.replaceAll(',', '');
-                                      print(str);
                                     },
                                     decoration: InputDecoration(
                                       prefixText: _currency,
@@ -8775,7 +8734,6 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
       cell5.cellStyle = cellStyle;
     }
 
-    print(statementDataSort.length);
 
     //CELL VALUES
 

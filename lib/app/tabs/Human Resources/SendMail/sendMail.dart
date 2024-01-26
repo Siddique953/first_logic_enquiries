@@ -257,14 +257,10 @@ class _SendMailToEmployeesState extends State<SendMailToEmployees> {
                                           },
                                           mediaLinkInsertInterceptor:
                                               (String url, InsertFileType type) {
-                                            print(url);
                                             return true;
                                           },
                                           mediaUploadInterceptor:
                                               (PlatformFile file, InsertFileType type) async {
-                                            print(file.name); //filename
-                                            print(file.size); //size in bytes
-                                            print(file.extension); //file extension (eg jpeg or mp4)
                                             return true;
                                           },
                                         ),
@@ -338,7 +334,6 @@ class _SendMailToEmployeesState extends State<SendMailToEmployees> {
                                               },
                                               mentionsWeb: ['test1', 'test2', 'test3'],
                                               onSelect: (String value) {
-                                                print(value);
                                               }),
                                         ],
                                       ),

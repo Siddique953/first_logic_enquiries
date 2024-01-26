@@ -183,7 +183,6 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
             ? ''
             : empDataById[employeeDetails!.teamLead ?? '']!.name!;
       } catch (e) {
-        print(e);
         teamLead.text = '';
       }
 
@@ -1952,7 +1951,6 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                         oError = '';
 
                                                         setState(() {
-                                                          print(x);
                                                         });
                                                       },
                                                     ),
@@ -2034,7 +2032,6 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                         oError = '';
 
                                                         setState(() {
-                                                          print(x);
                                                         });
                                                       },
                                                     ),
@@ -3279,8 +3276,6 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
                                                   ),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      print(currentBranchId);
-                                                      print('[[[[[[[[[[[[');
                                                       if (dob != null &&
                                                           gender != '' &&
                                                           dept.text != '' &&
@@ -3858,7 +3853,6 @@ class _SingleEmployeeDetailsState extends State<SingleEmployeeDetails> {
 
                                                   GestureDetector(
                                                     onTap: () {
-                                                      print('mailllllllllllllllllllllllllllllllllll');
                                                       String html = '<html>'
                                                           '<head>'
                                                           '<meta name="viewport" content="width=device-width, initial-scale=1">'

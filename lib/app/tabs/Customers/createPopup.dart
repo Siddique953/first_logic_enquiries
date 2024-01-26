@@ -1,18 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:searchfield/searchfield.dart';
 
-import '../../../auth/auth_util.dart';
-import '../../../flutter_flow/flutter_flow_drop_down.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../flutter_flow/upload_media.dart';
 import '../../app_widget.dart';
 import '../../pages/home_page/home.dart';
-import '../Branch/SelectBranches.dart';
-import '../Enquiry/AddEnquiry.dart';
 
 class CreateNewPopup extends StatefulWidget {
   final GlobalKey<FormState> form;
@@ -162,7 +157,6 @@ class _CreateNewPopupState extends State<CreateNewPopup> {
                           onCountryChanged: (value) {
                             countryDialCode = value.dialCode;
                             countryShortName = value.code;
-                            print(value.code);
                           },
                           decoration: InputDecoration(
                             labelText: 'Phone Number',
@@ -424,7 +418,6 @@ class _CreateNewPopupState extends State<CreateNewPopup> {
 
                               careOf.text = x.searchKey;
                               setState(() {
-                                print(x);
                               });
                             },
                           ),

@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import '../../../flutter_flow/flutter_flow_theme.dart';
-import '../../../flutter_flow/flutter_flow_util.dart';
-import '../../../flutter_flow/flutter_flow_widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
+
+import '../../../flutter_flow/flutter_flow_theme.dart';
+import '../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../pages/home_page/home.dart';
 import '../Customers/customer_SinglePage.dart';
 
@@ -46,8 +45,6 @@ class _ProjectPaymentReportState extends State<ProjectPaymentReport> {
 
   getFirst20() {
     listOfFilteredProjects = [];
-    print('===============================================');
-    print(listOfActiveProjects.length);
     for (int i = 0; i < listOfActiveProjects.length; i++) {
       firstIndex = 0;
       if (listOfFilteredProjects.length < 20) {
@@ -63,11 +60,7 @@ class _ProjectPaymentReportState extends State<ProjectPaymentReport> {
       lastIndex = i;
     }
 
-    print('=====================FIRST INDEX==========================');
-    print(firstIndex);
 
-    print('==========================LAST INDEX=====================');
-    print(lastIndex);
 
     setState(() {});
   }
@@ -87,8 +80,6 @@ class _ProjectPaymentReportState extends State<ProjectPaymentReport> {
       lastIndex = i;
     }
 
-    print(firstIndex);
-    print(lastIndex);
 
     setState(() {});
   }
@@ -111,8 +102,6 @@ class _ProjectPaymentReportState extends State<ProjectPaymentReport> {
 
     listOfFilteredProjects = prev.reversed.toList();
 
-    print(firstIndex);
-    print(lastIndex);
 
     // listOfFilteredProjects.reversed;
 
@@ -203,8 +192,6 @@ class _ProjectPaymentReportState extends State<ProjectPaymentReport> {
     }
     listOfFilteredProjects = prev.reversed.toList();
 
-    print(firstIndex);
-    print(lastIndex);
 
     // listOfFilteredProjects.reversed;
 

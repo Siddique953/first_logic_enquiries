@@ -58,7 +58,6 @@ class _ProjectListState extends State<ProjectList> {
   getFirst20() {
     listOfFilteredProjects = [];
 
-    print(listOfProjects.length);
     for (int i = 0; i < listOfProjects.length; i++) {
       firstIndex = 0;
       if (listOfFilteredProjects.length < 20) {
@@ -73,14 +72,8 @@ class _ProjectListState extends State<ProjectList> {
       lastIndex = i;
     }
 
-    print('=====================FIRST INDEX==========================');
-    print(firstIndex);
 
-    print('==========================LAST INDEX=====================');
-    print(lastIndex);
 
-    print('==========================LIST CURRENT LENGTH=====================');
-    print(listOfFilteredProjects.length);
 
     setState(() {});
   }
@@ -101,8 +94,6 @@ class _ProjectListState extends State<ProjectList> {
       lastIndex = i;
     }
 
-    print(firstIndex);
-    print(lastIndex);
 
     setState(() {});
   }
@@ -126,8 +117,6 @@ class _ProjectListState extends State<ProjectList> {
 
     listOfFilteredProjects = prev.reversed.toList();
 
-    print(firstIndex);
-    print(lastIndex);
 
     // listOfFilteredProjects.reversed;
 
@@ -149,7 +138,6 @@ class _ProjectListState extends State<ProjectList> {
               .contains(txt) ||
           listOfProjects[i]['mobile'].toString().toLowerCase().contains(txt) ||
           listOfProjects[i]['email'].toString().toLowerCase().contains(txt)) {
-        print(i);
 
         if (listOfFilteredProjects.length < 20) {
           showNButton = false;
@@ -209,8 +197,6 @@ class _ProjectListState extends State<ProjectList> {
         // listOfFilteredProjects.add(listOfActiveProjects[i]);
       }
     }
-    print(firstIndex);
-    print(lastIndex);
     setState(() {});
   }
 
@@ -219,8 +205,6 @@ class _ProjectListState extends State<ProjectList> {
     showPButton = false;
     listOfFilteredProjects = [];
     List prev = [];
-    print('[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
-    print(lastIndex);
     for (int i = lastIndex; i >= 0; i--) {
       if (listOfProjects[i]['projectName']
               .toString()
@@ -255,8 +239,6 @@ class _ProjectListState extends State<ProjectList> {
     }
     listOfFilteredProjects = prev.reversed.toList();
 
-    print(firstIndex);
-    print(lastIndex);
 
     // listOfFilteredProjects.reversed;
 

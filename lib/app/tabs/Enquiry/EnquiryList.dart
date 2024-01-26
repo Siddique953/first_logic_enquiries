@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_erp/app/pages/home_page/home.dart';
-import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -177,7 +175,6 @@ class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
                           .orderBy('date', descending: true)
                           .snapshots(),
                       builder: (context, snapshot) {
-                        print(snapshot);
                         if (!snapshot.hasData) {
                           return Center(
                             child: CircularProgressIndicator(),
@@ -410,7 +407,6 @@ class _EnqyiryListWidgetState extends State<EnqyiryListWidget> {
                           .orderBy('date', descending: true)
                           .snapshots(),
                       builder: (context, snapshot) {
-                        print(snapshot);
                         if (!snapshot.hasData) {
                           return Center(
                             child: LottieBuilder.network(

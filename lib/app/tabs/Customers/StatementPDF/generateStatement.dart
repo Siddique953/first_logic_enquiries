@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:fl_erp/app/app_widget.dart';
 import 'package:fl_erp/app/tabs/Customers/StatementPDF/statementModel.dart';
 import 'package:flutter/foundation.dart';
@@ -25,7 +26,6 @@ var format = NumberFormat.simpleCurrency(locale: 'en_in');
 class StatementPDF {
   static Future<File?> downloadPdf(StatementModel invoice, List datas,
       double creditTotal, double debitTotal) async {
-    print('PDFFFFFFFFFF ');
 
     double balance = 0;
 
@@ -336,8 +336,6 @@ class StatementPDF {
                 }
               }
 
-              print(index);
-              print(datas.length);
 
               return index == datas.length
                   ? [

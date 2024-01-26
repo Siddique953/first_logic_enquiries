@@ -22,7 +22,6 @@ class GenerateInvoice {
     final pdf = Document();
     image = await imageFromAssetBundle('assets/images/fl_new.jpg');
     // globIcon = await imageFromAssetBundle('assets/images/globeIconPDF.png');
-    print("start");
     pdf.addPage(
       MultiPage(
         build: (context) => [

@@ -1,16 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
-
-import '../../../auth/auth_util.dart';
 import '../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../flutter_flow/flutter_flow_util.dart';
 import '../../../flutter_flow/flutter_flow_widgets.dart';
-
-import 'package:flutter/material.dart';
-
 import '../../../flutter_flow/upload_media.dart';
-import '../../../main.dart';
 import '../../app_widget.dart';
 import '../../models/enquiry/enquiryStatus.dart';
 import '../../models/enquiry/followUpModel.dart';
@@ -93,8 +88,6 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
         .then((value) {
       value.update({'dId': value.id});
     }).catchError((e) {
-      print('@@@@@@@@@@@@');
-      print(e);
     });
   }
 
@@ -109,7 +102,6 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print('Build Start  !!!!!!!!!!!!!!!!!!!!');
     currentTab = 1;
     return Scaffold(
       key: scaffoldKey,
@@ -137,7 +129,6 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
             .doc(widget.id)
             .snapshots(),
         builder: (context, snapshot) {
-          print(snapshot);
 
           if (!snapshot.hasData) {
             return Container(
@@ -763,7 +754,6 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
                                                 onTap: () async {
                                                   print(
                                                       "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[data['customerId']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]");
-                                                  print(data['customerId']);
                                                   if (data['status'] == 0) {
                                                     bool pressed = await alert(
                                                         context,
@@ -873,7 +863,6 @@ class _EnquiryDetailsWidgetState extends State<EnquiryDetailsWidget> {
                                                 onTap: () async {
                                                   print(
                                                       "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[data['customerId']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]");
-                                                  print(data['customerId']);
                                                   if (data['status'] == 0) {
                                                     bool pressed = await alert(
                                                         context,

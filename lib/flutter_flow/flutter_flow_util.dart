@@ -10,7 +10,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'lat_lng.dart';
 
 export 'dart:math' show min, max;
+
 export 'package:page_transition/page_transition.dart';
+
 export 'lat_lng.dart';
 export 'place.dart';
 
@@ -51,7 +53,6 @@ Future<Object?> getCurrentUserLocation(
             }
             return loc;
           }).onError((error, _) {
-            print("Error querying user location: $error");
             return defaultLocation;
           });
 

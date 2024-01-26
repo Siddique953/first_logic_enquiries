@@ -1,9 +1,11 @@
 import 'dart:io';
+
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart';
+
 import '../../../../../paymentReport/report/Invoice.dart';
 
 
@@ -412,12 +414,10 @@ class InvoicePrintingFunction {
       ],
     ));
 
-    print('aaaaaaaaaaaaaaaaaaaaaa');
 
     //web
     await Printing.layoutPdf(
         onLayout: (PdfPageFormat format) async => pdf.save());
-    print('bbbbbbbbbbbbbbbbbbbbbbbb');
 
     //android
     // return PdfApi.saveDocument(name: '${invoice.name}+feedetail.pdf', pdf: pdf);

@@ -40,6 +40,8 @@ class _PaySlipPageState extends State<PaySlipPage> {
 
   String filename = '';
 
+  DateTime? selectedDate;
+
   /*Map<String, Map<String, dynamic>>*/
   // var employeeDetails = {};
   // var employeeAttendance = {};
@@ -232,14 +234,8 @@ class _PaySlipPageState extends State<PaySlipPage> {
               (basicSalary / 30) * (30 - (leave + ((halfDay + lateCut) * 0.5)));
 
           if (empCode == 'FL108') {
-            print('hellooooo');
-            print(basicSalary);
-            print(basicSalary / 30);
             print(leave);
-            print(halfDay);
-            print(lateCut);
             print((leave - ((halfDay + lateCut) * 0.5)));
-            print(payable);
           }
         }
 
@@ -263,7 +259,6 @@ class _PaySlipPageState extends State<PaySlipPage> {
       }
     }
 
-    print('111111');
     uploadFileToFireBase(
         dateTimeFormat(
             'MMM y',
@@ -418,26 +413,33 @@ class _PaySlipPageState extends State<PaySlipPage> {
       key: scaffoldKey,
       backgroundColor: Colors.white,
       body: sendMailProgressShow
-          ? Center(
-              child: Container(
-                width: 300,
-                child: RoundedProgressBar(
-                  height: 30,
-                  style: RoundedProgressBarStyle(
-                      backgroundProgress: Colors.transparent,
-                      widthShadow: 5,
-                      colorProgress: Color(0xFF0F1113),
-                      colorProgressDark: Colors.transparent,
-                      borderWidth: 0),
+          ? Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                  child: Container(
+                    width: 300,
+                    child: RoundedProgressBar(
+                      height: 30,
+                      style: RoundedProgressBarStyle(
+                          backgroundProgress: Colors.transparent,
 
-                  childCenter: Text("${percent.toStringAsFixed(2)}%",
-                      style: TextStyle(color: Colors.white)),
-                  percent: percent,
+                          widthShadow: 5,
+                          colorProgress: Color(0xFF0F1113),
+                          colorProgressDark: Colors.transparent,
+                          borderWidth: 0),
 
-                  // theme: RoundedProgressBarTheme.red,
+
+                      childCenter: Text("${percent.toStringAsFixed(2)}%",
+                          style: TextStyle(color: percent <= 48.00?Colors.black:Colors.white)),
+                      percent: percent,
+
+                      // theme: RoundedProgressBarTheme.red,
+                    ),
+                  ),
                 ),
-              ),
-            )
+            ],
+          )
           : SafeArea(
               child: Column(
                 mainAxisSize: MainAxisSize.max,
@@ -525,7 +527,7 @@ class _PaySlipPageState extends State<PaySlipPage> {
                                                 lastDate: DateTime(
                                                     DateTime.now().year + 100,
                                                     12),
-                                                initialDate: DateTime.now(),
+                                                initialDate: selectedDate ??DateTime.now(),
 
                                                 // confirmText: Text(
                                                 //   'Choose',
@@ -537,6 +539,8 @@ class _PaySlipPageState extends State<PaySlipPage> {
                                                 // yearFirst: true,
                                               ).then((date) async {
                                                 if (date != null) {
+
+                                                  selectedDate = date;
                                                   try {
                                                     final value =
                                                         await FirebaseFirestore
@@ -577,7 +581,6 @@ class _PaySlipPageState extends State<PaySlipPage> {
 
                                                     });
                                                   } catch (err) {
-                                                    print(err);
                                                     showUploadMessage(context,
                                                         'No Data Found...');
                                                   }
@@ -588,40 +591,40 @@ class _PaySlipPageState extends State<PaySlipPage> {
                                           SizedBox(
                                             width: 20,
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: InkWell(
-                                              onTap: () {
-                                                pickFile();
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey[200],
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  border: Border.all(
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                                width: MediaQuery.of(context).size.width * 0.25,
-                                                height: 50,
-                                                child: Center(
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(Icons
-                                                          .file_present_sharp),
-                                                      filename == ''
-                                                          ? Text('Pick file')
-                                                          : Text(filename),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
+                                          // Padding(
+                                          //   padding: const EdgeInsets.all(8.0),
+                                          //   child: InkWell(
+                                          //     onTap: () {
+                                          //       pickFile();
+                                          //     },
+                                          //     child: Container(
+                                          //       decoration: BoxDecoration(
+                                          //         color: Colors.grey[200],
+                                          //         borderRadius:
+                                          //             BorderRadius.circular(8),
+                                          //         border: Border.all(
+                                          //           color: Colors.grey,
+                                          //         ),
+                                          //       ),
+                                          //       width: MediaQuery.of(context).size.width * 0.25,
+                                          //       height: 50,
+                                          //       child: Center(
+                                          //         child: Row(
+                                          //           mainAxisAlignment:
+                                          //               MainAxisAlignment
+                                          //                   .center,
+                                          //           children: [
+                                          //             Icon(Icons
+                                          //                 .file_present_sharp),
+                                          //             filename == ''
+                                          //                 ? Text('Pick file')
+                                          //                 : Text(filename),
+                                          //           ],
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //   ),
+                                          // ),
                                           SizedBox(
                                             width: 20,
                                           ),
@@ -643,13 +646,7 @@ class _PaySlipPageState extends State<PaySlipPage> {
                                                         size: 25,
                                                       ),
                                                       onPressed: () async {
-                                                        print(
-                                                            '""""employeeAttendance""""');
-                                                        print(
-                                                            employeeAttendance);
-                                                        print(
-                                                            '"""""""employeeDetails"""""""');
-                                                        print(employeeDetails);
+
                                                         bool pressed = await alert(
                                                             context,
                                                             'Do you want Upload');
@@ -683,14 +680,7 @@ class _PaySlipPageState extends State<PaySlipPage> {
                                                               .doc(
                                                                   dateTimeFormat(
                                                                       'MMMM y',
-                                                                      DateTime(
-                                                                        DateTime.now()
-                                                                            .year,
-                                                                        DateTime.now().month -
-                                                                            1,
-                                                                        DateTime.now()
-                                                                            .day,
-                                                                      )))
+                                                                      selectedDate!))
                                                               .set({
                                                             'salaryInfo':
                                                                 employeeDetails,
@@ -708,12 +698,7 @@ class _PaySlipPageState extends State<PaySlipPage> {
                                                                   .doc(
                                                                       dateTimeFormat(
                                                                           'MMMM y',
-                                                                          DateTime(
-                                                                            DateTime.now().year,
-                                                                            DateTime.now().month -
-                                                                                1,
-                                                                            DateTime.now().day,
-                                                                          )))
+                                                                          selectedDate!))
                                                                   .collection(
                                                                       'attendanceInfo')
                                                                   .doc(i)
@@ -976,14 +961,7 @@ class _PaySlipPageState extends State<PaySlipPage> {
                                                             .doc(
                                                             dateTimeFormat(
                                                                 'MMMM y',
-                                                                DateTime(
-                                                                  DateTime.now()
-                                                                      .year,
-                                                                  DateTime.now().month -
-                                                                      1,
-                                                                  DateTime.now()
-                                                                      .day,
-                                                                )))
+                                                                selectedDate!))
                                                             .set({
                                                           'salaryInfo':
                                                           employeeDetails,
@@ -1001,12 +979,7 @@ class _PaySlipPageState extends State<PaySlipPage> {
                                                                 .doc(
                                                                 dateTimeFormat(
                                                                     'MMMM y',
-                                                                    DateTime(
-                                                                      DateTime.now().year,
-                                                                      DateTime.now().month -
-                                                                          1,
-                                                                      DateTime.now().day,
-                                                                    )))
+                                                                    selectedDate!))
                                                                 .collection(
                                                                 'attendanceInfo')
                                                                 .doc(i)
@@ -1020,37 +993,39 @@ class _PaySlipPageState extends State<PaySlipPage> {
 
 
                                                         });
+
+                                                        try {
+                                                          importData();
+                                                        } catch (e) {
+
+                                                          return showDialog(
+                                                              context: context,
+                                                              builder: (context) {
+                                                                return AlertDialog(
+                                                                  title: Text(
+                                                                      'error'),
+                                                                  content: Text(e
+                                                                      .toString()),
+                                                                  actions: <Widget>[
+                                                                    ElevatedButton(
+                                                                      child:
+                                                                      new Text(
+                                                                          'ok'),
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(
+                                                                            context)
+                                                                            .pop();
+                                                                      },
+                                                                    )
+                                                                  ],
+                                                                );
+                                                              });
+                                                        }
+
                                                       }
 
-                                                      try {
-                                                        importData();
-                                                      } catch (e) {
-                                                        print(e);
 
-                                                        return showDialog(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return AlertDialog(
-                                                                title: Text(
-                                                                    'error'),
-                                                                content: Text(e
-                                                                    .toString()),
-                                                                actions: <Widget>[
-                                                                  ElevatedButton(
-                                                                    child:
-                                                                        new Text(
-                                                                            'ok'),
-                                                                    onPressed:
-                                                                        () {
-                                                                      Navigator.of(
-                                                                              context)
-                                                                          .pop();
-                                                                    },
-                                                                  )
-                                                                ],
-                                                              );
-                                                            });
-                                                      }
                                                       // });
                                                     },
                                                     text: 'Generate Excel',
@@ -1095,14 +1070,7 @@ class _PaySlipPageState extends State<PaySlipPage> {
                                                             .doc(
                                                             dateTimeFormat(
                                                                 'MMMM y',
-                                                                DateTime(
-                                                                  DateTime.now()
-                                                                      .year,
-                                                                  DateTime.now().month -
-                                                                      1,
-                                                                  DateTime.now()
-                                                                      .day,
-                                                                )))
+                                                                selectedDate!))
                                                             .set({
                                                           'salaryInfo':
                                                           employeeDetails,
@@ -1121,12 +1089,7 @@ class _PaySlipPageState extends State<PaySlipPage> {
                                                                 .doc(
                                                                 dateTimeFormat(
                                                                     'MMMM y',
-                                                                    DateTime(
-                                                                      DateTime.now().year,
-                                                                      DateTime.now().month -
-                                                                          1,
-                                                                      DateTime.now().day,
-                                                                    )))
+                                                                    selectedDate!))
                                                                 .collection(
                                                                 'attendanceInfo')
                                                                 .doc(i)
@@ -1140,10 +1103,9 @@ class _PaySlipPageState extends State<PaySlipPage> {
 
 
                                                         });
+
+                                                        sendMail();
                                                       }
-
-
-                                                      sendMail();
                                                     },
                                                     text: 'Send Email',
                                                     options: FFButtonOptions(
@@ -1215,8 +1177,6 @@ class _PaySlipPageState extends State<PaySlipPage> {
                                 if (search.text == '') {
                                   // listOfFilteredProjects
                                   //     .addAll(listOfActiveProjects);
-
-
                                   sortedEmployeeList.addAll(employeeListFull);
                                   setState(() {});
                                 } else {
@@ -1605,19 +1565,30 @@ class _PaySlipPageState extends State<PaySlipPage> {
   sendMail() async {
     List availableEmployees =
         employeeList.where((element) => element['delete'] == false).toList();
-    DateTime monthDay = DateTime(DateTime.now().year, DateTime.now().month, 0);
+    DateTime monthDay = DateTime(selectedDate!.year, selectedDate!.month, 0);
+
     int lastDay = monthDay.day;
     sendMailProgressShow = true;
     percent = 0;
     setState(() {});
     for (int i = 0; i < availableEmployees.length; i++) {
+
+      await Future.delayed(Duration(seconds: 10));
+      percent = ((i+1) / availableEmployees.length) * 100;
+      setState(() {});
+      if((i+1) == availableEmployees.length) {
+        sendMailProgressShow = false;
+        percent = 0;
+        setState(() {});
+      }
+
       if (employeeDetails[availableEmployees[i]['empId']]['takeHome'] == 0) {
         continue;
       } else {
         int offDays = int.tryParse(
             (employeeDetails[availableEmployees[i]['empId']]['offDay'] ?? 4)
                 .toString())!;
-        int workingDays = int.tryParse((30 - offDays).toString())!;
+        int workingDays = int.tryParse((lastDay - offDays).toString())!;
         double payable = double.tryParse(
             empDataById[availableEmployees[i]['empId']]!.ctc ?? '0')!;
         double leaveCut = payable -
@@ -1636,11 +1607,7 @@ class _PaySlipPageState extends State<PaySlipPage> {
               .toString(),
           month: dateTimeFormat(
               'MMM y',
-              DateTime(
-                DateTime.now().year,
-                DateTime.now().month - 1,
-                DateTime.now().day,
-              )),
+              selectedDate!),
           medicalAlowance: '',
           leaves: '',
           leavesTaken: employeeDetails[availableEmployees[i]['empId']]['leave'],
@@ -1668,14 +1635,11 @@ class _PaySlipPageState extends State<PaySlipPage> {
           bankName: empDataById[availableEmployees[i]['empId']]!.bankName,
           designation: empDataById[availableEmployees[i]['empId']]!.designation,
         );
-        PaySlip.downloadPdf(data, employeeDetails, employeeAttendance,
-            availableEmployees[i]['empId'], lastDay);
 
-        await Future.delayed(Duration(seconds: 10));
-        percent = (i / availableEmployees.length) * 100;
-        setState(() {
-          
-        });
+          PaySlip.downloadPdf(data, employeeDetails, employeeAttendance,
+              availableEmployees[i]['empId'], lastDay, selectedDate!);
+
+
       }
 
       // if(kDebugMode) {
@@ -1911,7 +1875,6 @@ class MyData extends DataTableSource {
                   //   }
                   // }
                 } catch (err) {
-                  print(err);
                   showUploadMessage(context, 'Unexpected error occurred!!!');
                 }
               },
@@ -1965,7 +1928,6 @@ class MyData extends DataTableSource {
                   //   }
                   // }
                 } catch (err) {
-                  print(err);
                   showUploadMessage(context, 'Unexpected error occurred!!!');
                 }
               },
@@ -2003,14 +1965,10 @@ class MyData extends DataTableSource {
                   double newLeave = double.tryParse(leave.text) ?? 0;
 
                   employeeDetails[data]['leave'] = newLeave;
-                  print(1);
-                  print(workDay);
-                  print(newLeave);
                   print(oldLeave);
                   print(workDay - (newLeave - oldLeave));
                   employeeDetails[data]['workDay'] =
                       workDay - (newLeave - oldLeave);
-                  print(2);
 
                   double salary = 0;
 
@@ -2024,13 +1982,10 @@ class MyData extends DataTableSource {
                   if ((employeeDetails[data]['leave'] -
                           (employeeDetails[data]['casualLeave'] ?? 0)) >
                       5) {
-                    print(3);
-                    print(employeeDetails[data]['workDay']);
                     double bp = basicSalary / 30;
                     salary = (bp) *
                         ((employeeDetails[data]['workDay'] +
                             (employeeDetails[data]['casualLeave'] ?? 0)));
-                    print(4);
                   } else {
                     salary = (basicSalary / 30) *
                         (30 -
@@ -2064,8 +2019,6 @@ class MyData extends DataTableSource {
 
                   refresh();
                 } catch (err) {
-                  print('"""""""err"""""""');
-                  print(err);
                   showUploadMessage(context, 'Unexpected error occurred!!!');
                 }
               },
@@ -2149,7 +2102,6 @@ class MyData extends DataTableSource {
 
                   refresh();
                 } catch (err) {
-                  print(err);
                   showUploadMessage(context, 'Unexpected error occurred!!!');
                 }
               },
@@ -2234,7 +2186,6 @@ class MyData extends DataTableSource {
                     refresh();
                   }
                 } catch (err) {
-                  print(err);
                   showUploadMessage(context, 'Provide Only Digit');
                 }
               },
@@ -2306,7 +2257,6 @@ class MyData extends DataTableSource {
                     refresh();
                   }
                 } catch (err) {
-                  print(err);
                   showUploadMessage(context, 'Provide Only Digit');
                 }
               },
@@ -2366,7 +2316,6 @@ class MyData extends DataTableSource {
                     refresh();
                   }
                 } catch (err) {
-                  print(err);
                   showUploadMessage(context, 'Provide Only Digit');
                 }
               },
@@ -2443,7 +2392,6 @@ class MyData extends DataTableSource {
                     refresh();
                   }
                 } catch (err) {
-                  print(err);
                   showUploadMessage(context, 'Provide Only Digit');
                 }
               },

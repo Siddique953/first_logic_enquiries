@@ -286,14 +286,6 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
           String totalWorkHour = rowDetail[j][4].toString();
 
 
-          print('======================================');
-          print(DateFormat('dd-MM-yyyy').format(day));
-          print(empCode);
-          print(totalWorkHour);
-          print(inT);
-          print(outT);
-          print(outT-inT);
-          print('======================================');
 
           paySlipInfo[empCode] = {};
 
@@ -404,18 +396,21 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
         paySlipInfo[empCode]['takeHome'] =
             (payable - deduction + (incentive + ot)).round();
 
+        if(empCode == 'FL199'){
+        }
+
         // employeeDetailsList.add(employeeDetails);
       }
     }
 
     await Future.delayed(Duration(milliseconds: 200));
-    print('hereeeeeeeeeeeeeeeeeee222222222222222222');
     showUploadMessage(context, 'Data Reading completed successfully');
 
     showUploadMessage(context, 'Saving new attendance data');
-    // uploadFileToFireBase(bytes,
-    //     name: dateTimeFormat('dd MMM y', DateTime.now()), ext: 'csv', fileName: file.name);
+    uploadFileToFireBase(bytes,
+        name: dateTimeFormat('dd MMM y', DateTime.now()), ext: 'csv', fileName: file.name);
 
+    ///
     createAttendance();
   }
 
@@ -471,12 +466,8 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
 
       /// MERGE OLD AND NEW ATTENDANCE FILES
       for (var i in employeeAttendance.keys) {
-        print(i);
         Map singleAttendance = employeeAttendance[i];
         for(var d in singleAttendance.keys){
-          // print(savedAttendanceDetails[i][d]);
-          // print('\n\n');
-          // print(employeeAttendance[i][d]);
           if(savedAttendanceDetails[i]==null){
             savedAttendanceDetails[i]={};
           }
@@ -537,10 +528,6 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
 
 
         if ((leave + ((halfDay + lateCut) * 0.5)) > 5) {
-          print('ifffffff');
-          print(((basicSalary / 30) * (totalWork - (0.5 * lateCut))).round());
-          print((totalWork - (0.5 * lateCut)));
-          print(((0.5 * lateCut)));
           // savedPaySlipInfo[empCode]['payable'] = ((basicSalary / 30) * (totalWork - (0.5 * lateCut))).round();
           // savedPaySlipInfo[empCode]['takeHome'] = ((basicSalary / 30) * (totalWork - (0.5 * lateCut))).round();
 
@@ -549,36 +536,27 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
 
 
         } else {
-          print('elseeeeee');
           savedPaySlipInfo[empCode]['payable'] = ((basicSalary / 30) * (30 - (leave + ((halfDay + lateCut) * 0.5)))).round();
           savedPaySlipInfo[empCode]['takeHome'] = ((basicSalary / 30) * (30 - (leave + ((halfDay + lateCut) * 0.5)))).round();
         }
 
 
       }
-       // print('"""""""""""""""""savedAttendanceDetails"""""""""""""""""\n \n');
-       // print(savedAttendanceDetails);
        //
-       // print('\n\n""""""""""""""""""""savedPaySlipInfo""""""""""""""""""""\n\n');
-       // print(savedPaySlipInfo);
 
       ///
 
-      // uploadAttendance(attendance: savedAttendanceDetails, paySlip: savedPaySlipInfo);
-      print('hereeeeeeeeeeeeeeeeeee1111111111111111111111111111');
+      uploadAttendance(attendance: savedAttendanceDetails, paySlip: savedPaySlipInfo);
       await Future.delayed(Duration(seconds: 1));
       showUploadMessage(context, 'Attendance File Successfully Saved ');
 
     }
     ///
     else {
-      // uploadAttendance(attendance: employeeAttendance,paySlip: paySlipInfo);
+      uploadAttendance(attendance: employeeAttendance,paySlip: paySlipInfo);
       await Future.delayed(Duration(seconds: 1));
       showUploadMessage(context, 'Attendance File Successfully Saved ');
     }
-
-
-
   }
 
 
@@ -591,6 +569,7 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
       'salaryInfo': paySlip,
 
       'closed': false,
+
     });
     for (String i in attendance.keys) {
       FirebaseFirestore.instance
@@ -634,11 +613,9 @@ class _AddAttendancePageState extends State<AddAttendancePage> {
       });
     }
 
-    print('hereeeeeeeeeeeeeeeeeee');
   }
   
   deleteAttData() {
-    print('"""""deleteing"""""');
     FirebaseFirestore.instance.collection('employees').get().then((value) {
       for(DocumentSnapshot doc in value.docs) {
         doc.reference.collection('attendance').doc('Dec 2023').delete();

@@ -1,9 +1,10 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+
 import '../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../flutter_flow/flutter_flow_widgets.dart';
-import 'package:intl/intl.dart';
 import '../../pages/home_page/home.dart';
 import '../Customers/customer_SinglePage.dart';
 
@@ -47,8 +48,6 @@ class _ProjectReportState extends State<ProjectReport> {
 
   getFirst20() {
     listOfFilteredProjects = [];
-    print('===============================================');
-    print(listOfProjects.length);
     for (int i = 0; i < listOfProjects.length; i++) {
       firstIndex = 0;
       if (listOfFilteredProjects.length < 20) {
@@ -80,11 +79,7 @@ class _ProjectReportState extends State<ProjectReport> {
       lastIndex = i;
     }
 
-    print('=====================FIRST INDEX==========================');
-    print(firstIndex);
 
-    print('==========================LAST INDEX=====================');
-    print(lastIndex);
 
     setState(() {});
   }
@@ -121,8 +116,6 @@ class _ProjectReportState extends State<ProjectReport> {
       lastIndex = i;
     }
 
-    print(firstIndex);
-    print(lastIndex);
 
     setState(() {});
   }
@@ -163,8 +156,6 @@ class _ProjectReportState extends State<ProjectReport> {
 
     listOfFilteredProjects = prev.reversed.toList();
 
-    print(firstIndex);
-    print(lastIndex);
 
     // listOfFilteredProjects.reversed;
 
@@ -307,8 +298,6 @@ class _ProjectReportState extends State<ProjectReport> {
     }
     listOfFilteredProjects = prev.reversed.toList();
 
-    print(firstIndex);
-    print(lastIndex);
 
     // listOfFilteredProjects.reversed;
 
@@ -322,7 +311,6 @@ class _ProjectReportState extends State<ProjectReport> {
     dropdownValue = TextEditingController(text: 'All');
     getFirst20();
 
-    print(dropdownValue.text);
   }
 
   @override
@@ -379,7 +367,6 @@ class _ProjectReportState extends State<ProjectReport> {
                             controller: dropdownValue,
                             onChanged: (val) {
                               setState(() {
-                                print(dropdownValue.text);
                                 getFirst20();
                               });
                             },

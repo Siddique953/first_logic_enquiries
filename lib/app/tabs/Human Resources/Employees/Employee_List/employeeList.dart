@@ -65,8 +65,6 @@ class _EmployeeListState extends State<EmployeeList> {
 //GET FIRST 20 DATA
   getFirst20() {
     listOfFilteredCustomers = [];
-    print('===============================================');
-    print(listOfCustomers.length);
     for (int i = 0; i < listOfCustomers.length; i++) {
       firstIndex = 0;
       if (listOfFilteredCustomers.length < 20) {
@@ -81,14 +79,8 @@ class _EmployeeListState extends State<EmployeeList> {
       lastIndex = i;
     }
 
-    print('=====================FIRST INDEX==========================');
-    print(firstIndex);
 
-    print('==========================LAST INDEX=====================');
-    print(lastIndex);
 
-    print('==========================LIST CURRENT LENGTH=====================');
-    print(listOfFilteredCustomers.length);
 
     setState(() {});
   }
@@ -109,8 +101,6 @@ class _EmployeeListState extends State<EmployeeList> {
       lastIndex = i;
     }
 
-    print(firstIndex);
-    print(lastIndex);
 
     setState(() {});
   }
@@ -134,8 +124,6 @@ class _EmployeeListState extends State<EmployeeList> {
 
     listOfFilteredCustomers = prev.reversed.toList();
 
-    print(firstIndex);
-    print(lastIndex);
 
     // listOfFilteredProjects.reversed;
 
@@ -188,8 +176,6 @@ class _EmployeeListState extends State<EmployeeList> {
         // listOfFilteredProjects.add(listOfActiveProjects[i]);
       }
     }
-    print(firstIndex);
-    print(lastIndex);
     setState(() {});
   }
 
@@ -197,8 +183,6 @@ class _EmployeeListState extends State<EmployeeList> {
   getPrevSearchProjects(String txt) {
     listOfFilteredCustomers = [];
     List prev = [];
-    print('[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
-    print(lastIndex);
     for (int i = lastIndex; i >= 0; i--) {
       if (listOfCustomers[i]['name'].toString().toLowerCase().contains(txt) ||
           listOfCustomers[i]['mobile'].toString().toLowerCase().contains(txt) ||
@@ -218,8 +202,6 @@ class _EmployeeListState extends State<EmployeeList> {
     }
     listOfFilteredCustomers = prev.reversed.toList();
 
-    print(firstIndex);
-    print(lastIndex);
 
     // listOfFilteredProjects.reversed;
 
@@ -230,7 +212,6 @@ class _EmployeeListState extends State<EmployeeList> {
   void initState() {
     super.initState();
 
-    print(employeeList.length);
 
     listOfCustomers= employeeList.where((element) => element['delete']==false).toList();
         // .addAll(employeeList);

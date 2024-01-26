@@ -12,7 +12,6 @@ import '../../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../../flutter_flow/upload_media.dart';
 import '../../../app_widget.dart';
 import '../../../pages/home_page/home.dart';
-import '../../Branch/AddBranch.dart';
 
 class CreateUsersWidget extends StatefulWidget {
   const CreateUsersWidget({Key? key}) : super(key: key);
@@ -154,7 +153,6 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                                           selectedMedia.storagePath
                                     },
                                   );
-                                  print(metadata.contentType);
                                   final uploadSnap = await FirebaseStorage
                                       .instance
                                       .ref()
@@ -521,8 +519,6 @@ class _CreateUsersWidgetState extends State<CreateUsersWidget> {
                               onPressed: () async {
                                 print(
                                     '[[[[[[[[[[[[[[[[[[[ogPass]]]]]]]]]]]]]]]]]]]');
-                                print(ogPass);
-                                print(ogUser);
                                 if (name.text != '' &&
                                     email.text != '' &&
                                     password.text != '' &&

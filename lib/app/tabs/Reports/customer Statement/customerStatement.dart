@@ -1,18 +1,14 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:universal_html/html.dart' as html;
 import 'package:intl/intl.dart';
-
-import '../../../../flutter_flow/flutter_flow_drop_down.dart';
+import 'package:universal_html/html.dart' as html;
 
 import '../../../../flutter_flow/flutter_flow_theme.dart';
-
 import '../../../../flutter_flow/flutter_flow_util.dart';
-
 import '../../../../flutter_flow/flutter_flow_widgets.dart';
-import '../../../pages/home_page/home.dart';
 import 'customerListPage.dart';
 
 class CustomerStatement extends StatefulWidget {
@@ -43,7 +39,6 @@ class _CustomerStatementState extends State<CustomerStatement> {
   List serviceData = [];
 
   getProjectData() {
-    print(customerId);
     FirebaseFirestore.instance
         .collection('projects')
         .where('customerID', isEqualTo: customerId)
@@ -52,23 +47,16 @@ class _CustomerStatementState extends State<CustomerStatement> {
       projectData = [];
 
       for (var doc in event.docs) {
-        print('2');
         projectData.add({
           'date': doc['date'],
           'particular': doc['projectName'],
           'credit': doc['projectCost'],
         });
-        print('[[[[[[[[[[[[[2]]]]]]]]]]]]]');
-        print('2');
 
         List data = doc['paymentDetails'];
 
-        print('[[[[[[[[[[[[[[[[3]]]]]]]]]]]]]]]]');
-        print('3');
 
         for (var item in data) {
-          print('[[[[[[[[[[[[[[[[4]]]]]]]]]]]]]]]]');
-          print('4');
           projectData.add({
             'date': item['datePaid'],
             'particular': item['description'],
@@ -90,7 +78,6 @@ class _CustomerStatementState extends State<CustomerStatement> {
   }
 
   getServiceData() {
-    print(customerId);
     FirebaseFirestore.instance
         .collection('customerServices')
         .where('customerId', isEqualTo: customerId)
@@ -100,23 +87,16 @@ class _CustomerStatementState extends State<CustomerStatement> {
       serviceData = [];
 
       for (var doc in event.docs) {
-        print('2');
         serviceData.add({
           'date': doc['serviceStartingDate'],
           'particular': doc['serviceName'],
           'credit': doc['serviceAmount'],
         });
-        print('[[[[[[[[[[[[[2]]]]]]]]]]]]]');
-        print('2');
 
         List data = doc['paymentDetails'];
 
-        print('[[[[[[[[[[[[[[[[3]]]]]]]]]]]]]]]]');
-        print('3');
 
         for (var item in data) {
-          print('[[[[[[[[[[[[[[[[4]]]]]]]]]]]]]]]]');
-          print('4');
           serviceData.add({
             'date': item['datePaid'],
             'particular': item['description'],
@@ -188,7 +168,6 @@ class _CustomerStatementState extends State<CustomerStatement> {
                           try {
                             importData();
                           } catch (e) {
-                            print(e);
 
                              showDialog(
                                 context: context,
@@ -662,7 +641,6 @@ class _CustomerStatementState extends State<CustomerStatement> {
       cell4.cellStyle = cellStyle;
     }
 
-    print(statementData.length);
 
     //CELL VALUES
 

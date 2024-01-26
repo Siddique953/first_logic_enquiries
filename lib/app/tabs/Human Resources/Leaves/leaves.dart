@@ -238,9 +238,6 @@ class _HrLeavePageState extends State<HrLeavePage> {
                   ? StreamBuilder<QuerySnapshot>(
                       stream: leaveStream,
                       builder: (context, snapshot) {
-                        print('[[[[[[[[[[[[[[snapshot]]]]]]]]]]]]]]');
-                        print(snapshot);
-                        print(snapshot.error);
                         if (snapshot.hasError) {
                           return Center(
                             child: CircularProgressIndicator(),
@@ -584,7 +581,6 @@ class _HrLeavePageState extends State<HrLeavePage> {
                           .orderBy('from', descending: true)
                           .snapshots(),
                       builder: (context, snapshot) {
-                        print(snapshot);
                         if (!snapshot.hasData) {
                           return Center(
                             child: LottieBuilder.network(

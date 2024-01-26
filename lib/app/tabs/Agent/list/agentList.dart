@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../../flutter_flow/flutter_flow_theme.dart';
-import '../../../../flutter_flow/flutter_flow_util.dart';
 import '../../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../../flutter_flow/upload_media.dart';
 import '../../../app_widget.dart';
@@ -19,7 +18,6 @@ class _AgentListState extends State<AgentList> {
   List listOfAgents = [];
 
   getAgents() {
-    print(currentBranchId);
     FirebaseFirestore.instance
         .collection('agents')
         // .where('verified', isEqualTo: true)
@@ -57,7 +55,6 @@ class _AgentListState extends State<AgentList> {
   getFirst20() {
     listOfFilteredAgents = [];
 
-    print(listOfAgents.length);
     for (int i = 0; i < listOfAgents.length; i++) {
       firstIndex = 0;
       if (listOfFilteredAgents.length < 20) {
@@ -72,14 +69,8 @@ class _AgentListState extends State<AgentList> {
       lastIndex = i;
     }
 
-    print('=====================FIRST INDEX==========================');
-    print(firstIndex);
 
-    print('==========================LAST INDEX=====================');
-    print(lastIndex);
 
-    print('==========================LIST CURRENT LENGTH=====================');
-    print(listOfFilteredAgents.length);
 
     setState(() {});
   }
@@ -100,8 +91,6 @@ class _AgentListState extends State<AgentList> {
       lastIndex = i;
     }
 
-    print(firstIndex);
-    print(lastIndex);
 
     setState(() {});
   }
@@ -125,8 +114,6 @@ class _AgentListState extends State<AgentList> {
 
     listOfFilteredAgents = prev.reversed.toList();
 
-    print(firstIndex);
-    print(lastIndex);
 
     // listOfFilteredProjects.reversed;
 
@@ -179,8 +166,6 @@ class _AgentListState extends State<AgentList> {
         // listOfFilteredProjects.add(listOfActiveProjects[i]);
       }
     }
-    print(firstIndex);
-    print(lastIndex);
     setState(() {});
   }
 
@@ -188,8 +173,6 @@ class _AgentListState extends State<AgentList> {
   getPrevSearchProjects(String txt) {
     listOfFilteredAgents = [];
     List prev = [];
-    print('[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
-    print(lastIndex);
     for (int i = lastIndex; i >= 0; i--) {
       if (listOfAgents[i]['name'].toString().toLowerCase().contains(txt) ||
           listOfAgents[i]['mobile'].toString().toLowerCase().contains(txt) ||
@@ -209,8 +192,6 @@ class _AgentListState extends State<AgentList> {
     }
     listOfFilteredAgents = prev.reversed.toList();
 
-    print(firstIndex);
-    print(lastIndex);
 
     // listOfFilteredProjects.reversed;
 

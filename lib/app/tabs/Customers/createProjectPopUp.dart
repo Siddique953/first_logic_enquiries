@@ -2,13 +2,12 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../auth/auth_util.dart';
+
 import '../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../flutter_flow/upload_media.dart';
 import '../../app_widget.dart';
-import '../../pages/home_page/components/side_menu.dart';
 import '../../pages/home_page/home.dart';
 import 'customer_SinglePage.dart';
 
@@ -45,8 +44,6 @@ class _CreateProjectState extends State<CreateProject> {
     platform = TextEditingController();
     additionalInfo = TextEditingController();
     careOfNo = TextEditingController();
-    print('////////////');
-    print(widget.id);
   }
 
   @override
@@ -360,7 +357,6 @@ class _CreateProjectState extends State<CreateProject> {
                               if (mounted) {
                                 setState(() {});
                               }
-                              print(projectDetails);
 
                               domain.text = '';
                               deliverables.text = '';

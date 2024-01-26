@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,14 +6,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:number_to_words/number_to_words.dart';
-import 'package:universal_html/html.dart' as html;
+
 import '../../../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../../../flutter_flow/flutter_flow_util.dart';
 import '../../../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../../../flutter_flow/upload_media.dart';
 import '../../../../pages/home_page/home.dart';
-import 'generateBankSlip.dart';
 
 class BankSlipPage extends StatefulWidget {
   final Map paySlip;
@@ -39,8 +37,6 @@ class _BankSlipPageState extends State<BankSlipPage> {
     super.initState();
 
     for (int i = 0; i < empNamesList.length; i++) {
-      print("[[[[[[[[[employeeList[i]['empId']]]]]]]]]]");
-      print(empNamesList[i]['empId']);
       if(widget.paySlip[empNamesList[i]['empId']]==null){
         continue;
         // widget.paySlip[empNamesList[i]['empId']]['takeHome']=0;
@@ -100,7 +96,6 @@ class _BankSlipPageState extends State<BankSlipPage> {
                         padding: EdgeInsetsDirectional.fromSTEB(0, 0, 8, 0),
                         child: FFButtonWidget(
                           onPressed: () {
-                            print('hiiiiiiiiiiiiiiiiii');
                             // BankSlipGenerate().downloadPdf(widget.paySlip,
                             //     chequeNumber.text, total, slipNames);
 
@@ -108,7 +103,6 @@ class _BankSlipPageState extends State<BankSlipPage> {
                               try {
                                 importData();
                               } catch (e) {
-                                print(e);
 
                                  showDialog(
                                     context: context,
@@ -288,8 +282,6 @@ class _BankSlipPageState extends State<BankSlipPage> {
                               (index) {
                                 String id = '';
 
-                                print(index);
-                                print(slipNames.length);
 
                                 if (index < slipNames.length) {
                                   id = slipNames[index]['empId'];
@@ -621,7 +613,6 @@ class _BankSlipPageState extends State<BankSlipPage> {
   }
 
   Future<void> importData() async {
-    print(slipNames.length);
 
     var excel = ex.Excel.createExcel();
 
@@ -763,8 +754,6 @@ class _BankSlipPageState extends State<BankSlipPage> {
           verticalAlign: ex.VerticalAlign.Center,
         );
       } else {
-        print(i);
-        print(num);
         var cell1 = sheetObject.cell(ex.CellIndex.indexByString("B${i + 2}"));
         cell1.value = '${num + 1}'; // dynamic values support provided;
         cell1.cellStyle = ex.CellStyle(

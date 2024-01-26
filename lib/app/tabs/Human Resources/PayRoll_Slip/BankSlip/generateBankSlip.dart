@@ -1,17 +1,17 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fl_erp/app/pages/home_page/home.dart';
 import 'package:intl/intl.dart';
+import 'package:number_to_words/number_to_words.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:number_to_words/number_to_words.dart';
 import 'package:pdf/widgets.dart';
 import 'package:universal_html/html.dart' as html;
 
 import '../../../../../flutter_flow/flutter_flow_util.dart';
-import '../../../../../flutter_flow/upload_media.dart';
 
 var image;
 var format = NumberFormat.simpleCurrency(locale: 'en_in');
@@ -70,9 +70,6 @@ class BankSlipGenerate {
       }
     }
 
-    print('asdadawdasdad');
-    print(first10TableData);
-    print(secondTableData);
 
     final pdf = Document();
 

@@ -4,11 +4,11 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
-import '../../../flutter_flow/flutter_flow_drop_down.dart';
+import 'package:flutter/material.dart';
+
 import '../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../flutter_flow/flutter_flow_widgets.dart';
-import 'package:flutter/material.dart';
 import '../../../flutter_flow/upload_media.dart';
 import '../../app_widget.dart';
 import '../../pages/home_page/home.dart';
@@ -40,21 +40,16 @@ class _AddLeadsWidgetState extends State<AddLeadsWidget> {
 
   List<List<dynamic>> rowdetail=[];
   void _openFile(PlatformFile file) {
-    print(file.name);
     filename = file.name;
 
     rowdetail =
         const CsvToListConverter().convert(String.fromCharCodes(file.bytes!));
 
-    print(rowdetail.length);
-    print(rowdetail);
 
-    print('EXEL EXEL EXEL EXEL EXEL EXEL ');
 
     int i = 0;
 
     for (dynamic a in rowdetail) {
-      print(a);
       if (a[0] == '' || a[0] == 'CLIENT') {
         continue;
       } else {
@@ -79,7 +74,6 @@ class _AddLeadsWidgetState extends State<AddLeadsWidget> {
         }
       }
     }
-    print(leadz);
     setState(() {});
 
     // var bytes = file.bytes;
@@ -206,7 +200,6 @@ class _AddLeadsWidgetState extends State<AddLeadsWidget> {
                                       child: InkWell(
                                         onTap: () {
                                           pickFile();
-                                          print('Button pressed ...');
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -242,8 +235,6 @@ class _AddLeadsWidgetState extends State<AddLeadsWidget> {
                               ),
                               FFButtonWidget(
                                 onPressed: () async {
-                                  print(leadz.length);
-                                  print(selectedBranch);
 
                                   if (selectedBranch != '' &&
                                       leadz.length != 0) {

@@ -1,12 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'dart:convert';
-import 'dart:io';
 import 'package:universal_html/html.dart' as html;
-import 'package:excel/excel.dart';
+
 import '../../../../../flutter_flow/flutter_flow_theme.dart';
-import '../../../../../flutter_flow/flutter_flow_util.dart';
 import '../../../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../../pages/home_page/home.dart';
 import '../Employee_List/employeeList.dart';
@@ -64,8 +65,6 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
 //GET FIRST 20 DATA
   getFirst20() {
     listOfFilteredCustomers = [];
-    print('===============================================');
-    print(listOfCustomers.length);
     for (int i = 0; i < listOfCustomers.length; i++) {
       firstIndex = 0;
       if (listOfFilteredCustomers.length < 20) {
@@ -80,14 +79,8 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
       lastIndex = i;
     }
 
-    print('=====================FIRST INDEX==========================');
-    print(firstIndex);
 
-    print('==========================LAST INDEX=====================');
-    print(lastIndex);
 
-    print('==========================LIST CURRENT LENGTH=====================');
-    print(listOfFilteredCustomers.length);
 
     setState(() {});
   }
@@ -108,8 +101,6 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
       lastIndex = i;
     }
 
-    print(firstIndex);
-    print(lastIndex);
 
     setState(() {});
   }
@@ -133,8 +124,6 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
 
     listOfFilteredCustomers = prev.reversed.toList();
 
-    print(firstIndex);
-    print(lastIndex);
 
     // listOfFilteredProjects.reversed;
 
@@ -187,8 +176,6 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
         // listOfFilteredProjects.add(listOfActiveProjects[i]);
       }
     }
-    print(firstIndex);
-    print(lastIndex);
     setState(() {});
   }
 
@@ -196,8 +183,6 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
   getPrevSearchProjects(String txt) {
     listOfFilteredCustomers = [];
     List prev = [];
-    print('[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
-    print(lastIndex);
     for (int i = lastIndex; i >= 0; i--) {
       if (listOfCustomers[i]['name'].toString().toLowerCase().contains(txt) ||
           listOfCustomers[i]['mobile'].toString().toLowerCase().contains(txt) ||
@@ -217,8 +202,6 @@ class _DeletedEmployeesState extends State<DeletedEmployees> {
     }
     listOfFilteredCustomers = prev.reversed.toList();
 
-    print(firstIndex);
-    print(lastIndex);
 
     // listOfFilteredProjects.reversed;
 

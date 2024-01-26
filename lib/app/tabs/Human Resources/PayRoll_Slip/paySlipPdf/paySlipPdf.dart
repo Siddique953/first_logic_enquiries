@@ -18,7 +18,7 @@ var image;
 
 class PaySlip {
   static downloadPdf(PaySlipModel invoice, Map employeeDetails,
-      Map employeeAttendance, String empId, int lastDay) async {
+      Map employeeAttendance, String empId, int lastDay,DateTime selectedDay) async {
 
     // print('""""invoice.attended""""');
     // print(empId);
@@ -189,7 +189,7 @@ class PaySlip {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     pw.Padding(
-                                      padding: EdgeInsets.only(left: 1),
+                                      padding: EdgeInsets.only(left: 5),
                                     child: Text(invoice.month!,
                                           style: TextStyle(
                                               fontSize: 8,
@@ -315,7 +315,7 @@ class PaySlip {
                   ),
                 ),
 
-                ///
+                /// EMPLOYEE CODE
                 Container(
                   height: 20,
                   decoration: BoxDecoration(
@@ -424,6 +424,8 @@ class PaySlip {
                     ],
                   ),
                 ),
+
+                /// DESIGNATION
                 Container(
                   height: 20,
                   decoration: BoxDecoration(
@@ -533,6 +535,7 @@ class PaySlip {
                   ),
                 ),
 
+                /// PAN
                 Container(
                   height: 20,
                   decoration: BoxDecoration(
@@ -664,6 +667,8 @@ class PaySlip {
                     ],
                   ),
                 ),
+
+                /// ACCOUNT NUMBER
                 Container(
                   height: 20,
                   decoration: BoxDecoration(
@@ -795,6 +800,8 @@ class PaySlip {
                     ],
                   ),
                 ),
+
+                /// BANK NAME
                 Container(
                   height: 20,
                   decoration: BoxDecoration(
@@ -927,6 +934,7 @@ class PaySlip {
                   ),
                 ),
 
+                
                 Container(
                   height: 20,
                   decoration: BoxDecoration(
@@ -1844,7 +1852,6 @@ class PaySlip {
 
     var data = await pdf.save();
     Uint8List bytes = Uint8List.fromList(data);
-    print('pdffffffffffffffffffffffffff');
 
     //WEB DOWNLOAD
 
@@ -1863,7 +1870,7 @@ class PaySlip {
     // html.Url.revokeObjectUrl(url);
 
     uploadFileToFireBase(invoice.name!, bytes, 'pdf', employeeDetails,
-        employeeAttendance, empId, lastDay);
+        employeeAttendance, empId, lastDay,selectedDay);
 ///
     //android
     // return PdfApi.saveDocument(name: '${invoice.name}+feedetail.pdf', pdf: pdf);
@@ -1877,30 +1884,27 @@ class PaySlip {
       Map employeeDetails,
       Map employeeAttendance,
       String empId,
-      int lastDay) async {
+      int lastDay,
+      DateTime selectedDay,
+      ) async {
     // final path='file/${pickFile.name}';
     // final file=File(pickFile.path);
 
     // final ref=FirebaseStorage.instance.ref().child(path);
     // uploadTask = ref.putFile(file);
 
-    print('uploaddddddddddddddddddddddddd');
     var uploadTask = FirebaseStorage.instance
-        .ref('Pay Slips/${dateTimeFormat('MMMM y', DateTime(
-              DateTime.now().year,
-              DateTime.now().month - 1,
-              DateTime.now().day,
-            ))}/BankSlip--$name.$ext')
+        .ref('Pay Slips/${dateTimeFormat('MMMM y', selectedDay)}/BankSlip--$name.$ext')
         .putData(fileBytes);
     final snapshot = await uploadTask.whenComplete(() {});
     snapshot.ref.getDownloadURL().then((url) {
-      sendMail(url, employeeDetails, employeeAttendance, empId, lastDay);
+      sendMail(url, employeeDetails, employeeAttendance, empId, lastDay,selectedDay);
     });
   }
 
   ///
   static sendMail(String url, Map employeeDetails, Map employeeAttendance,
-      String empId, int lastDay) {
+      String empId, int lastDay,DateTime selectedDay) {
     // String html = '<!DOCTYPE html>'
     //     '<html>'
     //     '<head>'
@@ -2055,7 +2059,6 @@ class PaySlip {
     // '</body>'
     // '</html>';
 
-    print('mailllllllllllllllllllllllllllllllllll');
     String html = '<html>'
         '<head>'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
@@ -2117,11 +2120,7 @@ class PaySlip {
         '</p>'
         '<p>'
         'I hope this email finds you in good health and spirits. I am writing to '
-        'inform you that your salary for the month of <b>${dateTimeFormat('MMM y', DateTime(
-              DateTime.now().year,
-              DateTime.now().month - 1,
-              DateTime.now().day,
-            ))}</b> has been '
+        'inform you that your salary for the month of <b>${dateTimeFormat('MMM y', selectedDay)}</b> has been '
         'credited to your account.'
         '</p>'
         '<p>'
@@ -2133,7 +2132,7 @@ class PaySlip {
         ' <ul>'
         ' <li>Name: ${empDataById[empId]!.name}</li>'
         ' <li>Employee ID: ${empDataById[empId]!.empId}</li>'
-        ' <li>Total Working Days: ${(30 - (employeeDetails[empId]['offDay'] ?? 0))}</li>'
+        ' <li>Total Working Days: ${(lastDay - (employeeDetails[empId]['offDay'] ?? 0))}</li>'
         '<li>Number of Leaves: ${employeeDetails[empId]['leave']}</li>'
         ' </ul>'
         ' </section>';
@@ -2186,35 +2185,17 @@ class PaySlip {
           .collection('employees')
           .doc(empId)
           .collection('attendance')
-          .doc(dateTimeFormat(
-              'MMM y',
-              DateTime(
-                DateTime.now().year,
-                DateTime.now().month - 1,
-                DateTime.now().day,
-              )))
+          .doc(dateTimeFormat('MMM y', selectedDay))
           .set({
         'attendance': employeeAttendance[empId] ?? {},
-        'month': dateTimeFormat(
-            'MMM y',
-            DateTime(
-              DateTime.now().year,
-              DateTime.now().month - 1,
-              DateTime.now().day,
-            )),
+        'month': dateTimeFormat('MMM y', selectedDay),
       });
 
       FirebaseFirestore.instance
           .collection('employees')
           .doc(empId)
           .collection('salaryInfo')
-          .doc(dateTimeFormat(
-              'MMM y',
-              DateTime(
-                DateTime.now().year,
-                DateTime.now().month - 1,
-                DateTime.now().day,
-              )))
+          .doc(dateTimeFormat('MMM y', selectedDay))
           .set({
         'totalWorkingDays': (lastDay - (employeeDetails[empId]['offDay'] ?? 4)),
         'totalLeave': employeeDetails[empId]['leave'],
@@ -2225,25 +2206,13 @@ class PaySlip {
         'deduction': employeeDetails[empId]['deduction'],
         'takeHome': employeeDetails[empId]['takeHome'],
         'document': url,
-        'month': dateTimeFormat(
-            'MMM y',
-            DateTime(
-              DateTime.now().year,
-              DateTime.now().month - 1,
-              DateTime.now().day,
-            )),
+        'month': dateTimeFormat('MMM y', selectedDay),
       });
 
       /// Update PAYSLIPS with this PDF FILE
       FirebaseFirestore.instance
           .collection('paySlips')
-          .doc(dateTimeFormat(
-          'MMMM y',
-          DateTime(
-            DateTime.now().year,
-            DateTime.now().month - 1,
-            DateTime.now().day,
-          )))
+          .doc(dateTimeFormat('MMMM y', selectedDay))
           .update({
         'paySlipFiles.$empId': url,
       });

@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mime_type/mime_type.dart';
 
 import '../app/pages/home_page/home.dart';
-import '../auth/auth_util.dart';
 
 const allowedFormats = {'image/png', 'image/jpeg', 'video/mp4', 'image/gif'};
 
@@ -44,8 +43,6 @@ Future<SelectedMedia?> selectMedia({
 }
 
 bool validateFileFormat(String filePath, BuildContext context) {
-  print(filePath);
-  print(allowedFormats);
   if (allowedFormats.contains(mime(filePath))) {
     return true;
   }

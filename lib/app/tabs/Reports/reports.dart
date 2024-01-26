@@ -5,8 +5,8 @@ import 'package:excel/excel.dart' as ex;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
-import 'package:intl/intl.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
+import 'package:universal_html/html.dart' as html;
 
 import '../../../flutter_flow/flutter_flow_drop_down.dart';
 import '../../../flutter_flow/flutter_flow_icon_button.dart';
@@ -14,9 +14,6 @@ import '../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../flutter_flow/flutter_flow_util.dart';
 import '../../../flutter_flow/upload_media.dart';
 import '../../app_widget.dart';
-
-import 'package:universal_html/html.dart' as html;
-
 import '../../pages/home_page/home.dart';
 
 class Reports extends StatefulWidget {
@@ -46,7 +43,6 @@ class _ReportsState extends State<Reports> {
             if (data[i]['paymentMethod'] == 'Cash' && dropdownValue == 'Cash') {
               Map value = {};
               value = doc.data();
-              print('|||||||||||||||||||||${data[i]['amount']}');
               value['amount'] = data[i]['amount'];
               value['paidDate'] = data[i]['datePaid'];
               value['modeOfPayment'] = data[i]['paymentMethod'];
@@ -55,7 +51,6 @@ class _ReportsState extends State<Reports> {
                 dropdownValue == 'Bank') {
               Map value = {};
               value = doc.data();
-              print('|||||||||||||||||||||${data[i]['feepaid']}');
               value['amount'] = data[i]['amount'];
               value['paidDate'] = data[i]['datePaid'];
               value['modeOfPayment'] = data[i]['paymentMethod'];
@@ -63,7 +58,6 @@ class _ReportsState extends State<Reports> {
             } else if (dropdownValue == '') {
               Map value = {};
               value = doc.data();
-              print('|||||||||||||||||||||${data[i]['amount']}');
               value['amount'] = data[i]['amount'];
               value['paidDate'] = data[i]['datePaid'];
               value['modeOfPayment'] = data[i]['paymentMethod'];
@@ -124,7 +118,6 @@ class _ReportsState extends State<Reports> {
       cell8.cellStyle = cellStyle;
     }
 
-    print(payments.length);
 
     //CELL VALUES
 
@@ -159,7 +152,6 @@ class _ReportsState extends State<Reports> {
           payments[i]['amount'].toString(); // dynamic values support provided;
       cell8.cellStyle = cellStyle;
 
-      print("hereeee");
 
       print(payments[i]['studentId'].toString());
     }
@@ -183,8 +175,6 @@ class _ReportsState extends State<Reports> {
     today = DateTime.now();
     fromDate = DateTime(today.year, today.month, 01, 0, 0, 0);
     lastDate = DateTime(today.year, today.month + 1, 0, 23, 59, 59);
-    print('---------------------Last Day------------------');
-    print(lastDate);
     toDate = DateTime(
         fromDate.year, fromDate.month + 1, fromDate.day - 1, 23, 59, 59);
 
@@ -293,10 +283,8 @@ class _ReportsState extends State<Reports> {
                   ),
                   onPressed: () async {
                     if (fromDate != null && toDate != null) {
-                      print('pressed');
                       getPaymentDetails(Timestamp.fromDate(fromDate),
                           Timestamp.fromDate(toDate));
-                      print('pressed1');
                     } else {
                       fromDate == null
                           ? showUploadMessage(
@@ -621,7 +609,6 @@ class _ReportsState extends State<Reports> {
                           try {
                             importData();
                           } catch (e) {
-                            print(e);
 
                              showDialog(
                                 context: context,

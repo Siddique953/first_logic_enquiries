@@ -1,20 +1,19 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart' as ex;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
-import 'dart:io';
-import 'dart:convert';
 import 'package:universal_html/html.dart' as html;
-import 'package:intl/intl.dart';
-import '../../../constant/Constant.dart';
-import '../../../flutter_flow/flutter_flow_drop_down.dart';
+
 import '../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../flutter_flow/flutter_flow_util.dart';
-import '../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../flutter_flow/upload_media.dart';
 import '../../app_widget.dart';
 import '../../pages/home_page/home.dart';
@@ -75,9 +74,6 @@ class _ExpenseReportState extends State<ExpenseReport> {
         }
       }
 
-      print('Lengthhhhhhhhhhh');
-      print(expenses.length);
-      print('Totallll');
       print(dropdownValue);
       if (mounted) {
         setState(() {});
@@ -124,7 +120,6 @@ class _ExpenseReportState extends State<ExpenseReport> {
       cell4.cellStyle = cellStyle;
     }
 
-    print(expenses.length);
 
     //CELL VALUES
 
@@ -194,8 +189,6 @@ class _ExpenseReportState extends State<ExpenseReport> {
 
     fromDate = DateTime(today.year, today.month, 01, 0, 0, 0);
     lastDate = DateTime(today.year, today.month + 1, 0, 23, 59, 59);
-    print('---------------------Last Day------------------');
-    print(lastDate);
     toDate = DateTime(
         fromDate.year, fromDate.month + 1, fromDate.day - 1, 23, 59, 59);
 
@@ -314,11 +307,9 @@ class _ExpenseReportState extends State<ExpenseReport> {
                   ),
                   onPressed: () async {
                     if (fromDate != null && toDate != null) {
-                      print('pressed');
                       getExpenseDetails(Timestamp.fromDate(fromDate),
                           Timestamp.fromDate(toDate));
                       // sort = true;
-                      print('pressed1');
                     } else {
                       fromDate == null
                           ? showUploadMessage(
@@ -495,7 +486,6 @@ class _ExpenseReportState extends State<ExpenseReport> {
                         onChanged: (val) {
                           setState(() {
                             dropdownValue = val;
-                            print('777777777777777777777777777$dropdownValue');
                             getExpenseDetails(Timestamp.fromDate(fromDate),
                                 Timestamp.fromDate(toDate));
                             // sort = true;
@@ -722,7 +712,6 @@ class _ExpenseReportState extends State<ExpenseReport> {
                               try {
                                 importData();
                               } catch (e) {
-                                print(e);
 
                                  showDialog(
                                     context: context,

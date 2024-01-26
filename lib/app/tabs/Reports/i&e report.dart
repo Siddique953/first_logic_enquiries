@@ -1,20 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:month_picker_dialog/month_picker_dialog.dart';
-import 'package:month_year_picker/month_year_picker.dart';
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:excel/excel.dart' as ex;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import '../../../auth/auth_util.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:universal_html/html.dart' as html;
+
 import '../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../flutter_flow/flutter_flow_util.dart';
-import '../../../flutter_flow/upload_media.dart';
 import '../../app_widget.dart';
 import '../../pages/home_page/home.dart';
 
@@ -83,9 +80,6 @@ class _FirmReportState extends State<FirmReport> {
 
     if (mounted) {
       setState(() {
-        print('---------------------BALANCE------------------------');
-        print(cashInHand);
-        print(cashAtBank);
       });
     }
   }
@@ -123,9 +117,6 @@ class _FirmReportState extends State<FirmReport> {
         }
       }
 
-      print('EXPENSSSSSSSSSSSSSSSSSSSSS');
-      print(expensesByBank);
-      print(expensesByCash);
       if (mounted) {
         setState(() {});
       }
@@ -186,9 +177,6 @@ class _FirmReportState extends State<FirmReport> {
           }
         }
       }
-      print('PAYMENTSSSSSSSSSSSSSSSSSSSS');
-      print(paymentsToBank);
-      print(paymentsToCash);
       if (mounted) {
         setState(() {});
       }
@@ -301,8 +289,6 @@ class _FirmReportState extends State<FirmReport> {
 
     fromDate = DateTime(today!.year, today!.month, 01, 0, 0, 0);
     lastDate = DateTime(today!.year, today!.month + 1, 0, 23, 59, 59);
-    print('---------------------Last Day------------------');
-    print(lastDate);
     toDate = DateTime(
         fromDate.year, fromDate.month + 1, fromDate.day - 1, 23, 59, 59);
 

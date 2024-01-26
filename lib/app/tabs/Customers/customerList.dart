@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+
 import '../../../flutter_flow/flutter_flow_theme.dart';
-import '../../../flutter_flow/flutter_flow_util.dart';
 import '../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../app_widget.dart';
 import '../../pages/home_page/home.dart';
-import 'customer_SinglePage.dart';
 import 'createPopup.dart';
+import 'customer_SinglePage.dart';
 
 class CustomerListWidget extends StatefulWidget {
   const CustomerListWidget({Key? key}) : super(key: key);
@@ -59,7 +59,6 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
   getFirst20() {
     listOfFilteredCustomers = [];
 
-    print(listOfCostomers.length);
     for (int i = 0; i < listOfCostomers.length; i++) {
       firstIndex = 0;
       if (listOfFilteredCustomers.length < 20) {
@@ -74,14 +73,8 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
       lastIndex = i;
     }
 
-    print('=====================FIRST INDEX==========================');
-    print(firstIndex);
 
-    print('==========================LAST INDEX=====================');
-    print(lastIndex);
 
-    print('==========================LIST CURRENT LENGTH=====================');
-    print(listOfFilteredCustomers.length);
 
     setState(() {});
   }
@@ -102,8 +95,6 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
       lastIndex = i;
     }
 
-    print(firstIndex);
-    print(lastIndex);
 
     setState(() {});
   }
@@ -127,8 +118,6 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
 
     listOfFilteredCustomers = prev.reversed.toList();
 
-    print(firstIndex);
-    print(lastIndex);
 
     // listOfFilteredProjects.reversed;
 
@@ -143,7 +132,6 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
       if (listOfCustomers[i]['name'].toString().toLowerCase().contains(txt) ||
           listOfCustomers[i]['mobile'].toString().toLowerCase().contains(txt) ||
           listOfCustomers[i]['email'].toString().toLowerCase().contains(txt)) {
-        print(i);
 
         if (listOfFilteredCustomers.length < 20) {
           showNButton = false;
@@ -196,8 +184,6 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
         // listOfFilteredProjects.add(listOfActiveProjects[i]);
       }
     }
-    print(firstIndex);
-    print(lastIndex);
     setState(() {});
   }
 
@@ -206,8 +192,6 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
     showPButton = false;
     listOfFilteredCustomers = [];
     List prev = [];
-    print('[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[');
-    print(lastIndex);
     for (int i = lastIndex; i >= 0; i--) {
       if (listOfCustomers[i]['name'].toString().toLowerCase().contains(txt) ||
           listOfCustomers[i]['mobile'].toString().toLowerCase().contains(txt) ||
@@ -235,8 +219,6 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
     }
     listOfFilteredCustomers = prev.reversed.toList();
 
-    print(firstIndex);
-    print(lastIndex);
 
     // listOfFilteredProjects.reversed;
 

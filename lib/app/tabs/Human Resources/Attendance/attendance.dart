@@ -37,7 +37,6 @@ class _HrAttendanceState extends State<HrAttendance> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   getData(DateTime date) {
-    print('[[[[[[[[[[[[[[[[[[[dateTimeFormat]]]]]]]]]]]]]]]]]]]');
     print(dateTimeFormat(
       'MMMM y',
       date,
@@ -64,8 +63,6 @@ class _HrAttendanceState extends State<HrAttendance> {
 
       setState(() {});
     }).onError((StateError error, stackTrace) {
-      print('[[[[[[[[[[[[[[[[[[[error]]]]]]]]]]]]]]]]]]]');
-      print(error.message);
       if (error.message ==
               'field does not exist within the DocumentSnapshotPlatform' ||
           error.message ==
@@ -81,7 +78,7 @@ class _HrAttendanceState extends State<HrAttendance> {
 
     getData(DateTime(
       DateTime.now().year,
-      DateTime.now().month - 1,
+      DateTime.now().month,
       DateTime.now().day,
     ));
 
@@ -433,8 +430,6 @@ class _HrAttendanceState extends State<HrAttendance> {
 
                                         print(
                                             '[[[[[[[[[[[[[[[[[[[[[[[leaves + workingDays]]]]]]]]]]]]]]]]]]]]]]]');
-                                        print(leaves);
-                                        print(workingDays);
 
                                         String present = ((workingDays == ''
                                                     ? 0
@@ -512,7 +507,7 @@ class _HrAttendanceState extends State<HrAttendance> {
                                                     onPressed: () {
                                                       if (employeeDetails
                                                               .entries
-                                                              .isNotEmpty ||
+                                                              .isEmpty ||
                                                           employeeDetails[
                                                                   data] !=
                                                               null) {

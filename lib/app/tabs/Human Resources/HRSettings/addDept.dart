@@ -637,7 +637,6 @@ class _HrSettingsPageState extends State<HrSettingsPage> {
                                                 setState(() {
                                                   edit = true;
                                                   // currentListIndex = index;
-                                                  print(edit);
                                                   // print(currentListIndex);
                                                 });
                                               },
@@ -816,10 +815,8 @@ class _HrSettingsPageState extends State<HrSettingsPage> {
                                                 setState(() {
                                                   print(
                                                       '[[[[[[[[[[[dept.text]]]]]]]]]]]');
-                                                  print(dept.text);
                                                   print(
                                                       '[[[[[[[[[[[[[subDept.text]]]]]]]]]]]]]');
-                                                  print(subDept.text);
                                                 });
                                               },
                                               text: 'Edit',
@@ -912,7 +909,6 @@ class _HrSettingsPageState extends State<HrSettingsPage> {
       }
       if (mounted) {
         setState(() {
-          print(departmentNameById);
         });
       }
     });

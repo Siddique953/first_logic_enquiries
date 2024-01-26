@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import '../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../flutter_flow/flutter_flow_widgets.dart';
 import '../../../flutter_flow/upload_media.dart';
@@ -483,7 +484,6 @@ class _AddProjectTypeWidgetState extends State<AddProjectTypeWidget> {
                             return Center(child: CircularProgressIndicator());
                           }
                           var data = snapshot.data!.docs;
-                          print(data.length);
                           return Container(
                             width: MediaQuery.of(context).size.width * 0.75,
                             height: MediaQuery.of(context).size.height * 0.9,
@@ -612,7 +612,6 @@ class _AddProjectTypeWidgetState extends State<AddProjectTypeWidget> {
                             return Center(child: CircularProgressIndicator());
                           }
                           var data = snapshot.data!.docs;
-                          print(data.length);
                           return Container(
                             width: MediaQuery.of(context).size.width * 0.75,
                             height: MediaQuery.of(context).size.height * 0.9,

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../flutter_flow/flutter_flow_util.dart';
 import '../../../flutter_flow/flutter_flow_widgets.dart';
@@ -40,7 +39,6 @@ class _FollowUpPageState extends State<FollowUpPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print('>>>>>>>>>>>>>>>> $currentBranchId');
   }
 
   @override
@@ -242,7 +240,6 @@ class _FollowUpPageState extends State<FollowUpPage> {
                                           children: [
                                             FFButtonWidget(
                                               onPressed: () async {
-                                                print(eId);
                                                 bool proceed = await alert(
                                                     context,
                                                     'FollowUp Completed?');
@@ -259,7 +256,6 @@ class _FollowUpPageState extends State<FollowUpPage> {
                                                   }).catchError((e) {
                                                     showUploadMessage(context,
                                                         'Updation Failed');
-                                                    print(e);
                                                   });
                                                 }
                                               },

@@ -47,7 +47,7 @@ import '../../tabs/users/users/addBranchUser.dart';
 import 'components/side_menu.dart';
 
 /// ERP VERSIONS
-String webVersion = "1.9.14";
+String webVersion = "1.9.15";
 
 ///
 
@@ -264,7 +264,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   }
 
   sendMail() {
-    print('send Maillllllllllllllllllllllllllllllll');
     // String html = '<!DOCTYPE html>'
     //     '<html>'
     //     '<head>'
@@ -879,7 +878,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     //   },
     // ];
 
-    print('=============asd============');
     FirebaseFirestore.instance.collection('employees').get().then(
           (value) => value.docs.forEach(
             (element) {

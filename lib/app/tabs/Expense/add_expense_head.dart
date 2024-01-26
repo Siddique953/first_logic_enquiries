@@ -158,10 +158,8 @@ class _ExpenseHeadPageState extends State<ExpenseHeadPage> {
                                       });
                                     } else {
                                       var currentHeadValue;
-                                      print(currentList);
                                       currentList[currentListIndex] =
                                           expenseHead.text;
-                                      print(currentList);
 
                                       //get Current head Value
                                       DocumentSnapshot doc =
@@ -169,7 +167,6 @@ class _ExpenseHeadPageState extends State<ExpenseHeadPage> {
                                               .collection('expenseHead')
                                               .doc(currentBranchId)
                                               .get();
-                                      print(currentValue);
                                       FirebaseFirestore.instance
                                           .collection('expenseHead')
                                           .doc(currentBranchId)
@@ -305,8 +302,6 @@ class _ExpenseHeadPageState extends State<ExpenseHeadPage> {
                                               setState(() {
                                                 edit = true;
                                                 currentListIndex = index;
-                                                print(edit);
-                                                print(currentListIndex);
                                               });
                                             },
                                             text: 'Edit',

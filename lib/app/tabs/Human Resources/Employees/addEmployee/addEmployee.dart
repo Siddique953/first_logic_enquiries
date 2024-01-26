@@ -1577,7 +1577,6 @@ class _AddEmployeeState extends State<AddEmployee> {
                                               oError = '';
 
                                               setState(() {
-                                                print(x);
                                               });
                                             },
                                           ),

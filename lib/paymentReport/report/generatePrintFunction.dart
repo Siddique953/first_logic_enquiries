@@ -1,10 +1,11 @@
 import 'dart:io';
+
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart';
-import '../../app/app_widget.dart';
+
 import 'Invoice.dart';
 
 var image;
@@ -684,12 +685,10 @@ class PrintingFunction {
       ],
     ));
 
-    print('aaaaaaaaaaaaaaaaaaaaaa');
 
     //web
     await Printing.layoutPdf(
         onLayout: (PdfPageFormat format) async => pdf.save());
-    print('bbbbbbbbbbbbbbbbbbbbbbbb');
     return null;
 
     //android

@@ -20,6 +20,7 @@ void main() async {
         measurementId: "G-58TS14550F"
     ));
 
+    getBranch();
 
     runApp(MyApp());
   } else {
@@ -55,8 +56,12 @@ setSearchParam(String caseNumber) {
 
 getBranch() {
   FirebaseFirestore.instance
-      .collection('sendNotification')
-      .add({
-    'name':'DDEC2023'
+      .collection('employees')
+      .get().then((value) {
+        for(DocumentSnapshot doc in value.docs) {
+          doc.reference.update({
+            'search':FieldValue.arrayUnion(setSearchParam(doc.id))
+          });
+        }
   });
 }
