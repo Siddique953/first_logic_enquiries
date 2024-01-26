@@ -79,18 +79,18 @@ class _AddLeadsWidgetState extends State<AddLeadsWidget> {
     // var bytes = file.bytes;
     // excel.setDefaultSheet('sales');
     // for (var table in excel.tables.keys) {
-    //   print(table);
-    //   print('^^^^^^^^^^^^^^');
-    //   print(excel.tables[table].rows);
-    //   print('TABLE TABLE TABLE');
+    //   
+    //   
+    //   
+    //   
     //   for (var row in excel.tables[table].rows) {
-    //     print(row);
-    //     print('Row Row Row');
+    //     
+    //     
     //
     //     rowdetail.add(row);
     //   }
     // }
-    // print(rowdetail);
+    // 
   }
 
   @override

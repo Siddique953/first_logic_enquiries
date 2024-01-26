@@ -74,7 +74,6 @@ class _ExpenseReportState extends State<ExpenseReport> {
         }
       }
 
-      print(dropdownValue);
       if (mounted) {
         setState(() {});
       }

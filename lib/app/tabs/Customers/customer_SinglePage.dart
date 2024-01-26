@@ -611,8 +611,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
     for (int i = 0; i < data.length; i++) {
       try {
-        // print(i);
-        // print(data[i]['paidDate'].toDate());
+        // 
+        // 
 
         /// SORT SERVICE DATA
 
@@ -819,8 +819,8 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
 
     for (int i = 0; i < data.length; i++) {
       try {
-        // print(i);
-        // print(data[i]['paidDate'].toDate());
+        // 
+        // 
 
         /// SORT SERVICE DATA
         if(projectDataById[data[i]['project']]['projectName'] ==
@@ -3669,7 +3669,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                             value.toString();
                                                         // paymentType = false;
                                                         // radioval = 'Bank';
-                                                        // print(radioval);
+                                                        // 
                                                         // radioSelected1 =
                                                         //     value;
                                                       });
@@ -3708,7 +3708,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                             value.toString();
                                                         // paymentType = false;
                                                         // radioval = 'Bank';
-                                                        // print(radioval);
+                                                        // 
                                                         // radioSelected1 =
                                                         //     value;
                                                       });
@@ -8472,7 +8472,7 @@ class _CustomerSinglePageState extends State<CustomerSinglePage> {
                                                         deliverable.text,
                                                     'platform': platform.text,
                                                   });
-                                                  print(abc.toString());
+                                                  
                                                   FirebaseFirestore.instance
                                                       .collection('projects')
                                                       .doc(work['projectId'])

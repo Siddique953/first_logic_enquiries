@@ -657,7 +657,7 @@ class _CreateNewPopupState extends State<CreateNewPopup> {
                       }
                     }
                     catch(ex){
-                      print(ex.toString());
+                      
                     }
 
                   },
@@ -697,10 +697,10 @@ class _CreateNewPopupState extends State<CreateNewPopup> {
   //           (element) {
   //             String str = element['email'];
   //
-  //             print(str);
+  //             
   //             str = str.replaceAll(' ', '').toLowerCase();
   //
-  //             print(str);
+  //             
   //             FirebaseFirestore.instance
   //                 .collection('customer')
   //                 .doc(element.id)

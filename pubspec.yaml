@@ -86,7 +86,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  print_remover: ^1.0.1
 
 flutter:
   uses-material-design: true

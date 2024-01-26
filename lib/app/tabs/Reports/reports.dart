@@ -67,7 +67,7 @@ class _ReportsState extends State<Reports> {
         }
       }
 
-      print(payments.toString());
+      
       if (mounted) {
         setState(() {});
       }
@@ -153,7 +153,7 @@ class _ReportsState extends State<Reports> {
       cell8.cellStyle = cellStyle;
 
 
-      print(payments[i]['studentId'].toString());
+      
     }
 
     excel.setDefaultSheet('sales');
@@ -528,7 +528,7 @@ class _ReportsState extends State<Reports> {
                       rows: List.generate(
                         payments.length,
                         (index) {
-                          print(payments.length.toString());
+                          
                           String name =
                               projectDataById[payments[index]['projectId']]
                                   ['projectName'];

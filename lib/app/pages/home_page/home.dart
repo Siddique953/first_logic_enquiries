@@ -881,18 +881,18 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     FirebaseFirestore.instance.collection('employees').get().then(
           (value) => value.docs.forEach(
             (element) {
-          // print('customerId');
-          // print(element['customerId']);
-          // print(element['paymentDetails'].length);
+          // 
+          // 
+          // 
 
           ///
           // String str = element['careOf'];asd
           //'agentName':
           //        careOfNo.text ?? '',
-          // print(str);
+          // 
           // str = str.replaceAll(' ', '').toLowerCase();
           //
-          // print(str);as
+          // as
           // List paymentDetails = [];
           // for (var item in element['paymentDetails']) {
           //   Map det = item;
@@ -904,9 +904,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           //   }
           //   paymentDetails.add(det);
           // }
-          // print('====================================================');
-          // print(element['projectName']);
-          // print(paymentDetails);
+          // 
+          // 
+          // 
           ///
           ///
 
@@ -914,7 +914,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           // // List payTest=element['paymentDetailsTest'];
           // // payTest.sort((a, b) => a['datePaid'].compareTo(b['datePaid']));
           // if(element['totalCost']==0 || element['totalCost']<0 ) {
-          // print(element['projectName']);
+          // 
           FirebaseFirestore.instance
               .collection('employees')
               .doc(element.id)

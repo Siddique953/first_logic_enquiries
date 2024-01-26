@@ -20,9 +20,9 @@ class PaySlip {
   static downloadPdf(PaySlipModel invoice, Map employeeDetails,
       Map employeeAttendance, String empId, int lastDay,DateTime selectedDay) async {
 
-    // print('""""invoice.attended""""');
-    // print(empId);
-    // print(invoice.attended);
+    // 
+    // 
+    // 
     //
     // String attendedDays =  invoice.attended.toString().split('.')[1]=='0'
     //     ? (invoice.attended??0.0).truncate().toString()

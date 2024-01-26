@@ -234,8 +234,7 @@ class _PaySlipPageState extends State<PaySlipPage> {
               (basicSalary / 30) * (30 - (leave + ((halfDay + lateCut) * 0.5)));
 
           if (empCode == 'FL108') {
-            print(leave);
-            print((leave - ((halfDay + lateCut) * 0.5)));
+            
           }
         }
 
@@ -1643,8 +1642,8 @@ class _PaySlipPageState extends State<PaySlipPage> {
       }
 
       // if(kDebugMode) {
-      //   print('"""""""""empId"""""""""');
-      //   print(availableEmployees[i]['empId']);
+      //   
+      //   
       // }
     }
     showUploadMessage(context, 'Pay Slip Successfully Shared..');
@@ -1965,8 +1964,7 @@ class MyData extends DataTableSource {
                   double newLeave = double.tryParse(leave.text) ?? 0;
 
                   employeeDetails[data]['leave'] = newLeave;
-                  print(oldLeave);
-                  print(workDay - (newLeave - oldLeave));
+                  
                   employeeDetails[data]['workDay'] =
                       workDay - (newLeave - oldLeave);
 

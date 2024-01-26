@@ -802,7 +802,7 @@
 // //                                                   'deliverable': deliverable.text,
 // //                                                   'platform': platform.text,
 // //                                                 });
-// //                                                 print(abc.toString());
+// //                                                 
 // //                                                 FirebaseFirestore.instance.collection('customer').doc(widget.id).update({
 // //                                                   'projectDetails': FieldValue.arrayUnion(abc),
 // //                                                 });

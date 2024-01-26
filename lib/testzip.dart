@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
+
 import 'package:archive/archive.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
@@ -66,7 +67,7 @@ class DownloadAssetsDemoState extends State<DownloadAssetsDemo> {
       var fileName = '$_dir/${file.name}';
       if (file.isFile) {
         var outFile = File(fileName);
-        //print('File:: ' + outFile.path);
+        //
         _tempImages!.add(outFile.path);
         outFile = await outFile.create(recursive: true);
         await outFile.writeAsBytes(file.content);

@@ -36,7 +36,7 @@ class _ProjectPaymentReportState extends State<ProjectPaymentReport> {
   //   for (int i = 0; i < listOfActiveProjects.length; i++) {
   //     if (listOfActiveProjects[i]['status'] == 'Suspended' ||
   //         listOfActiveProjects[i]['status'] == 'Completed') {
-  //       print('$i IS SUSPENDED');
+  //       
   //     } else {
   //       listOfFilteredProjects.add(listOfActiveProjects[i]);
   //     }

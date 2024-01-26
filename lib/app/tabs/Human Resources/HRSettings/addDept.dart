@@ -480,10 +480,10 @@ class _HrSettingsPageState extends State<HrSettingsPage> {
                                     }
                                     // else {
                                     //   var currentHeadValue;
-                                    //   print(currentList);
+                                    //   
                                     //   currentList[currentListIndex] =
                                     //       expenseHead.text;
-                                    //   print(currentList);
+                                    //   
                                     //
                                     //   //get Current head Value
                                     //   DocumentSnapshot doc =
@@ -491,7 +491,7 @@ class _HrSettingsPageState extends State<HrSettingsPage> {
                                     //           .collection('expenseHead')
                                     //           .doc(currentBranchId)
                                     //           .get();
-                                    //   print(currentValue);
+                                    //   
                                     //   FirebaseFirestore.instance
                                     //       .collection('expenseHead')
                                     //       .doc(currentBranchId)
@@ -637,7 +637,7 @@ class _HrSettingsPageState extends State<HrSettingsPage> {
                                                 setState(() {
                                                   edit = true;
                                                   // currentListIndex = index;
-                                                  // print(currentListIndex);
+                                                  // 
                                                 });
                                               },
                                               text: 'Edit',
